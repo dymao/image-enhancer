@@ -1,0 +1,12 @@
+{
+  "name": "image-enhancer-electron",
+  "version": "1.0.0",
+  "description": "Electron desktop UI for local image enhancement.",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^33.4.11"
+  }
+}

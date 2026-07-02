@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Image Enhancer</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="left-panel">
+        <div class="brand">
+          <div class="logo">IE</div>
+          <div>
+            <h1>Image Enhancer</h1>
+            <p>本地高级修图工具</p>
+          </div>
+        </div>
+
+        <button id="openButton" class="primary-action">打开图片</button>
+        <button id="saveButton" class="secondary-action" disabled>导出成片</button>
+
+        <section class="preset-section">
+          <h2>快捷处理</h2>
+          <button class="preset-card" data-preset="portrait">
+            <span>人像一键美化</span>
+            <small>自然美白、磨皮、轻微瘦脸</small>
+          </button>
+          <button class="preset-card wedding" data-preset="wedding">
+            <span>婚纱照一键精修</span>
+            <small>通透柔光、肤色干净、高光柔和</small>
+          </button>
+          <button class="preset-card" data-preset="reset">
+            <span>重置效果</span>
+            <small>恢复原图参数</small>
+          </button>
+        </section>
+
+        <section class="preset-section style-section">
+          <h2>风格化一键修图</h2>
+          <button class="preset-card sky" data-style-preset="blueSky">
+            <span>蓝天白云</span>
+            <small>天空更蓝、白云更干净、画面通透</small>
+          </button>
+          <button class="preset-card youth" data-style-preset="cyanYouth">
+            <span>青色青春</span>
+            <small>青绿色调、人物清爽、适合校园写真</small>
+          </button>
+          <button class="preset-card film" data-style-preset="warmFilm">
+            <span>暖阳胶片</span>
+            <small>暖色高光、轻胶片感、适合日落外景</small>
+          </button>
+          <button class="preset-card gray" data-style-preset="premiumGray">
+            <span>高级灰</span>
+            <small>低饱和、稳重影调、适合质感大片</small>
+          </button>
+        </section>
+
+        <div class="tip-card">
+          <strong>提示</strong>
+          <span>预览使用缩略图实时渲染，导出时会按原图尺寸重新处理。</span>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <span class="eyebrow">Preview</span>
+            <h2 id="fileName">还没有打开图片</h2>
+          </div>
+          <div id="imageMeta" class="image-meta">支持 JPG / PNG / WEBP / BMP</div>
+        </header>
+
+        <section class="canvas-card">
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon">+</div>
+            <h3>打开一张图片开始修图</h3>
+            <p>支持人像照、婚纱照、写真照和普通图片。</p>
+          </div>
+          <canvas id="previewCanvas"></canvas>
+        </section>
+      </main>
+
+      <aside class="right-panel">
+        <div class="panel-header">
+          <span class="eyebrow">Adjustments</span>
+          <h2>手工微调</h2>
+        </div>
+
+        <div id="controls" class="controls"></div>
+
+        <label class="toggle-row">
+          <input id="grayscaleToggle" type="checkbox" />
+          <span>黑白效果</span>
+        </label>
+      </aside>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="./renderer.js"></script>
+  </body>
+</html>
