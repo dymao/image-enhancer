@@ -103,6 +103,76 @@ const stylePresets = {
       softGlow: 4,
     },
   },
+  sweetPink: {
+    label: '甜美樱花',
+    controls: {
+      brightness: 12,
+      contrast: 2,
+      saturation: 8,
+      sharpness: 4,
+      denoise: 14,
+      whitening: 34,
+      skinSmooth: 34,
+      faceSlim: 8,
+      softGlow: 22,
+    },
+  },
+  cyberNight: {
+    label: '赛博夜景',
+    controls: {
+      brightness: -4,
+      contrast: 24,
+      saturation: 22,
+      sharpness: 20,
+      denoise: 12,
+      whitening: 8,
+      skinSmooth: 8,
+      faceSlim: 0,
+      softGlow: 18,
+    },
+  },
+  forestFresh: {
+    label: '森林清新',
+    controls: {
+      brightness: 8,
+      contrast: 6,
+      saturation: 14,
+      sharpness: 12,
+      denoise: 10,
+      whitening: 16,
+      skinSmooth: 16,
+      faceSlim: 0,
+      softGlow: 10,
+    },
+  },
+  vintageRetro: {
+    label: '复古港风',
+    controls: {
+      brightness: 0,
+      contrast: 18,
+      saturation: 10,
+      sharpness: 16,
+      denoise: 6,
+      whitening: 8,
+      skinSmooth: 10,
+      faceSlim: 0,
+      softGlow: 8,
+    },
+  },
+  classicBw: {
+    label: '经典黑白',
+    controls: {
+      brightness: 2,
+      contrast: 22,
+      saturation: -100,
+      sharpness: 18,
+      denoise: 8,
+      whitening: 8,
+      skinSmooth: 8,
+      faceSlim: 0,
+      softGlow: 0,
+    },
+  },
 };
 
 const state = {
@@ -124,6 +194,8 @@ const imageMeta = document.getElementById('imageMeta');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
+const styleToggleButton = document.getElementById('styleToggleButton');
+const styleOptions = document.getElementById('styleOptions');
 
 const sliderElements = new Map();
 const valueElements = new Map();
@@ -242,6 +314,19 @@ function applyStylePreset(name) {
   state.styleMode = name;
   renderPreview();
   showToast(`已应用：${style.label}`);
+  collapseStyleOptions();
+}
+
+function toggleStyleOptions() {
+  const isCollapsed = styleOptions.classList.toggle('collapsed');
+  styleToggleButton.classList.toggle('expanded', !isCollapsed);
+  styleToggleButton.setAttribute('aria-expanded', String(!isCollapsed));
+}
+
+function collapseStyleOptions() {
+  styleOptions.classList.add('collapsed');
+  styleToggleButton.classList.remove('expanded');
+  styleToggleButton.setAttribute('aria-expanded', 'false');
 }
 
 function renderPreview() {
@@ -613,6 +698,16 @@ function applyStyleGrade(context, width, height, styleMode) {
       next = gradeWarmFilm(red, green, blue, luminance, skin);
     } else if (styleMode === 'premiumGray') {
       next = gradePremiumGray(red, green, blue, luminance, skin);
+    } else if (styleMode === 'sweetPink') {
+      next = gradeSweetPink(red, green, blue, luminance, skin);
+    } else if (styleMode === 'cyberNight') {
+      next = gradeCyberNight(red, green, blue, luminance, skin);
+    } else if (styleMode === 'forestFresh') {
+      next = gradeForestFresh(red, green, blue, hsv, luminance, skin);
+    } else if (styleMode === 'vintageRetro') {
+      next = gradeVintageRetro(red, green, blue, luminance, skin);
+    } else if (styleMode === 'classicBw') {
+      next = gradeClassicBw(luminance, skin);
     }
 
     data[i] = clamp(next[0]);
@@ -702,6 +797,81 @@ function gradePremiumGray(red, green, blue, luminance, skin) {
   return [r, g, b];
 }
 
+function gradeSweetPink(red, green, blue, luminance, skin) {
+  let r = red;
+  let g = green;
+  let b = blue;
+  const highlight = smoothstep(130, 245, luminance);
+  const nonSkin = 1 - skin * 0.55;
+
+  r += 16 * highlight + 10 * skin;
+  g += 5 * highlight + 4 * skin;
+  b += 10 * highlight + 2 * nonSkin;
+
+  return liftMidtones(r, g, b, 0.08);
+}
+
+function gradeCyberNight(red, green, blue, luminance, skin) {
+  let r = red;
+  let g = green;
+  let b = blue;
+  const shadow = 1 - smoothstep(65, 175, luminance);
+  const highlight = smoothstep(150, 245, luminance);
+  const nonSkin = 1 - skin * 0.65;
+
+  r += 18 * highlight * nonSkin + 14 * shadow;
+  g -= 8 * nonSkin;
+  b += 28 * nonSkin + 16 * shadow;
+
+  if (skin > 0) {
+    r += 5 * skin;
+    g += 2 * skin;
+    b -= 3 * skin;
+  }
+
+  return [r, g, b];
+}
+
+function gradeForestFresh(red, green, blue, hsv, luminance, skin) {
+  let r = red;
+  let g = green;
+  let b = blue;
+  const greenMask = smoothstep(65, 145, hsv.h) * smoothstep(0.12, 0.55, hsv.s) * (1 - skin);
+  const highlight = smoothstep(135, 240, luminance);
+
+  r -= 8 * greenMask;
+  g += 20 * greenMask + 4 * highlight;
+  b += 6 * greenMask + 6 * highlight;
+
+  if (skin > 0) {
+    r += 6 * skin;
+    g += 3 * skin;
+    b -= 2 * skin;
+  }
+
+  return liftMidtones(r, g, b, 0.04);
+}
+
+function gradeVintageRetro(red, green, blue, luminance, skin) {
+  let r = red;
+  let g = green;
+  let b = blue;
+  const shadow = 1 - smoothstep(75, 175, luminance);
+  const highlight = smoothstep(145, 245, luminance);
+
+  r += 16 * highlight + 10 * shadow + 6 * skin;
+  g += 4 * highlight - 2 * shadow;
+  b -= 12 * highlight + 8 * shadow;
+
+  return [r, g, b];
+}
+
+function gradeClassicBw(luminance, skin) {
+  const contrast = skin > 0 ? 1.12 : 1.22;
+  const gray = (luminance - 128) * contrast + 128;
+  return [gray, gray, gray];
+}
+
 function liftMidtones(red, green, blue, amount) {
   const lift = (value) => value + (255 - value) * amount * (1 - Math.abs(value - 128) / 160);
   return [lift(red), lift(green), lift(blue)];
@@ -750,6 +920,8 @@ document.querySelectorAll('[data-preset]').forEach((button) => {
 document.querySelectorAll('[data-style-preset]').forEach((button) => {
   button.addEventListener('click', () => applyStylePreset(button.dataset.stylePreset));
 });
+
+styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 grayscaleToggle.addEventListener('change', () => {
   state.grayscale = grayscaleToggle.checked;

@@ -37,7 +37,11 @@
         </section>
 
         <section class="preset-section style-section">
-          <h2>风格化一键修图</h2>
+          <button id="styleToggleButton" class="preset-card style-toggle" aria-expanded="false" aria-controls="styleOptions">
+            <span>风格化一键修图</span>
+            <small>点击展开蓝天、青春、胶片、复古等风格</small>
+          </button>
+          <div id="styleOptions" class="style-options collapsed">
           <button class="preset-card sky" data-style-preset="blueSky">
             <span>蓝天白云</span>
             <small>天空更蓝、白云更干净、画面通透</small>
@@ -54,6 +58,27 @@
             <span>高级灰</span>
             <small>低饱和、稳重影调、适合质感大片</small>
           </button>
+          <button class="preset-card cherry" data-style-preset="sweetPink">
+            <span>甜美樱花</span>
+            <small>粉色高光、肤色柔和、适合少女写真</small>
+          </button>
+          <button class="preset-card night" data-style-preset="cyberNight">
+            <span>赛博夜景</span>
+            <small>蓝紫霓虹、高对比、适合城市夜拍</small>
+          </button>
+          <button class="preset-card forest" data-style-preset="forestFresh">
+            <span>森林清新</span>
+            <small>绿意清透、自然通风、适合户外草地</small>
+          </button>
+          <button class="preset-card vintage" data-style-preset="vintageRetro">
+            <span>复古港风</span>
+            <small>暖红暗部、复古对比、适合街拍人像</small>
+          </button>
+          <button class="preset-card bw" data-style-preset="classicBw">
+            <span>经典黑白</span>
+            <small>黑白层次、强对比、适合纪实肖像</small>
+          </button>
+          </div>
         </section>
 
         <div class="tip-card">

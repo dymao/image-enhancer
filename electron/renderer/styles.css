@@ -174,6 +174,37 @@ p {
   border-top: 1px solid var(--line);
 }
 
+.style-toggle {
+  position: relative;
+  background: linear-gradient(135deg, rgba(91, 140, 255, 0.24), rgba(244, 114, 182, 0.14));
+}
+
+.style-toggle::after {
+  content: "展开";
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.style-toggle.expanded::after {
+  content: "收起";
+}
+
+.style-options {
+  display: grid;
+  gap: 8px;
+  max-height: 380px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.style-options.collapsed {
+  display: none;
+}
+
 .preset-card.sky {
   background: linear-gradient(135deg, rgba(59, 130, 246, 0.28), rgba(125, 211, 252, 0.12));
 }
@@ -188,6 +219,26 @@ p {
 
 .preset-card.gray {
   background: linear-gradient(135deg, rgba(148, 163, 184, 0.24), rgba(255, 255, 255, 0.06));
+}
+
+.preset-card.cherry {
+  background: linear-gradient(135deg, rgba(244, 114, 182, 0.28), rgba(253, 186, 116, 0.1));
+}
+
+.preset-card.night {
+  background: linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(236, 72, 153, 0.12));
+}
+
+.preset-card.forest {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.26), rgba(132, 204, 22, 0.1));
+}
+
+.preset-card.vintage {
+  background: linear-gradient(135deg, rgba(180, 83, 9, 0.28), rgba(239, 68, 68, 0.1));
+}
+
+.preset-card.bw {
+  background: linear-gradient(135deg, rgba(229, 231, 235, 0.18), rgba(75, 85, 99, 0.18));
 }
 
 .tip-card {
