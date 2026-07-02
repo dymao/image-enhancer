@@ -314,19 +314,12 @@ function applyStylePreset(name) {
   state.styleMode = name;
   renderPreview();
   showToast(`已应用：${style.label}`);
-  collapseStyleOptions();
 }
 
 function toggleStyleOptions() {
   const isCollapsed = styleOptions.classList.toggle('collapsed');
   styleToggleButton.classList.toggle('expanded', !isCollapsed);
   styleToggleButton.setAttribute('aria-expanded', String(!isCollapsed));
-}
-
-function collapseStyleOptions() {
-  styleOptions.classList.add('collapsed');
-  styleToggleButton.classList.remove('expanded');
-  styleToggleButton.setAttribute('aria-expanded', 'false');
 }
 
 function renderPreview() {
@@ -911,6 +904,13 @@ function clamp(value) {
 }
 
 document.getElementById('openButton').addEventListener('click', openImage);
+emptyState.addEventListener('click', openImage);
+emptyState.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    openImage();
+  }
+});
 saveButton.addEventListener('click', saveImage);
 
 document.querySelectorAll('[data-preset]').forEach((button) => {
