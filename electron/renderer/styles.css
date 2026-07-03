@@ -623,6 +623,23 @@ button:disabled {
   font-weight: 750;
 }
 
+.icon-field {
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: center;
+  padding: 8px;
+}
+
+.icon-field > span,
+.inline-field > span,
+.control-head > span:first-child {
+  display: grid;
+  place-items: center;
+  min-width: 24px;
+  color: #dbeafe;
+  font-size: 13px;
+  font-weight: 900;
+}
+
 .field-control textarea,
 .field-control select {
   width: 100%;
@@ -688,6 +705,64 @@ button:disabled {
 
 #previewCanvas {
   touch-action: none;
+}
+
+.text-editor-frame {
+  position: absolute;
+  z-index: 3;
+  display: none;
+  min-width: 180px;
+  pointer-events: auto;
+  -webkit-app-region: no-drag;
+}
+
+.text-editor-frame.visible {
+  display: block;
+}
+
+.text-editor-overlay {
+  width: 100%;
+  min-height: 62px;
+  border: 1.5px dashed rgba(96, 165, 250, 0.95);
+  border-radius: 8px;
+  padding: 12px 14px;
+  color: white;
+  background: rgba(15, 23, 42, 0.2);
+  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.36), 0 12px 34px rgba(0, 0, 0, 0.24);
+  line-height: 1.22;
+  resize: none;
+  text-align: center;
+  outline: none;
+  overflow: hidden;
+}
+
+.text-editor-overlay::placeholder {
+  color: rgba(226, 232, 240, 0.76);
+}
+
+.text-drag-handle {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  padding: 0;
+  background: #2563eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.32);
+  cursor: move;
+}
+
+.text-drag-handle::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  margin: 5px auto;
+  border-radius: 50%;
+  background: white;
 }
 
 #previewCanvas[data-tool="text"] {

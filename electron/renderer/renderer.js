@@ -276,6 +276,8 @@ const mosaicSizeValue = document.getElementById('mosaicSizeValue');
 const mosaicColor = document.getElementById('mosaicColor');
 const mosaicPattern = document.getElementById('mosaicPattern');
 const clearMosaicRegion = document.getElementById('clearMosaicRegion');
+const textEditorFrame = document.getElementById('textEditorFrame');
+const textDragHandle = document.getElementById('textDragHandle');
 const textContent = document.getElementById('textContent');
 const textPreset = document.getElementById('textPreset');
 const textFont = document.getElementById('textFont');
@@ -318,6 +320,11 @@ function setActiveTool(tool) {
   textToolPanel.classList.toggle('active', tool === 'text');
   mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
   previewCanvas.dataset.tool = tool;
+  updateTextEditorOverlay();
+  renderPreview();
+  if (tool === 'text' && getActiveDocument()) {
+    window.setTimeout(() => textContent.focus(), 0);
+  }
 }
 
 function showToast(message) {
@@ -431,7 +438,9 @@ function syncToolControlsFromDocument(doc) {
   mosaicSizeValue.textContent = String(mosaic.size);
   mosaicColor.value = mosaic.color;
   mosaicPattern.value = mosaic.pattern;
-  textContent.value = text.content;
+  if (textContent.value !== text.content) {
+    textContent.value = text.content;
+  }
   textPreset.value = text.preset || 'custom';
   textFont.value = text.fontFamily;
   textEffect.value = text.effect;
@@ -446,6 +455,7 @@ function clearPreviewCanvas() {
   previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
   previewCanvas.style.width = '';
   previewCanvas.style.height = '';
+  hideTextEditorOverlay();
 }
 
 function syncUiWithActiveDocument() {
@@ -666,7 +676,7 @@ async function saveImage() {
   }
 
   showToast('正在生成全尺寸图片...');
-  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false);
+  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false, true);
   const dataUrl = outputCanvas.toDataURL('image/png');
   const savedPath = await window.imageEnhancer.saveImage({
     sourceName: doc.sourceName,
@@ -714,12 +724,19 @@ function renderPreview() {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  const canvas = buildProcessedCanvas(doc.image, 1500, doc, state.activeTool === 'mosaic');
+  const canvas = buildProcessedCanvas(
+    doc.image,
+    1500,
+    doc,
+    state.activeTool === 'mosaic',
+    state.activeTool !== 'text'
+  );
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
   previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
   previewContext.drawImage(canvas, 0, 0);
   fitPreviewCanvasToContainer();
+  updateTextEditorOverlay();
 }
 
 function fitPreviewCanvasToContainer() {
@@ -738,9 +755,57 @@ function fitPreviewCanvasToContainer() {
 
   previewCanvas.style.width = `${Math.floor(previewCanvas.width * scale)}px`;
   previewCanvas.style.height = `${Math.floor(previewCanvas.height * scale)}px`;
+  updateTextEditorOverlay();
 }
 
-function buildProcessedCanvas(image, maxSize, doc = getActiveDocument(), showGuides = false) {
+function hideTextEditorOverlay() {
+  textEditorFrame.classList.remove('visible');
+}
+
+function updateTextEditorOverlay() {
+  const doc = getActiveDocument();
+  if (!doc || state.activeTool !== 'text' || previewCanvas.style.display === 'none') {
+    hideTextEditorOverlay();
+    return;
+  }
+
+  const canvasRect = previewCanvas.getBoundingClientRect();
+  const cardRect = canvasCard.getBoundingClientRect();
+  if (canvasRect.width <= 0 || canvasRect.height <= 0) {
+    hideTextEditorOverlay();
+    return;
+  }
+
+  const text = doc.tools.text;
+  const displayScale = canvasRect.width / Math.max(1, previewCanvas.width);
+  const fontSize = Math.max(14, Math.round(text.size * Math.min(previewCanvas.width, previewCanvas.height) / 1000 * displayScale));
+  const width = Math.min(Math.max(220, fontSize * 8), canvasRect.width * 0.72);
+  const left = canvasRect.left - cardRect.left + canvasRect.width * (text.x / 100);
+  const top = canvasRect.top - cardRect.top + canvasRect.height * (text.y / 100);
+
+  textEditorFrame.style.left = `${left}px`;
+  textEditorFrame.style.top = `${top}px`;
+  textEditorFrame.style.width = `${width}px`;
+  textEditorFrame.style.transform = 'translate(-50%, -50%)';
+  textEditorFrame.classList.add('visible');
+
+  if (textContent.value !== text.content) {
+    textContent.value = text.content;
+  }
+  textContent.style.color = text.color;
+  textContent.style.fontFamily = text.fontFamily;
+  textContent.style.fontSize = `${fontSize}px`;
+  textContent.style.fontWeight = text.bold ? '700' : '400';
+  textContent.style.fontStyle = text.italic ? 'italic' : 'normal';
+}
+
+function buildProcessedCanvas(
+  image,
+  maxSize,
+  doc = getActiveDocument(),
+  showGuides = false,
+  showTextLayer = true
+) {
   if (!doc) return createCanvas(1, 1);
 
   const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
@@ -785,7 +850,9 @@ function buildProcessedCanvas(image, maxSize, doc = getActiveDocument(), showGui
     applyMosaic(context, width, height, doc.tools.mosaic, showGuides);
   }
 
-  applyTextOverlay(context, width, height, doc.tools.text);
+  if (showTextLayer) {
+    applyTextOverlay(context, width, height, doc.tools.text);
+  }
 
   return canvas;
 }
@@ -1558,6 +1625,21 @@ function handleCanvasPointerDown(event) {
   }
 }
 
+function handleTextDragPointerDown(event) {
+  const doc = getActiveDocument();
+  const point = getCanvasPoint(event);
+  if (!doc || !point) return;
+
+  setActiveTool('text');
+  state.canvasInteraction = {
+    type: 'text',
+    offsetX: point.x - doc.tools.text.x,
+    offsetY: point.y - doc.tools.text.y,
+  };
+  textDragHandle.setPointerCapture(event.pointerId);
+  event.preventDefault();
+}
+
 function handleCanvasPointerMove(event) {
   const doc = getActiveDocument();
   const point = getCanvasPoint(event);
@@ -1577,7 +1659,7 @@ function handleCanvasPointerUp(event) {
   if (!state.canvasInteraction) return;
   state.canvasInteraction = null;
   try {
-    previewCanvas.releasePointerCapture(event.pointerId);
+    event.currentTarget.releasePointerCapture(event.pointerId);
   } catch {
     // Pointer capture may already be released when the pointer leaves the canvas.
   }
@@ -1659,12 +1741,16 @@ clearMosaicRegion.addEventListener('click', () => {
 });
 
 textContent.addEventListener('input', () => {
-  setActiveTool('text');
+  if (state.activeTool !== 'text') {
+    setActiveTool('text');
+  }
   updateTextTool({ content: textContent.value });
 });
 
 textContent.addEventListener('focus', () => {
-  setActiveTool('text');
+  if (state.activeTool !== 'text') {
+    setActiveTool('text');
+  }
 });
 
 textPreset.addEventListener('change', () => {
@@ -1699,6 +1785,10 @@ previewCanvas.addEventListener('pointerdown', handleCanvasPointerDown);
 previewCanvas.addEventListener('pointermove', handleCanvasPointerMove);
 previewCanvas.addEventListener('pointerup', handleCanvasPointerUp);
 previewCanvas.addEventListener('pointercancel', handleCanvasPointerUp);
+textDragHandle.addEventListener('pointerdown', handleTextDragPointerDown);
+textDragHandle.addEventListener('pointermove', handleCanvasPointerMove);
+textDragHandle.addEventListener('pointerup', handleCanvasPointerUp);
+textDragHandle.addEventListener('pointercancel', handleCanvasPointerUp);
 
 createControls();
 setActiveTool('text');

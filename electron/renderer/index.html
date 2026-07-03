@@ -107,6 +107,10 @@
             <p>支持人像照、婚纱照、写真照和普通图片。</p>
           </div>
           <canvas id="previewCanvas"></canvas>
+          <div id="textEditorFrame" class="text-editor-frame">
+            <button id="textDragHandle" class="text-drag-handle" type="button" title="拖动文字位置" aria-label="拖动文字位置"></button>
+            <textarea id="textContent" class="text-editor-overlay" aria-label="图片文字" placeholder="输入文字"></textarea>
+          </div>
         </section>
       </main>
 
@@ -135,13 +139,8 @@
           </div>
 
           <div id="textToolPanel" class="tool-popover active">
-            <label class="field-control">
-              <span>添加文字</span>
-              <textarea id="textContent" rows="3" placeholder="输入要添加到图片上的文字"></textarea>
-            </label>
-
-            <label class="field-control">
-              <span>样式预设</span>
+            <label class="field-control icon-field">
+              <span title="样式预设">★</span>
               <select id="textPreset">
                 <option value="custom">自定义</option>
                 <option value="weddingTitle">婚纱标题</option>
@@ -151,8 +150,8 @@
               </select>
             </label>
 
-            <label class="field-control">
-              <span>字体</span>
+            <label class="field-control icon-field">
+              <span title="字体">F</span>
               <select id="textFont">
                 <option value="PingFang SC, Microsoft YaHei, sans-serif">苹方 / 微软雅黑</option>
                 <option value="Songti SC, SimSun, serif">宋体</option>
@@ -162,8 +161,8 @@
               </select>
             </label>
 
-            <label class="field-control">
-              <span>效果</span>
+            <label class="field-control icon-field">
+              <span title="文字效果">fx</span>
               <select id="textEffect">
                 <option value="shadow">阴影</option>
                 <option value="glow">发光</option>
@@ -174,29 +173,29 @@
 
             <div class="control">
               <div class="control-head">
-                <span>大小</span>
+                <span title="文字大小">Aa</span>
                 <span id="textSizeValue">48</span>
               </div>
               <input id="textSize" type="range" min="16" max="160" value="48" />
             </div>
 
             <label class="field-control inline-field">
-              <span>颜色</span>
+              <span title="文字颜色">A</span>
               <input id="textColor" type="color" value="#ffffff" />
             </label>
 
             <div class="tool-grid">
               <label class="toggle-row compact-toggle">
                 <input id="textBold" type="checkbox" />
-                <span>加粗</span>
+                <span title="加粗">B</span>
               </label>
               <label class="toggle-row compact-toggle">
                 <input id="textItalic" type="checkbox" />
-                <span>斜体</span>
+                <span title="斜体"><i>I</i></span>
               </label>
             </div>
 
-            <p class="tool-hint">选择 T 工具后，直接在图片上拖动文字位置。</p>
+            <p class="tool-hint">选择 T 后，在图片中央虚线框内输入文字，可拖动移动。</p>
           </div>
 
           <div id="mosaicToolPanel" class="tool-popover">
