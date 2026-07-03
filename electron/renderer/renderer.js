@@ -176,11 +176,9 @@ const stylePresets = {
 };
 
 const state = {
-  sourceName: '',
-  originalImage: null,
-  values: { ...presets.reset },
-  grayscale: false,
-  styleMode: 'none',
+  documents: [],
+  activeDocumentId: null,
+  nextDocumentId: 1,
   renderTimer: null,
 };
 
@@ -192,6 +190,7 @@ const rightPanel = document.querySelector('.right-panel');
 const emptyState = document.getElementById('emptyState');
 const fileName = document.getElementById('fileName');
 const imageMeta = document.getElementById('imageMeta');
+const documentTabs = document.getElementById('documentTabs');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
@@ -206,6 +205,129 @@ function showToast(message) {
   toast.classList.add('show');
   clearTimeout(showToast.timer);
   showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+function getActiveDocument() {
+  return state.documents.find((doc) => doc.id === state.activeDocumentId) || null;
+}
+
+function createDocument(result, image) {
+  return {
+    id: state.nextDocumentId++,
+    sourceName: result.name,
+    image,
+    meta: result,
+    values: { ...presets.reset },
+    grayscale: false,
+    styleMode: 'none',
+  };
+}
+
+function loadDocument(result) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(createDocument(result, image));
+    image.onerror = () => reject(new Error(result.name));
+    image.src = result.dataUrl;
+  });
+}
+
+function renderDocumentTabs() {
+  documentTabs.replaceChildren();
+  documentTabs.classList.toggle('empty', state.documents.length === 0);
+
+  state.documents.forEach((doc) => {
+    const tab = document.createElement('button');
+    tab.type = 'button';
+    tab.className = doc.id === state.activeDocumentId ? 'document-tab active' : 'document-tab';
+    tab.title = doc.meta.path || doc.sourceName;
+    tab.addEventListener('click', () => activateDocument(doc.id));
+
+    const title = document.createElement('span');
+    title.className = 'document-tab-title';
+    title.textContent = doc.sourceName;
+
+    const close = document.createElement('span');
+    close.className = 'document-tab-close';
+    close.textContent = 'x';
+    close.setAttribute('role', 'button');
+    close.setAttribute('aria-label', `关闭 ${doc.sourceName}`);
+    close.addEventListener('click', (event) => {
+      event.stopPropagation();
+      closeDocument(doc.id);
+    });
+
+    tab.append(title, close);
+    documentTabs.appendChild(tab);
+  });
+}
+
+function activateDocument(documentId) {
+  if (state.activeDocumentId === documentId) return;
+  state.activeDocumentId = documentId;
+  syncUiWithActiveDocument();
+}
+
+function closeDocument(documentId) {
+  const closingIndex = state.documents.findIndex((doc) => doc.id === documentId);
+  if (closingIndex === -1) return;
+
+  const wasActive = state.activeDocumentId === documentId;
+  state.documents.splice(closingIndex, 1);
+
+  if (wasActive) {
+    const nextDocument = state.documents[closingIndex] || state.documents[closingIndex - 1] || null;
+    state.activeDocumentId = nextDocument ? nextDocument.id : null;
+  }
+
+  syncUiWithActiveDocument();
+}
+
+function syncControlsFromDocument(doc) {
+  controlsConfig.forEach((config) => {
+    const slider = sliderElements.get(config.key);
+    const valueLabel = valueElements.get(config.key);
+    const value = doc?.values?.[config.key] ?? config.value;
+    if (slider) slider.value = value;
+    if (valueLabel) valueLabel.textContent = String(value);
+  });
+  grayscaleToggle.checked = Boolean(doc?.grayscale);
+}
+
+function clearPreviewCanvas() {
+  previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+  previewCanvas.style.width = '';
+  previewCanvas.style.height = '';
+}
+
+function syncUiWithActiveDocument() {
+  const activeDocument = getActiveDocument();
+  clearTimeout(state.renderTimer);
+  renderDocumentTabs();
+
+  if (!activeDocument) {
+    fileName.textContent = '还没有打开图片';
+    imageMeta.replaceChildren();
+    const hint = document.createElement('span');
+    hint.textContent = '支持 JPG / PNG / WEBP / BMP';
+    imageMeta.appendChild(hint);
+    emptyState.style.display = 'grid';
+    previewCanvas.style.display = 'none';
+    saveButton.disabled = true;
+    setAdjustmentsEnabled(false);
+    syncControlsFromDocument(null);
+    clearPreviewCanvas();
+    return;
+  }
+
+  fileName.textContent = activeDocument.sourceName;
+  updateImageMeta(activeDocument);
+  emptyState.style.display = 'none';
+  previewCanvas.style.display = 'block';
+  saveButton.disabled = false;
+  setAdjustmentsEnabled(true);
+  syncControlsFromDocument(activeDocument);
+  renderPreview();
 }
 
 function createControls() {
@@ -230,7 +352,10 @@ function createControls() {
     input.dataset.key = config.key;
 
     input.addEventListener('input', () => {
-      state.values[config.key] = Number(input.value);
+      const doc = getActiveDocument();
+      if (!doc) return;
+
+      doc.values[config.key] = Number(input.value);
       value.textContent = input.value;
       schedulePreviewRender();
     });
@@ -253,8 +378,11 @@ function setAdjustmentsEnabled(enabled) {
 }
 
 function setControlValues(values) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
   Object.entries(values).forEach(([key, value]) => {
-    state.values[key] = value;
+    doc.values[key] = value;
     const slider = sliderElements.get(key);
     const valueLabel = valueElements.get(key);
     if (slider) slider.value = value;
@@ -293,9 +421,11 @@ function formatDateTime(value) {
   });
 }
 
-function updateImageMeta(result, image) {
+function updateImageMeta(doc) {
   imageMeta.replaceChildren();
 
+  const result = doc.meta;
+  const { image } = doc;
   const rows = [
     ['尺寸', `${image.naturalWidth} x ${image.naturalHeight}`],
     ['格式', result.extension || '未知'],
@@ -324,42 +454,41 @@ function updateImageMeta(result, image) {
 }
 
 function schedulePreviewRender() {
-  if (!state.originalImage) return;
+  if (!getActiveDocument()) return;
   clearTimeout(state.renderTimer);
   state.renderTimer = setTimeout(renderPreview, 80);
 }
 
 async function openImage() {
-  const result = await window.imageEnhancer.openImage();
-  if (!result) return;
+  const results = await window.imageEnhancer.openImage();
+  if (!results) return;
 
-  const image = new Image();
-  image.onload = () => {
-    state.originalImage = image;
-    state.sourceName = result.name;
-    fileName.textContent = result.name;
-    updateImageMeta(result, image);
-    emptyState.style.display = 'none';
-    previewCanvas.style.display = 'block';
-    saveButton.disabled = false;
-    setAdjustmentsEnabled(true);
-    renderPreview();
-  };
-  image.onerror = () => showToast('图片加载失败');
-  image.src = result.dataUrl;
+  const files = Array.isArray(results) ? results : [results];
+  if (files.length === 0) return;
+
+  try {
+    const loadedDocuments = await Promise.all(files.map(loadDocument));
+    state.documents.push(...loadedDocuments);
+    state.activeDocumentId = loadedDocuments[loadedDocuments.length - 1].id;
+    syncUiWithActiveDocument();
+    showToast(files.length > 1 ? `已打开 ${files.length} 张图片` : '图片已打开');
+  } catch (error) {
+    showToast(`图片加载失败：${error.message}`);
+  }
 }
 
 async function saveImage() {
-  if (!state.originalImage) {
+  const doc = getActiveDocument();
+  if (!doc) {
     showToast('请先打开图片');
     return;
   }
 
   showToast('正在生成全尺寸图片...');
-  const outputCanvas = buildProcessedCanvas(state.originalImage, Number.POSITIVE_INFINITY);
+  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc);
   const dataUrl = outputCanvas.toDataURL('image/png');
   const savedPath = await window.imageEnhancer.saveImage({
-    sourceName: state.sourceName,
+    sourceName: doc.sourceName,
     dataUrl,
   });
 
@@ -369,21 +498,27 @@ async function saveImage() {
 }
 
 function applyPreset(name) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
   setControlValues(presets[name]);
   grayscaleToggle.checked = false;
-  state.grayscale = false;
-  state.styleMode = 'none';
+  doc.grayscale = false;
+  doc.styleMode = 'none';
   renderPreview();
 }
 
 function applyStylePreset(name) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
   const style = stylePresets[name];
   if (!style) return;
 
   setControlValues(style.controls);
   grayscaleToggle.checked = false;
-  state.grayscale = false;
-  state.styleMode = name;
+  doc.grayscale = false;
+  doc.styleMode = name;
   renderPreview();
   showToast(`已应用：${style.label}`);
 }
@@ -395,9 +530,10 @@ function toggleStyleOptions() {
 }
 
 function renderPreview() {
-  if (!state.originalImage) return;
+  const doc = getActiveDocument();
+  if (!doc) return;
 
-  const canvas = buildProcessedCanvas(state.originalImage, 1500);
+  const canvas = buildProcessedCanvas(doc.image, 1500, doc);
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
   previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -423,7 +559,9 @@ function fitPreviewCanvasToContainer() {
   previewCanvas.style.height = `${Math.floor(previewCanvas.height * scale)}px`;
 }
 
-function buildProcessedCanvas(image, maxSize) {
+function buildProcessedCanvas(image, maxSize, doc = getActiveDocument()) {
+  if (!doc) return createCanvas(1, 1);
+
   const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
   const width = Math.max(1, Math.round(image.naturalWidth * scale));
   const height = Math.max(1, Math.round(image.naturalHeight * scale));
@@ -431,34 +569,34 @@ function buildProcessedCanvas(image, maxSize) {
   const context = canvas.getContext('2d', { willReadFrequently: true });
 
   context.drawImage(image, 0, 0, width, height);
-  applyPixelAdjustments(context, width, height);
+  applyPixelAdjustments(context, width, height, doc.values);
   const skinMask = buildSkinMask(context, width, height);
 
-  if (state.values.whitening > 0) {
-    applySkinWhitening(context, width, height, state.values.whitening, skinMask);
+  if (doc.values.whitening > 0) {
+    applySkinWhitening(context, width, height, doc.values.whitening, skinMask);
   }
 
-  if (state.values.skinSmooth > 0 || state.values.denoise > 0) {
-    applySmoothOverlay(context, canvas, state.values.skinSmooth, state.values.denoise, skinMask);
+  if (doc.values.skinSmooth > 0 || doc.values.denoise > 0) {
+    applySmoothOverlay(context, canvas, doc.values.skinSmooth, doc.values.denoise, skinMask);
   }
 
-  if (state.values.sharpness > 0) {
-    applySharpen(context, width, height, state.values.sharpness);
+  if (doc.values.sharpness > 0) {
+    applySharpen(context, width, height, doc.values.sharpness);
   }
 
-  if (state.values.faceSlim > 0) {
-    applyCenterSlim(context, width, height, state.values.faceSlim);
+  if (doc.values.faceSlim > 0) {
+    applyCenterSlim(context, width, height, doc.values.faceSlim);
   }
 
-  if (state.values.softGlow > 0) {
-    applySoftGlow(context, canvas, state.values.softGlow);
+  if (doc.values.softGlow > 0) {
+    applySoftGlow(context, canvas, doc.values.softGlow);
   }
 
-  if (state.styleMode !== 'none') {
-    applyStyleGrade(context, width, height, state.styleMode);
+  if (doc.styleMode !== 'none') {
+    applyStyleGrade(context, width, height, doc.styleMode);
   }
 
-  if (state.grayscale) {
+  if (doc.grayscale) {
     applyGrayscale(context, width, height);
   }
 
@@ -472,12 +610,12 @@ function createCanvas(width, height) {
   return canvas;
 }
 
-function applyPixelAdjustments(context, width, height) {
+function applyPixelAdjustments(context, width, height, values) {
   const imageData = context.getImageData(0, 0, width, height);
   const data = imageData.data;
-  const brightness = state.values.brightness * 2.1;
-  const contrast = 1 + state.values.contrast / 100;
-  const saturation = 1 + state.values.saturation / 100;
+  const brightness = values.brightness * 2.1;
+  const contrast = 1 + values.contrast / 100;
+  const saturation = 1 + values.saturation / 100;
 
   for (let i = 0; i < data.length; i += 4) {
     let red = (data[i] - 128) * contrast + 128 + brightness;
@@ -996,12 +1134,15 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 grayscaleToggle.addEventListener('change', () => {
-  state.grayscale = grayscaleToggle.checked;
+  const doc = getActiveDocument();
+  if (!doc) return;
+
+  doc.grayscale = grayscaleToggle.checked;
   schedulePreviewRender();
 });
 
 createControls();
-setAdjustmentsEnabled(false);
+syncUiWithActiveDocument();
 
 window.addEventListener('resize', fitPreviewCanvasToContainer);
 

@@ -45,7 +45,7 @@ app.on('window-all-closed', () => {
 ipcMain.handle('image:open', async () => {
   const result = await dialog.showOpenDialog({
     title: '选择图片',
-    properties: ['openFile'],
+    properties: ['openFile', 'multiSelections'],
     filters: IMAGE_FILTERS,
   });
 
@@ -53,23 +53,24 @@ ipcMain.handle('image:open', async () => {
     return null;
   }
 
-  const filePath = result.filePaths[0];
-  const [buffer, stats] = await Promise.all([
-    fs.readFile(filePath),
-    fs.stat(filePath),
-  ]);
-  const ext = path.extname(filePath).toLowerCase().replace('.', '') || 'png';
-  const mime = ext === 'jpg' ? 'jpeg' : ext;
+  return Promise.all(result.filePaths.map(async (filePath) => {
+    const [buffer, stats] = await Promise.all([
+      fs.readFile(filePath),
+      fs.stat(filePath),
+    ]);
+    const ext = path.extname(filePath).toLowerCase().replace('.', '') || 'png';
+    const mime = ext === 'jpg' ? 'jpeg' : ext;
 
-  return {
-    path: filePath,
-    name: path.basename(filePath),
-    size: stats.size,
-    createdAt: stats.birthtime.toISOString(),
-    modifiedAt: stats.mtime.toISOString(),
-    extension: ext.toUpperCase(),
-    dataUrl: `data:image/${mime};base64,${buffer.toString('base64')}`,
-  };
+    return {
+      path: filePath,
+      name: path.basename(filePath),
+      size: stats.size,
+      createdAt: stats.birthtime.toISOString(),
+      modifiedAt: stats.mtime.toISOString(),
+      extension: ext.toUpperCase(),
+      dataUrl: `data:image/${mime};base64,${buffer.toString('base64')}`,
+    };
+  }));
 });
 
 ipcMain.handle('image:save', async (_event, payload) => {
