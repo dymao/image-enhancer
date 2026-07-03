@@ -248,7 +248,7 @@ const state = {
   nextDocumentId: 1,
   renderTimer: null,
   canvasInteraction: null,
-  activeTool: 'text',
+  activeTool: null,
 };
 
 const previewCanvas = document.getElementById('previewCanvas');
@@ -319,7 +319,11 @@ function setActiveTool(tool) {
   mosaicToolButton.classList.toggle('active', tool === 'mosaic');
   textToolPanel.classList.toggle('active', tool === 'text');
   mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
-  previewCanvas.dataset.tool = tool;
+  if (tool) {
+    previewCanvas.dataset.tool = tool;
+  } else {
+    delete previewCanvas.dataset.tool;
+  }
   updateTextEditorOverlay();
   if (getActiveDocument()) {
     renderPreview();
@@ -476,6 +480,7 @@ function syncUiWithActiveDocument() {
     saveButton.disabled = true;
     setAdjustmentsEnabled(false);
     syncControlsFromDocument(null);
+    setActiveTool(null);
     clearPreviewCanvas();
     return;
   }
@@ -663,6 +668,7 @@ async function openImage() {
     const loadedDocuments = await Promise.all(files.map(loadDocument));
     state.documents.push(...loadedDocuments);
     state.activeDocumentId = loadedDocuments[loadedDocuments.length - 1].id;
+    setActiveTool(null);
     syncUiWithActiveDocument();
     showToast(files.length > 1 ? `已打开 ${files.length} 张图片` : '图片已打开');
   } catch (error) {
@@ -1821,7 +1827,7 @@ textDragHandle.addEventListener('pointerup', handleCanvasPointerUp);
 textDragHandle.addEventListener('pointercancel', handleCanvasPointerUp);
 
 createControls();
-setActiveTool('text');
+setActiveTool(null);
 syncUiWithActiveDocument();
 
 window.addEventListener('resize', fitPreviewCanvasToContainer);
