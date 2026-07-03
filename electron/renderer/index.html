@@ -122,6 +122,82 @@
           <input id="grayscaleToggle" type="checkbox" />
           <span>黑白效果</span>
         </label>
+
+        <section class="tool-section">
+          <div class="panel-header compact">
+            <span class="eyebrow">Tools</span>
+            <h2>编辑操作</h2>
+          </div>
+
+          <label class="toggle-row">
+            <input id="mosaicToggle" type="checkbox" />
+            <span>马赛克</span>
+          </label>
+
+          <div class="control">
+            <div class="control-head">
+              <span>马赛克粒度</span>
+              <span id="mosaicSizeValue">18</span>
+            </div>
+            <input id="mosaicSize" type="range" min="6" max="60" value="18" />
+          </div>
+
+          <label class="field-control">
+            <span>添加文字</span>
+            <textarea id="textContent" rows="3" placeholder="输入要添加到图片上的文字"></textarea>
+          </label>
+
+          <label class="field-control">
+            <span>字体</span>
+            <select id="textFont">
+              <option value="PingFang SC, Microsoft YaHei, sans-serif">苹方 / 微软雅黑</option>
+              <option value="Songti SC, SimSun, serif">宋体</option>
+              <option value="Kaiti SC, KaiTi, serif">楷体</option>
+              <option value="Arial, Helvetica, sans-serif">Arial</option>
+              <option value="Georgia, serif">Georgia</option>
+            </select>
+          </label>
+
+          <div class="control">
+            <div class="control-head">
+              <span>文字大小</span>
+              <span id="textSizeValue">48</span>
+            </div>
+            <input id="textSize" type="range" min="16" max="160" value="48" />
+          </div>
+
+          <label class="field-control inline-field">
+            <span>文字颜色</span>
+            <input id="textColor" type="color" value="#ffffff" />
+          </label>
+
+          <div class="tool-grid">
+            <label class="toggle-row compact-toggle">
+              <input id="textBold" type="checkbox" />
+              <span>加粗</span>
+            </label>
+            <label class="toggle-row compact-toggle">
+              <input id="textItalic" type="checkbox" />
+              <span>斜体</span>
+            </label>
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <span>水平位置</span>
+              <span id="textXValue">50%</span>
+            </div>
+            <input id="textX" type="range" min="0" max="100" value="50" />
+          </div>
+
+          <div class="control">
+            <div class="control-head">
+              <span>垂直位置</span>
+              <span id="textYValue">82%</span>
+            </div>
+            <input id="textY" type="range" min="0" max="100" value="82" />
+          </div>
+        </section>
       </aside>
     </div>
 

@@ -46,6 +46,23 @@ const presets = {
   },
 };
 
+const defaultTools = {
+  mosaic: {
+    enabled: false,
+    size: 18,
+  },
+  text: {
+    content: '',
+    fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
+    size: 48,
+    color: '#ffffff',
+    bold: false,
+    italic: false,
+    x: 50,
+    y: 82,
+  },
+};
+
 const stylePresets = {
   blueSky: {
     label: '蓝天白云',
@@ -194,11 +211,37 @@ const documentTabs = document.getElementById('documentTabs');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
+const mosaicToggle = document.getElementById('mosaicToggle');
+const mosaicSize = document.getElementById('mosaicSize');
+const mosaicSizeValue = document.getElementById('mosaicSizeValue');
+const textContent = document.getElementById('textContent');
+const textFont = document.getElementById('textFont');
+const textSize = document.getElementById('textSize');
+const textSizeValue = document.getElementById('textSizeValue');
+const textColor = document.getElementById('textColor');
+const textBold = document.getElementById('textBold');
+const textItalic = document.getElementById('textItalic');
+const textX = document.getElementById('textX');
+const textXValue = document.getElementById('textXValue');
+const textY = document.getElementById('textY');
+const textYValue = document.getElementById('textYValue');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
 const sliderElements = new Map();
 const valueElements = new Map();
+const toolInputs = [
+  mosaicToggle,
+  mosaicSize,
+  textContent,
+  textFont,
+  textSize,
+  textColor,
+  textBold,
+  textItalic,
+  textX,
+  textY,
+];
 
 function showToast(message) {
   toast.textContent = message;
@@ -218,6 +261,10 @@ function createDocument(result, image) {
     image,
     meta: result,
     values: { ...presets.reset },
+    tools: {
+      mosaic: { ...defaultTools.mosaic },
+      text: { ...defaultTools.text },
+    },
     grayscale: false,
     styleMode: 'none',
   };
@@ -292,6 +339,27 @@ function syncControlsFromDocument(doc) {
     if (valueLabel) valueLabel.textContent = String(value);
   });
   grayscaleToggle.checked = Boolean(doc?.grayscale);
+  syncToolControlsFromDocument(doc);
+}
+
+function syncToolControlsFromDocument(doc) {
+  const tools = doc?.tools || defaultTools;
+  const { mosaic, text } = tools;
+
+  mosaicToggle.checked = Boolean(mosaic.enabled);
+  mosaicSize.value = mosaic.size;
+  mosaicSizeValue.textContent = String(mosaic.size);
+  textContent.value = text.content;
+  textFont.value = text.fontFamily;
+  textSize.value = text.size;
+  textSizeValue.textContent = String(text.size);
+  textColor.value = text.color;
+  textBold.checked = Boolean(text.bold);
+  textItalic.checked = Boolean(text.italic);
+  textX.value = text.x;
+  textXValue.textContent = `${text.x}%`;
+  textY.value = text.y;
+  textYValue.textContent = `${text.y}%`;
 }
 
 function clearPreviewCanvas() {
@@ -375,6 +443,9 @@ function setAdjustmentsEnabled(enabled) {
     slider.disabled = !enabled;
   });
   grayscaleToggle.disabled = !enabled;
+  toolInputs.forEach((input) => {
+    input.disabled = !enabled;
+  });
 }
 
 function setControlValues(values) {
@@ -388,6 +459,24 @@ function setControlValues(values) {
     if (slider) slider.value = value;
     if (valueLabel) valueLabel.textContent = String(value);
   });
+}
+
+function updateMosaicTool(updates) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
+  Object.assign(doc.tools.mosaic, updates);
+  syncToolControlsFromDocument(doc);
+  schedulePreviewRender();
+}
+
+function updateTextTool(updates) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
+  Object.assign(doc.tools.text, updates);
+  syncToolControlsFromDocument(doc);
+  schedulePreviewRender();
 }
 
 function formatFileSize(bytes) {
@@ -599,6 +688,12 @@ function buildProcessedCanvas(image, maxSize, doc = getActiveDocument()) {
   if (doc.grayscale) {
     applyGrayscale(context, width, height);
   }
+
+  if (doc.tools.mosaic.enabled) {
+    applyMosaic(context, width, height, doc.tools.mosaic.size);
+  }
+
+  applyTextOverlay(context, width, height, doc.tools.text);
 
   return canvas;
 }
@@ -880,6 +975,68 @@ function applyGrayscale(context, width, height) {
   context.putImageData(imageData, 0, 0);
 }
 
+function applyMosaic(context, width, height, size) {
+  const blockSize = Math.max(2, Math.round(size * Math.min(width, height) / 1000));
+  const imageData = context.getImageData(0, 0, width, height);
+  const data = imageData.data;
+
+  for (let y = 0; y < height; y += blockSize) {
+    for (let x = 0; x < width; x += blockSize) {
+      const sampleX = Math.min(width - 1, x + Math.floor(blockSize / 2));
+      const sampleY = Math.min(height - 1, y + Math.floor(blockSize / 2));
+      const sampleIndex = (sampleY * width + sampleX) * 4;
+      const red = data[sampleIndex];
+      const green = data[sampleIndex + 1];
+      const blue = data[sampleIndex + 2];
+
+      for (let yy = y; yy < Math.min(y + blockSize, height); yy += 1) {
+        for (let xx = x; xx < Math.min(x + blockSize, width); xx += 1) {
+          const index = (yy * width + xx) * 4;
+          data[index] = red;
+          data[index + 1] = green;
+          data[index + 2] = blue;
+        }
+      }
+    }
+  }
+
+  context.putImageData(imageData, 0, 0);
+}
+
+function applyTextOverlay(context, width, height, text) {
+  const content = text.content.trim();
+  if (!content) return;
+
+  const scaledSize = Math.max(10, Math.round(text.size * Math.min(width, height) / 1000));
+  const style = `${text.italic ? 'italic ' : ''}${text.bold ? '700 ' : '400 '}`;
+  const x = width * (text.x / 100);
+  const y = height * (text.y / 100);
+
+  context.save();
+  context.font = `${style}${scaledSize}px ${text.fontFamily}`;
+  context.textAlign = 'center';
+  context.textBaseline = 'middle';
+  context.lineJoin = 'round';
+  context.shadowColor = 'rgba(0, 0, 0, 0.55)';
+  context.shadowBlur = Math.max(3, scaledSize * 0.16);
+  context.shadowOffsetY = Math.max(1, scaledSize * 0.06);
+
+  const lines = content.split(/\r?\n/);
+  const lineHeight = scaledSize * 1.22;
+  const startY = y - ((lines.length - 1) * lineHeight) / 2;
+
+  lines.forEach((line, index) => {
+    const lineY = startY + index * lineHeight;
+    context.lineWidth = Math.max(2, scaledSize * 0.08);
+    context.strokeStyle = 'rgba(0, 0, 0, 0.62)';
+    context.strokeText(line, x, lineY);
+    context.fillStyle = text.color;
+    context.fillText(line, x, lineY);
+  });
+
+  context.restore();
+}
+
 function applyStyleGrade(context, width, height, styleMode) {
   const imageData = context.getImageData(0, 0, width, height);
   const data = imageData.data;
@@ -1139,6 +1296,46 @@ grayscaleToggle.addEventListener('change', () => {
 
   doc.grayscale = grayscaleToggle.checked;
   schedulePreviewRender();
+});
+
+mosaicToggle.addEventListener('change', () => {
+  updateMosaicTool({ enabled: mosaicToggle.checked });
+});
+
+mosaicSize.addEventListener('input', () => {
+  updateMosaicTool({ size: Number(mosaicSize.value) });
+});
+
+textContent.addEventListener('input', () => {
+  updateTextTool({ content: textContent.value });
+});
+
+textFont.addEventListener('change', () => {
+  updateTextTool({ fontFamily: textFont.value });
+});
+
+textSize.addEventListener('input', () => {
+  updateTextTool({ size: Number(textSize.value) });
+});
+
+textColor.addEventListener('input', () => {
+  updateTextTool({ color: textColor.value });
+});
+
+textBold.addEventListener('change', () => {
+  updateTextTool({ bold: textBold.checked });
+});
+
+textItalic.addEventListener('change', () => {
+  updateTextTool({ italic: textItalic.checked });
+});
+
+textX.addEventListener('input', () => {
+  updateTextTool({ x: Number(textX.value) });
+});
+
+textY.addEventListener('input', () => {
+  updateTextTool({ y: Number(textY.value) });
 });
 
 createControls();
