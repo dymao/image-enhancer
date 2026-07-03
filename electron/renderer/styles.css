@@ -94,7 +94,8 @@ p {
 }
 
 .brand h1 {
-  font-size: 18px;
+  font-size: 16px;
+  line-height: 1.25;
 }
 
 .brand p,
