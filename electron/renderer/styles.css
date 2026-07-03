@@ -543,14 +543,72 @@ button:disabled {
 }
 
 .tool-section {
+  position: relative;
   display: grid;
-  gap: 9px;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 10px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
 }
 
 .panel-header.compact {
+  grid-column: 1 / -1;
   margin-bottom: 2px;
+}
+
+.tool-dock {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.tool-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 9px;
+  padding: 0;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.tool-icon.active {
+  color: white;
+  background: linear-gradient(135deg, #4b8dff, #2563eb);
+}
+
+.tool-icon:disabled {
+  opacity: 0.45;
+}
+
+.mosaic-icon::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background:
+    linear-gradient(90deg, transparent 47%, rgba(255, 255, 255, 0.45) 48% 52%, transparent 53%),
+    linear-gradient(transparent 47%, rgba(255, 255, 255, 0.45) 48% 52%, transparent 53%),
+    linear-gradient(135deg, #94a3b8, #475569);
+  background-size: 11px 11px, 11px 11px, 100% 100%;
+}
+
+.tool-popover {
+  display: none;
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.tool-popover.active {
+  display: grid;
+  gap: 9px;
 }
 
 .field-control {
@@ -630,6 +688,14 @@ button:disabled {
 
 #previewCanvas {
   touch-action: none;
+}
+
+#previewCanvas[data-tool="text"] {
+  cursor: move;
+}
+
+#previewCanvas[data-tool="mosaic"] {
+  cursor: crosshair;
 }
 
 .toast {

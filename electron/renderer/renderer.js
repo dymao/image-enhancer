@@ -248,6 +248,7 @@ const state = {
   nextDocumentId: 1,
   renderTimer: null,
   canvasInteraction: null,
+  activeTool: 'text',
 };
 
 const previewCanvas = document.getElementById('previewCanvas');
@@ -262,6 +263,10 @@ const documentTabs = document.getElementById('documentTabs');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
+const textToolButton = document.getElementById('textToolButton');
+const mosaicToolButton = document.getElementById('mosaicToolButton');
+const textToolPanel = document.getElementById('textToolPanel');
+const mosaicToolPanel = document.getElementById('mosaicToolPanel');
 const mosaicToggle = document.getElementById('mosaicToggle');
 const mosaicPreset = document.getElementById('mosaicPreset');
 const mosaicShape = document.getElementById('mosaicShape');
@@ -286,6 +291,8 @@ const styleOptions = document.getElementById('styleOptions');
 const sliderElements = new Map();
 const valueElements = new Map();
 const toolInputs = [
+  textToolButton,
+  mosaicToolButton,
   mosaicToggle,
   mosaicPreset,
   mosaicShape,
@@ -303,6 +310,15 @@ const toolInputs = [
   textBold,
   textItalic,
 ];
+
+function setActiveTool(tool) {
+  state.activeTool = tool;
+  textToolButton.classList.toggle('active', tool === 'text');
+  mosaicToolButton.classList.toggle('active', tool === 'mosaic');
+  textToolPanel.classList.toggle('active', tool === 'text');
+  mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
+  previewCanvas.dataset.tool = tool;
+}
 
 function showToast(message) {
   toast.textContent = message;
@@ -698,7 +714,7 @@ function renderPreview() {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  const canvas = buildProcessedCanvas(doc.image, 1500, doc, true);
+  const canvas = buildProcessedCanvas(doc.image, 1500, doc, state.activeTool === 'mosaic');
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
   previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -1520,7 +1536,7 @@ function handleCanvasPointerDown(event) {
   const point = getCanvasPoint(event);
   if (!doc || !point) return;
 
-  if (doc.tools.mosaic.enabled) {
+  if (state.activeTool === 'mosaic' && doc.tools.mosaic.enabled) {
     state.canvasInteraction = {
       type: 'mosaic',
       start: point,
@@ -1531,7 +1547,7 @@ function handleCanvasPointerDown(event) {
     return;
   }
 
-  if (doc.tools.text.content.trim()) {
+  if (state.activeTool === 'text' && doc.tools.text.content.trim()) {
     state.canvasInteraction = {
       type: 'text',
       offsetX: point.x - doc.tools.text.x,
@@ -1587,6 +1603,18 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
+textToolButton.addEventListener('click', () => {
+  setActiveTool('text');
+});
+
+mosaicToolButton.addEventListener('click', () => {
+  setActiveTool('mosaic');
+  const doc = getActiveDocument();
+  if (doc && !doc.tools.mosaic.enabled) {
+    updateMosaicTool({ enabled: true });
+  }
+});
+
 grayscaleToggle.addEventListener('change', () => {
   const doc = getActiveDocument();
   if (!doc) return;
@@ -1596,6 +1624,9 @@ grayscaleToggle.addEventListener('change', () => {
 });
 
 mosaicToggle.addEventListener('change', () => {
+  if (mosaicToggle.checked) {
+    setActiveTool('mosaic');
+  }
   updateMosaicTool({ enabled: mosaicToggle.checked });
 });
 
@@ -1628,7 +1659,12 @@ clearMosaicRegion.addEventListener('click', () => {
 });
 
 textContent.addEventListener('input', () => {
+  setActiveTool('text');
   updateTextTool({ content: textContent.value });
+});
+
+textContent.addEventListener('focus', () => {
+  setActiveTool('text');
 });
 
 textPreset.addEventListener('change', () => {
@@ -1665,6 +1701,7 @@ previewCanvas.addEventListener('pointerup', handleCanvasPointerUp);
 previewCanvas.addEventListener('pointercancel', handleCanvasPointerUp);
 
 createControls();
+setActiveTool('text');
 syncUiWithActiveDocument();
 
 window.addEventListener('resize', fitPreviewCanvasToContainer);

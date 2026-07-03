@@ -129,128 +129,137 @@
             <h2>编辑操作</h2>
           </div>
 
-          <label class="toggle-row">
-            <input id="mosaicToggle" type="checkbox" />
-            <span>马赛克区域选择</span>
-          </label>
+          <div class="tool-dock" role="toolbar" aria-label="编辑工具">
+            <button id="textToolButton" class="tool-icon active" type="button" title="文字工具" aria-label="文字工具">T</button>
+            <button id="mosaicToolButton" class="tool-icon mosaic-icon" type="button" title="马赛克工具" aria-label="马赛克工具"></button>
+          </div>
 
-          <label class="field-control">
-            <span>马赛克预设</span>
-            <select id="mosaicPreset">
-              <option value="custom">自定义</option>
-              <option value="privacy">隐私遮挡</option>
-              <option value="softBlur">柔和模糊</option>
-              <option value="darkMask">深色遮罩</option>
-              <option value="comicDots">波点图案</option>
-            </select>
-          </label>
-
-          <div class="tool-grid">
+          <div id="textToolPanel" class="tool-popover active">
             <label class="field-control">
-              <span>区域形状</span>
-              <select id="mosaicShape">
-                <option value="rect">矩形</option>
-                <option value="ellipse">椭圆</option>
+              <span>添加文字</span>
+              <textarea id="textContent" rows="3" placeholder="输入要添加到图片上的文字"></textarea>
+            </label>
+
+            <label class="field-control">
+              <span>样式预设</span>
+              <select id="textPreset">
+                <option value="custom">自定义</option>
+                <option value="weddingTitle">婚纱标题</option>
+                <option value="posterGlow">海报发光</option>
+                <option value="simpleCaption">简洁字幕</option>
+                <option value="stamp">印章标题</option>
               </select>
             </label>
+
             <label class="field-control">
-              <span>马赛克样式</span>
-              <select id="mosaicStyle">
-                <option value="pixelate">像素块</option>
-                <option value="blur">模糊</option>
-                <option value="solid">纯色遮罩</option>
-                <option value="pattern">图案遮罩</option>
+              <span>字体</span>
+              <select id="textFont">
+                <option value="PingFang SC, Microsoft YaHei, sans-serif">苹方 / 微软雅黑</option>
+                <option value="Songti SC, SimSun, serif">宋体</option>
+                <option value="Kaiti SC, KaiTi, serif">楷体</option>
+                <option value="Arial, Helvetica, sans-serif">Arial</option>
+                <option value="Georgia, serif">Georgia</option>
               </select>
             </label>
-          </div>
 
-          <div class="control">
-            <div class="control-head">
-              <span>笔刷大小</span>
-              <span id="mosaicSizeValue">18</span>
-            </div>
-            <input id="mosaicSize" type="range" min="6" max="60" value="18" />
-          </div>
-
-          <label class="field-control inline-field">
-            <span>遮罩颜色</span>
-            <input id="mosaicColor" type="color" value="#111827" />
-          </label>
-
-          <label class="field-control">
-            <span>图案类型</span>
-            <select id="mosaicPattern">
-              <option value="grid">网格</option>
-              <option value="dots">圆点</option>
-              <option value="diagonal">斜线</option>
-            </select>
-          </label>
-
-          <button id="clearMosaicRegion" class="secondary-action compact-action">清除马赛克区域</button>
-          <p class="tool-hint">开启后在图片上拖拽选定区域，支持矩形/椭圆区域。</p>
-
-          <label class="field-control">
-            <span>添加文字</span>
-            <textarea id="textContent" rows="3" placeholder="输入要添加到图片上的文字"></textarea>
-          </label>
-
-          <label class="field-control">
-            <span>文字样式预设</span>
-            <select id="textPreset">
-              <option value="custom">自定义</option>
-              <option value="weddingTitle">婚纱标题</option>
-              <option value="posterGlow">海报发光</option>
-              <option value="simpleCaption">简洁字幕</option>
-              <option value="stamp">印章标题</option>
-            </select>
-          </label>
-
-          <label class="field-control">
-            <span>字体</span>
-            <select id="textFont">
-              <option value="PingFang SC, Microsoft YaHei, sans-serif">苹方 / 微软雅黑</option>
-              <option value="Songti SC, SimSun, serif">宋体</option>
-              <option value="Kaiti SC, KaiTi, serif">楷体</option>
-              <option value="Arial, Helvetica, sans-serif">Arial</option>
-              <option value="Georgia, serif">Georgia</option>
-            </select>
-          </label>
-
-          <label class="field-control">
-            <span>文字效果</span>
-            <select id="textEffect">
-              <option value="shadow">阴影</option>
-              <option value="glow">发光</option>
-              <option value="float">悬浮</option>
-              <option value="outline">描边</option>
-            </select>
-          </label>
-
-          <div class="control">
-            <div class="control-head">
-              <span>文字大小</span>
-              <span id="textSizeValue">48</span>
-            </div>
-            <input id="textSize" type="range" min="16" max="160" value="48" />
-          </div>
-
-          <label class="field-control inline-field">
-            <span>文字颜色</span>
-            <input id="textColor" type="color" value="#ffffff" />
-          </label>
-
-          <div class="tool-grid">
-            <label class="toggle-row compact-toggle">
-              <input id="textBold" type="checkbox" />
-              <span>加粗</span>
+            <label class="field-control">
+              <span>效果</span>
+              <select id="textEffect">
+                <option value="shadow">阴影</option>
+                <option value="glow">发光</option>
+                <option value="float">悬浮</option>
+                <option value="outline">描边</option>
+              </select>
             </label>
-            <label class="toggle-row compact-toggle">
-              <input id="textItalic" type="checkbox" />
-              <span>斜体</span>
+
+            <div class="control">
+              <div class="control-head">
+                <span>大小</span>
+                <span id="textSizeValue">48</span>
+              </div>
+              <input id="textSize" type="range" min="16" max="160" value="48" />
+            </div>
+
+            <label class="field-control inline-field">
+              <span>颜色</span>
+              <input id="textColor" type="color" value="#ffffff" />
             </label>
+
+            <div class="tool-grid">
+              <label class="toggle-row compact-toggle">
+                <input id="textBold" type="checkbox" />
+                <span>加粗</span>
+              </label>
+              <label class="toggle-row compact-toggle">
+                <input id="textItalic" type="checkbox" />
+                <span>斜体</span>
+              </label>
+            </div>
+
+            <p class="tool-hint">选择 T 工具后，直接在图片上拖动文字位置。</p>
           </div>
 
-          <p class="tool-hint">输入文字后，直接在图片上拖动文字到任意位置。</p>
+          <div id="mosaicToolPanel" class="tool-popover">
+            <label class="toggle-row">
+              <input id="mosaicToggle" type="checkbox" />
+              <span>启用马赛克</span>
+            </label>
+
+            <label class="field-control">
+              <span>预设</span>
+              <select id="mosaicPreset">
+                <option value="custom">自定义</option>
+                <option value="privacy">隐私遮挡</option>
+                <option value="softBlur">柔和模糊</option>
+                <option value="darkMask">深色遮罩</option>
+                <option value="comicDots">波点图案</option>
+              </select>
+            </label>
+
+            <div class="tool-grid">
+              <label class="field-control">
+                <span>形状</span>
+                <select id="mosaicShape">
+                  <option value="rect">矩形</option>
+                  <option value="ellipse">椭圆</option>
+                </select>
+              </label>
+              <label class="field-control">
+                <span>样式</span>
+                <select id="mosaicStyle">
+                  <option value="pixelate">像素块</option>
+                  <option value="blur">模糊</option>
+                  <option value="solid">纯色遮罩</option>
+                  <option value="pattern">图案遮罩</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="control">
+              <div class="control-head">
+                <span>笔刷</span>
+                <span id="mosaicSizeValue">18</span>
+              </div>
+              <input id="mosaicSize" type="range" min="6" max="60" value="18" />
+            </div>
+
+            <label class="field-control inline-field">
+              <span>颜色</span>
+              <input id="mosaicColor" type="color" value="#111827" />
+            </label>
+
+            <label class="field-control">
+              <span>图案</span>
+              <select id="mosaicPattern">
+                <option value="grid">网格</option>
+                <option value="dots">圆点</option>
+                <option value="diagonal">斜线</option>
+              </select>
+            </label>
+
+            <button id="clearMosaicRegion" class="secondary-action compact-action">清除区域</button>
+            <p class="tool-hint">选择马赛克工具后，在图片上拖拽选定区域。</p>
+          </div>
         </section>
       </aside>
     </div>
