@@ -525,7 +525,8 @@ input[type="range"]:disabled,
 input[type="checkbox"]:disabled,
 select:disabled,
 textarea:disabled,
-input[type="color"]:disabled {
+input[type="color"]:disabled,
+button:disabled {
   cursor: not-allowed;
 }
 
@@ -586,6 +587,10 @@ input[type="color"]:disabled {
   border-color: rgba(75, 141, 255, 0.7);
 }
 
+.field-control select {
+  min-height: 34px;
+}
+
 .inline-field {
   grid-template-columns: 1fr auto;
   align-items: center;
@@ -609,6 +614,22 @@ input[type="color"]:disabled {
 .compact-toggle {
   justify-content: center;
   padding: 9px;
+}
+
+.compact-action {
+  width: 100%;
+  padding: 10px 12px;
+}
+
+.tool-hint {
+  margin: -2px 0 2px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+#previewCanvas {
+  touch-action: none;
 }
 
 .toast {

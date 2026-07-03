@@ -49,17 +49,67 @@ const presets = {
 const defaultTools = {
   mosaic: {
     enabled: false,
+    preset: 'custom',
     size: 18,
+    shape: 'rect',
+    style: 'pixelate',
+    color: '#111827',
+    pattern: 'grid',
+    region: null,
   },
   text: {
     content: '',
+    preset: 'custom',
     fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
     size: 48,
     color: '#ffffff',
     bold: false,
     italic: false,
+    effect: 'shadow',
     x: 50,
     y: 82,
+  },
+};
+
+const mosaicPresets = {
+  privacy: { size: 24, shape: 'rect', style: 'pixelate', color: '#111827', pattern: 'grid' },
+  softBlur: { size: 30, shape: 'ellipse', style: 'blur', color: '#111827', pattern: 'grid' },
+  darkMask: { size: 18, shape: 'rect', style: 'solid', color: '#111827', pattern: 'grid' },
+  comicDots: { size: 20, shape: 'ellipse', style: 'pattern', color: '#f97316', pattern: 'dots' },
+};
+
+const textPresets = {
+  weddingTitle: {
+    fontFamily: 'Songti SC, SimSun, serif',
+    size: 72,
+    color: '#fff7ed',
+    bold: true,
+    italic: false,
+    effect: 'shadow',
+  },
+  posterGlow: {
+    fontFamily: 'Arial, Helvetica, sans-serif',
+    size: 84,
+    color: '#93c5fd',
+    bold: true,
+    italic: false,
+    effect: 'glow',
+  },
+  simpleCaption: {
+    fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
+    size: 42,
+    color: '#ffffff',
+    bold: false,
+    italic: false,
+    effect: 'shadow',
+  },
+  stamp: {
+    fontFamily: 'Kaiti SC, KaiTi, serif',
+    size: 68,
+    color: '#ef4444',
+    bold: true,
+    italic: false,
+    effect: 'outline',
   },
 };
 
@@ -197,6 +247,7 @@ const state = {
   activeDocumentId: null,
   nextDocumentId: 1,
   renderTimer: null,
+  canvasInteraction: null,
 };
 
 const previewCanvas = document.getElementById('previewCanvas');
@@ -212,19 +263,23 @@ const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
 const mosaicToggle = document.getElementById('mosaicToggle');
+const mosaicPreset = document.getElementById('mosaicPreset');
+const mosaicShape = document.getElementById('mosaicShape');
+const mosaicStyle = document.getElementById('mosaicStyle');
 const mosaicSize = document.getElementById('mosaicSize');
 const mosaicSizeValue = document.getElementById('mosaicSizeValue');
+const mosaicColor = document.getElementById('mosaicColor');
+const mosaicPattern = document.getElementById('mosaicPattern');
+const clearMosaicRegion = document.getElementById('clearMosaicRegion');
 const textContent = document.getElementById('textContent');
+const textPreset = document.getElementById('textPreset');
 const textFont = document.getElementById('textFont');
+const textEffect = document.getElementById('textEffect');
 const textSize = document.getElementById('textSize');
 const textSizeValue = document.getElementById('textSizeValue');
 const textColor = document.getElementById('textColor');
 const textBold = document.getElementById('textBold');
 const textItalic = document.getElementById('textItalic');
-const textX = document.getElementById('textX');
-const textXValue = document.getElementById('textXValue');
-const textY = document.getElementById('textY');
-const textYValue = document.getElementById('textYValue');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -232,15 +287,21 @@ const sliderElements = new Map();
 const valueElements = new Map();
 const toolInputs = [
   mosaicToggle,
+  mosaicPreset,
+  mosaicShape,
+  mosaicStyle,
   mosaicSize,
+  mosaicColor,
+  mosaicPattern,
+  clearMosaicRegion,
   textContent,
+  textPreset,
   textFont,
+  textEffect,
   textSize,
   textColor,
   textBold,
   textItalic,
-  textX,
-  textY,
 ];
 
 function showToast(message) {
@@ -347,19 +408,22 @@ function syncToolControlsFromDocument(doc) {
   const { mosaic, text } = tools;
 
   mosaicToggle.checked = Boolean(mosaic.enabled);
+  mosaicPreset.value = mosaic.preset || 'custom';
+  mosaicShape.value = mosaic.shape;
+  mosaicStyle.value = mosaic.style;
   mosaicSize.value = mosaic.size;
   mosaicSizeValue.textContent = String(mosaic.size);
+  mosaicColor.value = mosaic.color;
+  mosaicPattern.value = mosaic.pattern;
   textContent.value = text.content;
+  textPreset.value = text.preset || 'custom';
   textFont.value = text.fontFamily;
+  textEffect.value = text.effect;
   textSize.value = text.size;
   textSizeValue.textContent = String(text.size);
   textColor.value = text.color;
   textBold.checked = Boolean(text.bold);
   textItalic.checked = Boolean(text.italic);
-  textX.value = text.x;
-  textXValue.textContent = `${text.x}%`;
-  textY.value = text.y;
-  textYValue.textContent = `${text.y}%`;
 }
 
 function clearPreviewCanvas() {
@@ -470,6 +534,18 @@ function updateMosaicTool(updates) {
   schedulePreviewRender();
 }
 
+function applyMosaicPreset(name) {
+  const preset = mosaicPresets[name];
+  if (!preset) return;
+  updateMosaicTool({ ...preset, preset: name });
+}
+
+function applyTextPreset(name) {
+  const preset = textPresets[name];
+  if (!preset) return;
+  updateTextTool({ ...preset, preset: name });
+}
+
 function updateTextTool(updates) {
   const doc = getActiveDocument();
   if (!doc) return;
@@ -574,7 +650,7 @@ async function saveImage() {
   }
 
   showToast('正在生成全尺寸图片...');
-  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc);
+  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false);
   const dataUrl = outputCanvas.toDataURL('image/png');
   const savedPath = await window.imageEnhancer.saveImage({
     sourceName: doc.sourceName,
@@ -622,7 +698,7 @@ function renderPreview() {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  const canvas = buildProcessedCanvas(doc.image, 1500, doc);
+  const canvas = buildProcessedCanvas(doc.image, 1500, doc, true);
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
   previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
@@ -648,7 +724,7 @@ function fitPreviewCanvasToContainer() {
   previewCanvas.style.height = `${Math.floor(previewCanvas.height * scale)}px`;
 }
 
-function buildProcessedCanvas(image, maxSize, doc = getActiveDocument()) {
+function buildProcessedCanvas(image, maxSize, doc = getActiveDocument(), showGuides = false) {
   if (!doc) return createCanvas(1, 1);
 
   const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
@@ -690,7 +766,7 @@ function buildProcessedCanvas(image, maxSize, doc = getActiveDocument()) {
   }
 
   if (doc.tools.mosaic.enabled) {
-    applyMosaic(context, width, height, doc.tools.mosaic.size);
+    applyMosaic(context, width, height, doc.tools.mosaic, showGuides);
   }
 
   applyTextOverlay(context, width, height, doc.tools.text);
@@ -975,13 +1051,72 @@ function applyGrayscale(context, width, height) {
   context.putImageData(imageData, 0, 0);
 }
 
-function applyMosaic(context, width, height, size) {
+function applyMosaic(context, width, height, mosaic, showGuides) {
+  const region = getMosaicRegionPixels(mosaic.region, width, height);
+  if (!region) return;
+
+  context.save();
+  createRegionPath(context, region, mosaic.shape);
+  context.clip();
+
+  if (mosaic.style === 'blur') {
+    applyMosaicBlur(context, width, height, region, mosaic.size);
+  } else if (mosaic.style === 'solid') {
+    context.globalAlpha = 0.82;
+    context.fillStyle = mosaic.color;
+    context.fillRect(region.x, region.y, region.width, region.height);
+  } else if (mosaic.style === 'pattern') {
+    drawMosaicPattern(context, region, mosaic);
+  } else {
+    applyPixelMosaic(context, width, height, region, mosaic.size);
+  }
+
+  if (showGuides) {
+    drawMosaicSelection(context, region, mosaic.shape);
+  }
+  context.restore();
+}
+
+function getMosaicRegionPixels(region, width, height) {
+  if (!region || region.width < 1 || region.height < 1) return null;
+
+  const x = Math.round(region.x * width / 100);
+  const y = Math.round(region.y * height / 100);
+  const regionWidth = Math.round(region.width * width / 100);
+  const regionHeight = Math.round(region.height * height / 100);
+
+  return {
+    x: Math.max(0, Math.min(width - 1, x)),
+    y: Math.max(0, Math.min(height - 1, y)),
+    width: Math.max(1, Math.min(width - x, regionWidth)),
+    height: Math.max(1, Math.min(height - y, regionHeight)),
+  };
+}
+
+function createRegionPath(context, region, shape) {
+  context.beginPath();
+  if (shape === 'ellipse') {
+    context.ellipse(
+      region.x + region.width / 2,
+      region.y + region.height / 2,
+      region.width / 2,
+      region.height / 2,
+      0,
+      0,
+      Math.PI * 2
+    );
+  } else {
+    context.rect(region.x, region.y, region.width, region.height);
+  }
+}
+
+function applyPixelMosaic(context, width, height, region, size) {
   const blockSize = Math.max(2, Math.round(size * Math.min(width, height) / 1000));
   const imageData = context.getImageData(0, 0, width, height);
   const data = imageData.data;
 
-  for (let y = 0; y < height; y += blockSize) {
-    for (let x = 0; x < width; x += blockSize) {
+  for (let y = region.y; y < region.y + region.height; y += blockSize) {
+    for (let x = region.x; x < region.x + region.width; x += blockSize) {
       const sampleX = Math.min(width - 1, x + Math.floor(blockSize / 2));
       const sampleY = Math.min(height - 1, y + Math.floor(blockSize / 2));
       const sampleIndex = (sampleY * width + sampleX) * 4;
@@ -989,8 +1124,8 @@ function applyMosaic(context, width, height, size) {
       const green = data[sampleIndex + 1];
       const blue = data[sampleIndex + 2];
 
-      for (let yy = y; yy < Math.min(y + blockSize, height); yy += 1) {
-        for (let xx = x; xx < Math.min(x + blockSize, width); xx += 1) {
+      for (let yy = y; yy < Math.min(y + blockSize, region.y + region.height); yy += 1) {
+        for (let xx = x; xx < Math.min(x + blockSize, region.x + region.width); xx += 1) {
           const index = (yy * width + xx) * 4;
           data[index] = red;
           data[index + 1] = green;
@@ -1001,6 +1136,81 @@ function applyMosaic(context, width, height, size) {
   }
 
   context.putImageData(imageData, 0, 0);
+}
+
+function applyMosaicBlur(context, width, height, region, size) {
+  const snapshot = createCanvas(width, height);
+  snapshot.getContext('2d').drawImage(context.canvas, 0, 0);
+
+  context.save();
+  context.filter = `blur(${Math.max(5, size / 2)}px)`;
+  context.drawImage(
+    snapshot,
+    region.x,
+    region.y,
+    region.width,
+    region.height,
+    region.x,
+    region.y,
+    region.width,
+    region.height
+  );
+  context.restore();
+}
+
+function drawMosaicPattern(context, region, mosaic) {
+  context.save();
+  context.globalAlpha = 0.82;
+  context.fillStyle = mosaic.color;
+
+  if (mosaic.pattern === 'dots') {
+    const gap = Math.max(10, mosaic.size);
+    for (let y = region.y; y <= region.y + region.height; y += gap) {
+      for (let x = region.x; x <= region.x + region.width; x += gap) {
+        context.beginPath();
+        context.arc(x, y, gap * 0.28, 0, Math.PI * 2);
+        context.fill();
+      }
+    }
+  } else if (mosaic.pattern === 'diagonal') {
+    const gap = Math.max(8, mosaic.size * 0.75);
+    context.lineWidth = Math.max(3, mosaic.size * 0.18);
+    context.strokeStyle = mosaic.color;
+    for (let offset = -region.height; offset < region.width; offset += gap) {
+      context.beginPath();
+      context.moveTo(region.x + offset, region.y + region.height);
+      context.lineTo(region.x + offset + region.height, region.y);
+      context.stroke();
+    }
+  } else {
+    const gap = Math.max(8, mosaic.size * 0.65);
+    context.lineWidth = Math.max(2, mosaic.size * 0.12);
+    context.strokeStyle = mosaic.color;
+    for (let x = region.x; x <= region.x + region.width; x += gap) {
+      context.beginPath();
+      context.moveTo(x, region.y);
+      context.lineTo(x, region.y + region.height);
+      context.stroke();
+    }
+    for (let y = region.y; y <= region.y + region.height; y += gap) {
+      context.beginPath();
+      context.moveTo(region.x, y);
+      context.lineTo(region.x + region.width, y);
+      context.stroke();
+    }
+  }
+
+  context.restore();
+}
+
+function drawMosaicSelection(context, region, shape) {
+  context.save();
+  createRegionPath(context, region, shape);
+  context.lineWidth = 2;
+  context.setLineDash([8, 6]);
+  context.strokeStyle = 'rgba(255, 255, 255, 0.88)';
+  context.stroke();
+  context.restore();
 }
 
 function applyTextOverlay(context, width, height, text) {
@@ -1017,9 +1227,9 @@ function applyTextOverlay(context, width, height, text) {
   context.textAlign = 'center';
   context.textBaseline = 'middle';
   context.lineJoin = 'round';
-  context.shadowColor = 'rgba(0, 0, 0, 0.55)';
-  context.shadowBlur = Math.max(3, scaledSize * 0.16);
-  context.shadowOffsetY = Math.max(1, scaledSize * 0.06);
+  context.shadowColor = text.effect === 'glow' ? text.color : 'rgba(0, 0, 0, 0.58)';
+  context.shadowBlur = getTextShadowBlur(text.effect, scaledSize);
+  context.shadowOffsetY = text.effect === 'float' ? Math.max(4, scaledSize * 0.16) : Math.max(1, scaledSize * 0.06);
 
   const lines = content.split(/\r?\n/);
   const lineHeight = scaledSize * 1.22;
@@ -1027,14 +1237,27 @@ function applyTextOverlay(context, width, height, text) {
 
   lines.forEach((line, index) => {
     const lineY = startY + index * lineHeight;
-    context.lineWidth = Math.max(2, scaledSize * 0.08);
-    context.strokeStyle = 'rgba(0, 0, 0, 0.62)';
+    context.lineWidth = getTextStrokeWidth(text.effect, scaledSize);
+    context.strokeStyle = text.effect === 'outline' ? 'rgba(255, 255, 255, 0.82)' : 'rgba(0, 0, 0, 0.62)';
     context.strokeText(line, x, lineY);
     context.fillStyle = text.color;
     context.fillText(line, x, lineY);
   });
 
   context.restore();
+}
+
+function getTextShadowBlur(effect, scaledSize) {
+  if (effect === 'glow') return Math.max(8, scaledSize * 0.34);
+  if (effect === 'float') return Math.max(8, scaledSize * 0.22);
+  if (effect === 'outline') return 0;
+  return Math.max(3, scaledSize * 0.16);
+}
+
+function getTextStrokeWidth(effect, scaledSize) {
+  if (effect === 'outline') return Math.max(3, scaledSize * 0.12);
+  if (effect === 'glow') return Math.max(1, scaledSize * 0.04);
+  return Math.max(2, scaledSize * 0.08);
 }
 
 function applyStyleGrade(context, width, height, styleMode) {
@@ -1270,6 +1493,80 @@ function clamp(value) {
   return Math.max(0, Math.min(255, value));
 }
 
+function getCanvasPoint(event) {
+  const rect = previewCanvas.getBoundingClientRect();
+  if (rect.width <= 0 || rect.height <= 0) return null;
+
+  const x = ((event.clientX - rect.left) / rect.width) * 100;
+  const y = ((event.clientY - rect.top) / rect.height) * 100;
+
+  return {
+    x: Math.max(0, Math.min(100, x)),
+    y: Math.max(0, Math.min(100, y)),
+  };
+}
+
+function createRegionFromPoints(start, end) {
+  const x = Math.min(start.x, end.x);
+  const y = Math.min(start.y, end.y);
+  const width = Math.abs(start.x - end.x);
+  const height = Math.abs(start.y - end.y);
+
+  return { x, y, width, height };
+}
+
+function handleCanvasPointerDown(event) {
+  const doc = getActiveDocument();
+  const point = getCanvasPoint(event);
+  if (!doc || !point) return;
+
+  if (doc.tools.mosaic.enabled) {
+    state.canvasInteraction = {
+      type: 'mosaic',
+      start: point,
+    };
+    doc.tools.mosaic.region = { x: point.x, y: point.y, width: 0, height: 0 };
+    previewCanvas.setPointerCapture(event.pointerId);
+    event.preventDefault();
+    return;
+  }
+
+  if (doc.tools.text.content.trim()) {
+    state.canvasInteraction = {
+      type: 'text',
+      offsetX: point.x - doc.tools.text.x,
+      offsetY: point.y - doc.tools.text.y,
+    };
+    previewCanvas.setPointerCapture(event.pointerId);
+    event.preventDefault();
+  }
+}
+
+function handleCanvasPointerMove(event) {
+  const doc = getActiveDocument();
+  const point = getCanvasPoint(event);
+  if (!doc || !point || !state.canvasInteraction) return;
+
+  if (state.canvasInteraction.type === 'mosaic') {
+    doc.tools.mosaic.region = createRegionFromPoints(state.canvasInteraction.start, point);
+  } else if (state.canvasInteraction.type === 'text') {
+    doc.tools.text.x = Math.max(0, Math.min(100, point.x - state.canvasInteraction.offsetX));
+    doc.tools.text.y = Math.max(0, Math.min(100, point.y - state.canvasInteraction.offsetY));
+  }
+
+  schedulePreviewRender();
+}
+
+function handleCanvasPointerUp(event) {
+  if (!state.canvasInteraction) return;
+  state.canvasInteraction = null;
+  try {
+    previewCanvas.releasePointerCapture(event.pointerId);
+  } catch {
+    // Pointer capture may already be released when the pointer leaves the canvas.
+  }
+}
+
 document.getElementById('openButton').addEventListener('click', openImage);
 emptyState.addEventListener('click', openImage);
 emptyState.addEventListener('keydown', (event) => {
@@ -1302,41 +1599,70 @@ mosaicToggle.addEventListener('change', () => {
   updateMosaicTool({ enabled: mosaicToggle.checked });
 });
 
+mosaicPreset.addEventListener('change', () => {
+  applyMosaicPreset(mosaicPreset.value);
+});
+
+mosaicShape.addEventListener('change', () => {
+  updateMosaicTool({ shape: mosaicShape.value, preset: 'custom' });
+});
+
+mosaicStyle.addEventListener('change', () => {
+  updateMosaicTool({ style: mosaicStyle.value, preset: 'custom' });
+});
+
 mosaicSize.addEventListener('input', () => {
-  updateMosaicTool({ size: Number(mosaicSize.value) });
+  updateMosaicTool({ size: Number(mosaicSize.value), preset: 'custom' });
+});
+
+mosaicColor.addEventListener('input', () => {
+  updateMosaicTool({ color: mosaicColor.value, preset: 'custom' });
+});
+
+mosaicPattern.addEventListener('change', () => {
+  updateMosaicTool({ pattern: mosaicPattern.value, preset: 'custom' });
+});
+
+clearMosaicRegion.addEventListener('click', () => {
+  updateMosaicTool({ region: null });
 });
 
 textContent.addEventListener('input', () => {
   updateTextTool({ content: textContent.value });
 });
 
+textPreset.addEventListener('change', () => {
+  applyTextPreset(textPreset.value);
+});
+
 textFont.addEventListener('change', () => {
-  updateTextTool({ fontFamily: textFont.value });
+  updateTextTool({ fontFamily: textFont.value, preset: 'custom' });
+});
+
+textEffect.addEventListener('change', () => {
+  updateTextTool({ effect: textEffect.value, preset: 'custom' });
 });
 
 textSize.addEventListener('input', () => {
-  updateTextTool({ size: Number(textSize.value) });
+  updateTextTool({ size: Number(textSize.value), preset: 'custom' });
 });
 
 textColor.addEventListener('input', () => {
-  updateTextTool({ color: textColor.value });
+  updateTextTool({ color: textColor.value, preset: 'custom' });
 });
 
 textBold.addEventListener('change', () => {
-  updateTextTool({ bold: textBold.checked });
+  updateTextTool({ bold: textBold.checked, preset: 'custom' });
 });
 
 textItalic.addEventListener('change', () => {
-  updateTextTool({ italic: textItalic.checked });
+  updateTextTool({ italic: textItalic.checked, preset: 'custom' });
 });
 
-textX.addEventListener('input', () => {
-  updateTextTool({ x: Number(textX.value) });
-});
-
-textY.addEventListener('input', () => {
-  updateTextTool({ y: Number(textY.value) });
-});
+previewCanvas.addEventListener('pointerdown', handleCanvasPointerDown);
+previewCanvas.addEventListener('pointermove', handleCanvasPointerMove);
+previewCanvas.addEventListener('pointerup', handleCanvasPointerUp);
+previewCanvas.addEventListener('pointercancel', handleCanvasPointerUp);
 
 createControls();
 syncUiWithActiveDocument();
