@@ -262,6 +262,67 @@ function setControlValues(values) {
   });
 }
 
+function formatFileSize(bytes) {
+  if (!Number.isFinite(bytes) || bytes < 0) return '未知大小';
+
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let size = bytes;
+  let unitIndex = 0;
+
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+
+  const precision = unitIndex === 0 ? 0 : size >= 10 ? 1 : 2;
+  return `${size.toFixed(precision)} ${units[unitIndex]}`;
+}
+
+function formatDateTime(value) {
+  if (!value) return '未知时间';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '未知时间';
+
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function updateImageMeta(result, image) {
+  imageMeta.replaceChildren();
+
+  const rows = [
+    ['尺寸', `${image.naturalWidth} x ${image.naturalHeight}`],
+    ['格式', result.extension || '未知'],
+    ['大小', formatFileSize(result.size)],
+    ['修改', formatDateTime(result.modifiedAt)],
+    ['创建', formatDateTime(result.createdAt)],
+    ['路径', result.path || '未知路径'],
+  ];
+
+  rows.forEach(([label, value]) => {
+    const row = document.createElement('div');
+    row.className = label === '路径' ? 'meta-row meta-path' : 'meta-row';
+
+    const labelElement = document.createElement('span');
+    labelElement.className = 'meta-label';
+    labelElement.textContent = label;
+
+    const valueElement = document.createElement('span');
+    valueElement.className = 'meta-value';
+    valueElement.textContent = value;
+    valueElement.title = value;
+
+    row.append(labelElement, valueElement);
+    imageMeta.appendChild(row);
+  });
+}
+
 function schedulePreviewRender() {
   if (!state.originalImage) return;
   clearTimeout(state.renderTimer);
@@ -277,7 +338,7 @@ async function openImage() {
     state.originalImage = image;
     state.sourceName = result.name;
     fileName.textContent = result.name;
-    imageMeta.textContent = `${image.naturalWidth} x ${image.naturalHeight}`;
+    updateImageMeta(result, image);
     emptyState.style.display = 'none';
     previewCanvas.style.display = 'block';
     saveButton.disabled = false;

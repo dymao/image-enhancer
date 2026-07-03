@@ -54,13 +54,20 @@ ipcMain.handle('image:open', async () => {
   }
 
   const filePath = result.filePaths[0];
-  const buffer = await fs.readFile(filePath);
+  const [buffer, stats] = await Promise.all([
+    fs.readFile(filePath),
+    fs.stat(filePath),
+  ]);
   const ext = path.extname(filePath).toLowerCase().replace('.', '') || 'png';
   const mime = ext === 'jpg' ? 'jpeg' : ext;
 
   return {
     path: filePath,
     name: path.basename(filePath),
+    size: stats.size,
+    createdAt: stats.birthtime.toISOString(),
+    modifiedAt: stats.mtime.toISOString(),
+    extension: ext.toUpperCase(),
     dataUrl: `data:image/${mime};base64,${buffer.toString('base64')}`,
   };
 });
