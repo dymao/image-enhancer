@@ -263,8 +263,10 @@ const documentTabs = document.getElementById('documentTabs');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
 const grayscaleToggle = document.getElementById('grayscaleToggle');
+const adjustToolButton = document.getElementById('adjustToolButton');
 const textToolButton = document.getElementById('textToolButton');
 const mosaicToolButton = document.getElementById('mosaicToolButton');
+const adjustToolPanel = document.getElementById('adjustToolPanel');
 const textToolPanel = document.getElementById('textToolPanel');
 const mosaicToolPanel = document.getElementById('mosaicToolPanel');
 const mosaicToggle = document.getElementById('mosaicToggle');
@@ -293,6 +295,7 @@ const styleOptions = document.getElementById('styleOptions');
 const sliderElements = new Map();
 const valueElements = new Map();
 const toolInputs = [
+  adjustToolButton,
   textToolButton,
   mosaicToolButton,
   mosaicToggle,
@@ -315,8 +318,10 @@ const toolInputs = [
 
 function setActiveTool(tool) {
   state.activeTool = tool;
+  adjustToolButton.classList.toggle('active', tool === 'adjust');
   textToolButton.classList.toggle('active', tool === 'text');
   mosaicToolButton.classList.toggle('active', tool === 'mosaic');
+  adjustToolPanel.classList.toggle('active', tool === 'adjust');
   textToolPanel.classList.toggle('active', tool === 'text');
   mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
   if (tool) {
@@ -1720,6 +1725,10 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 });
 
 styleToggleButton.addEventListener('click', toggleStyleOptions);
+
+adjustToolButton.addEventListener('click', () => {
+  setActiveTool('adjust');
+});
 
 textToolButton.addEventListener('click', () => {
   setActiveTool('text');

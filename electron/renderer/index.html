@@ -116,26 +116,29 @@
 
       <aside class="right-panel">
         <div class="panel-header">
-          <span class="eyebrow">Adjustments</span>
-          <h2>手工微调</h2>
+          <span class="eyebrow">Tools</span>
+          <h2>工具箱</h2>
         </div>
 
-        <div id="controls" class="controls"></div>
-
-        <label class="toggle-row">
-          <input id="grayscaleToggle" type="checkbox" />
-          <span>黑白效果</span>
-        </label>
-
         <section class="tool-section">
-          <div class="panel-header compact">
-            <span class="eyebrow">Tools</span>
-            <h2>编辑操作</h2>
+          <div class="tool-dock" role="toolbar" aria-label="编辑工具">
+            <button id="adjustToolButton" class="tool-icon adjust-icon" type="button" title="微调工具" aria-label="微调工具"></button>
+            <button id="textToolButton" class="tool-icon" type="button" title="文字工具" aria-label="文字工具">T</button>
+            <button id="mosaicToolButton" class="tool-icon mosaic-icon" type="button" title="马赛克工具" aria-label="马赛克工具"></button>
           </div>
 
-          <div class="tool-dock" role="toolbar" aria-label="编辑工具">
-            <button id="textToolButton" class="tool-icon active" type="button" title="文字工具" aria-label="文字工具">T</button>
-            <button id="mosaicToolButton" class="tool-icon mosaic-icon" type="button" title="马赛克工具" aria-label="马赛克工具"></button>
+          <div id="adjustToolPanel" class="tool-popover">
+            <div class="panel-header compact inside-panel">
+              <span class="eyebrow">Adjustments</span>
+              <h2>微调</h2>
+            </div>
+
+            <div id="controls" class="controls"></div>
+
+            <label class="toggle-row">
+              <input id="grayscaleToggle" type="checkbox" />
+              <span>黑白效果</span>
+            </label>
           </div>
 
           <div id="textToolPanel" class="tool-popover">

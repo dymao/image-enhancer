@@ -586,6 +586,19 @@ button:disabled {
   opacity: 0.45;
 }
 
+.adjust-icon::before {
+  content: "";
+  width: 24px;
+  height: 22px;
+  background:
+    radial-gradient(circle at 65% 3px, #ffffff 0 3px, transparent 3.5px),
+    radial-gradient(circle at 35% 11px, #ffffff 0 3px, transparent 3.5px),
+    radial-gradient(circle at 72% 19px, #ffffff 0 3px, transparent 3.5px),
+    linear-gradient(#cbd5e1, #cbd5e1) 0 3px / 100% 2px no-repeat,
+    linear-gradient(#cbd5e1, #cbd5e1) 0 11px / 100% 2px no-repeat,
+    linear-gradient(#cbd5e1, #cbd5e1) 0 19px / 100% 2px no-repeat;
+}
+
 .mosaic-icon::before {
   content: "";
   width: 22px;
