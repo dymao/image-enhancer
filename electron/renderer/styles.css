@@ -712,6 +712,7 @@ button:disabled {
   z-index: 3;
   display: none;
   min-width: 180px;
+  overflow: visible;
   pointer-events: auto;
   -webkit-app-region: no-drag;
 }
@@ -733,7 +734,7 @@ button:disabled {
   resize: none;
   text-align: center;
   outline: none;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .text-editor-overlay::placeholder {

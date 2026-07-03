@@ -321,7 +321,9 @@ function setActiveTool(tool) {
   mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
   previewCanvas.dataset.tool = tool;
   updateTextEditorOverlay();
-  renderPreview();
+  if (getActiveDocument()) {
+    renderPreview();
+  }
   if (tool === 'text' && getActiveDocument()) {
     window.setTimeout(() => textContent.focus(), 0);
   }
@@ -797,6 +799,34 @@ function updateTextEditorOverlay() {
   textContent.style.fontSize = `${fontSize}px`;
   textContent.style.fontWeight = text.bold ? '700' : '400';
   textContent.style.fontStyle = text.italic ? 'italic' : 'normal';
+  applyTextEditorEffect(text, fontSize);
+}
+
+function applyTextEditorEffect(text, fontSize) {
+  const blur = getTextShadowBlur(text.effect, fontSize);
+  const stroke = getTextStrokeWidth(text.effect, fontSize);
+  const darkStroke = `0 0 ${Math.max(1, stroke)}px rgba(0, 0, 0, 0.72)`;
+  const baseShadow = `0 ${Math.max(1, fontSize * 0.06)}px ${blur}px rgba(0, 0, 0, 0.58)`;
+
+  textContent.style.textShadow = baseShadow;
+  textContent.style.webkitTextStroke = '0 transparent';
+  textContent.style.filter = 'none';
+
+  if (text.effect === 'glow') {
+    textContent.style.textShadow = [
+      `0 0 ${Math.max(6, fontSize * 0.24)}px ${text.color}`,
+      `0 0 ${Math.max(12, fontSize * 0.45)}px ${text.color}`,
+      darkStroke,
+    ].join(', ');
+  } else if (text.effect === 'float') {
+    textContent.style.textShadow = [
+      `0 ${Math.max(5, fontSize * 0.16)}px ${Math.max(10, fontSize * 0.3)}px rgba(0, 0, 0, 0.62)`,
+      `0 ${Math.max(2, fontSize * 0.08)}px ${Math.max(4, fontSize * 0.14)}px rgba(0, 0, 0, 0.4)`,
+    ].join(', ');
+  } else if (text.effect === 'outline') {
+    textContent.style.webkitTextStroke = `${Math.max(1, stroke * 0.45)}px rgba(255, 255, 255, 0.82)`;
+    textContent.style.textShadow = darkStroke;
+  }
 }
 
 function buildProcessedCanvas(
