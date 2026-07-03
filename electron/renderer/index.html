@@ -22,18 +22,27 @@
 
         <section class="preset-section">
           <h2>快捷处理</h2>
-          <button class="preset-card" data-preset="portrait">
-            <span>人像一键美化</span>
-            <small>自然美白、磨皮、轻微瘦脸</small>
-          </button>
-          <button class="preset-card wedding" data-preset="wedding">
-            <span>婚纱照一键精修</span>
-            <small>通透柔光、肤色干净、高光柔和</small>
-          </button>
           <button class="preset-card" data-preset="reset">
             <span>重置效果</span>
             <small>恢复原图参数</small>
           </button>
+        </section>
+
+        <section class="preset-section style-section">
+          <button id="sceneToggleButton" class="preset-card style-toggle scene-toggle" aria-expanded="false" aria-controls="sceneOptions">
+            <span>场景化一键修图</span>
+            <small>点击展开人像、婚纱等场景处理</small>
+          </button>
+          <div id="sceneOptions" class="style-options collapsed">
+            <button class="preset-card" data-preset="portrait">
+              <span>人像一键美化</span>
+              <small>自然美白、磨皮、轻微瘦脸</small>
+            </button>
+            <button class="preset-card wedding" data-preset="wedding">
+              <span>婚纱照一键精修</span>
+              <small>通透柔光、肤色干净、高光柔和</small>
+            </button>
+          </div>
         </section>
 
         <section class="preset-section style-section">

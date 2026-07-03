@@ -185,6 +185,10 @@ p {
   background: linear-gradient(135deg, rgba(91, 140, 255, 0.24), rgba(244, 114, 182, 0.14));
 }
 
+.scene-toggle {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.22), rgba(91, 140, 255, 0.14));
+}
+
 .style-toggle::after {
   content: "展开";
   position: absolute;

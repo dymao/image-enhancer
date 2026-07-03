@@ -289,6 +289,8 @@ const textSizeValue = document.getElementById('textSizeValue');
 const textColor = document.getElementById('textColor');
 const textBold = document.getElementById('textBold');
 const textItalic = document.getElementById('textItalic');
+const sceneToggleButton = document.getElementById('sceneToggleButton');
+const sceneOptions = document.getElementById('sceneOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -727,10 +729,18 @@ function applyStylePreset(name) {
   showToast(`已应用：${style.label}`);
 }
 
+function toggleCollapsibleOptions(button, options) {
+  const isCollapsed = options.classList.toggle('collapsed');
+  button.classList.toggle('expanded', !isCollapsed);
+  button.setAttribute('aria-expanded', String(!isCollapsed));
+}
+
+function toggleSceneOptions() {
+  toggleCollapsibleOptions(sceneToggleButton, sceneOptions);
+}
+
 function toggleStyleOptions() {
-  const isCollapsed = styleOptions.classList.toggle('collapsed');
-  styleToggleButton.classList.toggle('expanded', !isCollapsed);
-  styleToggleButton.setAttribute('aria-expanded', String(!isCollapsed));
+  toggleCollapsibleOptions(styleToggleButton, styleOptions);
 }
 
 function renderPreview() {
@@ -1724,6 +1734,7 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
   button.addEventListener('click', () => applyStylePreset(button.dataset.stylePreset));
 });
 
+sceneToggleButton.addEventListener('click', toggleSceneOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 adjustToolButton.addEventListener('click', () => {
