@@ -71,19 +71,21 @@ button {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-top: 18px;
   -webkit-app-region: drag;
 }
 
 .logo {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
   color: white;
+  font-size: 16px;
   font-weight: 900;
   background: linear-gradient(135deg, var(--blue), var(--pink));
-  box-shadow: 0 12px 28px rgba(91, 140, 255, 0.35);
+  box-shadow: 0 8px 20px rgba(91, 140, 255, 0.3);
 }
 
 h1,
@@ -243,6 +245,11 @@ p {
 
 .preset-card.bw {
   background: linear-gradient(135deg, rgba(229, 231, 235, 0.18), rgba(75, 85, 99, 0.18));
+}
+
+.preset-card.active {
+  border-color: rgba(75, 141, 255, 0.85);
+  box-shadow: 0 0 0 1px rgba(75, 141, 255, 0.32), 0 12px 28px rgba(75, 141, 255, 0.18);
 }
 
 .tip-card {

@@ -262,7 +262,7 @@ const imageMeta = document.getElementById('imageMeta');
 const documentTabs = document.getElementById('documentTabs');
 const saveButton = document.getElementById('saveButton');
 const toast = document.getElementById('toast');
-const grayscaleToggle = document.getElementById('grayscaleToggle');
+const grayscaleButton = document.getElementById('grayscaleButton');
 const adjustToolButton = document.getElementById('adjustToolButton');
 const textToolButton = document.getElementById('textToolButton');
 const mosaicToolButton = document.getElementById('mosaicToolButton');
@@ -433,9 +433,9 @@ function syncControlsFromDocument(doc) {
     if (slider) slider.value = value;
     if (valueLabel) valueLabel.textContent = String(value);
   });
-  grayscaleToggle.checked = Boolean(doc?.grayscale);
-  syncToolControlsFromDocument(doc);
+  grayscaleButton.classList.toggle('active', Boolean(doc?.grayscale));
 }
+
 
 function syncToolControlsFromDocument(doc) {
   const tools = doc?.tools || defaultTools;
@@ -544,7 +544,7 @@ function setAdjustmentsEnabled(enabled) {
   sliderElements.forEach((slider) => {
     slider.disabled = !enabled;
   });
-  grayscaleToggle.disabled = !enabled;
+  grayscaleButton.disabled = !enabled;
   toolInputs.forEach((input) => {
     input.disabled = !enabled;
   });
@@ -706,8 +706,8 @@ function applyPreset(name) {
   if (!doc) return;
 
   setControlValues(presets[name]);
-  grayscaleToggle.checked = false;
   doc.grayscale = false;
+  grayscaleButton.classList.remove('active');
   doc.styleMode = 'none';
   renderPreview();
 }
@@ -720,8 +720,8 @@ function applyStylePreset(name) {
   if (!style) return;
 
   setControlValues(style.controls);
-  grayscaleToggle.checked = false;
   doc.grayscale = false;
+  grayscaleButton.classList.remove('active');
   doc.styleMode = name;
   renderPreview();
   showToast(`已应用：${style.label}`);
@@ -1742,12 +1742,15 @@ mosaicToolButton.addEventListener('click', () => {
   }
 });
 
-grayscaleToggle.addEventListener('change', () => {
+grayscaleButton.addEventListener('click', () => {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  doc.grayscale = grayscaleToggle.checked;
-  schedulePreviewRender();
+  doc.grayscale = !doc.grayscale;
+  doc.styleMode = doc.grayscale ? 'grayscale' : 'none';
+  grayscaleButton.classList.toggle('active', doc.grayscale);
+  renderPreview();
+  showToast(doc.grayscale ? '已应用：黑白效果' : '已取消：黑白效果');
 });
 
 mosaicToggle.addEventListener('change', () => {
