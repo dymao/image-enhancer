@@ -293,6 +293,7 @@ const mosaicPattern = document.getElementById('mosaicPattern');
 const clearMosaicRegion = document.getElementById('clearMosaicRegion');
 const textEditorFrame = document.getElementById('textEditorFrame');
 const textDragHandle = document.getElementById('textDragHandle');
+const textDeleteButton = document.getElementById('textDeleteButton');
 const textContent = document.getElementById('textContent');
 const textPreset = document.getElementById('textPreset');
 const textFont = document.getElementById('textFont');
@@ -321,6 +322,7 @@ const toolInputs = [
   mosaicColor,
   mosaicPattern,
   clearMosaicRegion,
+  textDeleteButton,
   textContent,
   textPreset,
   textFont,
@@ -412,6 +414,24 @@ function selectTextLayer(doc, layerId) {
   syncToolControlsFromDocument(doc);
   updateTextEditorOverlay();
   renderPreview();
+}
+
+function deleteActiveTextLayer() {
+  const doc = getActiveDocument();
+  const textTool = doc?.tools?.text;
+  if (!textTool?.activeLayerId) return false;
+
+  const nextLayers = textTool.layers.filter((layer) => layer.id !== textTool.activeLayerId);
+  if (nextLayers.length === textTool.layers.length) return false;
+
+  textTool.layers = nextLayers;
+  textTool.activeLayerId = null;
+  state.textSelectionRange = null;
+  hideTextEditorOverlay();
+  syncToolControlsFromDocument(doc);
+  renderPreview();
+  showToast('已删除文字框');
+  return true;
 }
 
 function syncActiveTextLayerFromEditor() {
@@ -1979,7 +1999,6 @@ function handleCanvasPointerDown(event) {
     state.textSelectionRange = null;
     syncToolControlsFromDocument(doc);
     updateTextEditorOverlay();
-    window.setTimeout(() => textContent.focus(), 0);
     state.canvasInteraction = {
       type: 'text',
       layerId: hitLayer.id,
@@ -2033,6 +2052,19 @@ function handleCanvasPointerUp(event) {
     event.currentTarget.releasePointerCapture(event.pointerId);
   } catch {
     // Pointer capture may already be released when the pointer leaves the canvas.
+  }
+}
+
+function handleTextDeleteKey(event) {
+  if (event.key !== 'Delete' && event.key !== 'Backspace') return;
+  if (state.activeTool !== 'text' || !getActiveTextLayer()) return;
+
+  const target = event.target;
+  const isEditingText = target === textContent || textContent.contains(target);
+  if (isEditingText) return;
+
+  if (deleteActiveTextLayer()) {
+    event.preventDefault();
   }
 }
 
@@ -2157,6 +2189,10 @@ textItalic.addEventListener('change', () => {
   updateTextTool({ italic: textItalic.checked, preset: 'custom' }, true);
 });
 
+textDeleteButton.addEventListener('click', () => {
+  deleteActiveTextLayer();
+});
+
 previewCanvas.addEventListener('pointerdown', handleCanvasPointerDown);
 previewCanvas.addEventListener('pointermove', handleCanvasPointerMove);
 previewCanvas.addEventListener('pointerup', handleCanvasPointerUp);
@@ -2165,6 +2201,7 @@ textDragHandle.addEventListener('pointerdown', handleTextDragPointerDown);
 textDragHandle.addEventListener('pointermove', handleCanvasPointerMove);
 textDragHandle.addEventListener('pointerup', handleCanvasPointerUp);
 textDragHandle.addEventListener('pointercancel', handleCanvasPointerUp);
+document.addEventListener('keydown', handleTextDeleteKey);
 
 createControls();
 setActiveTool(null);
