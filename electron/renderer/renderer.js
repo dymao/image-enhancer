@@ -958,6 +958,7 @@ function toggleStyleOptions() {
 function renderPreview() {
   const doc = getActiveDocument();
   if (!doc) return;
+  const hideActiveTextLayer = shouldHideActiveTextLayerInPreview();
 
   const canvas = buildProcessedCanvas(
     doc.image,
@@ -965,7 +966,7 @@ function renderPreview() {
     doc,
     state.activeTool === 'mosaic',
     true,
-    state.activeTool === 'text'
+    hideActiveTextLayer
   );
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
@@ -996,6 +997,13 @@ function fitPreviewCanvasToContainer() {
 
 function hideTextEditorOverlay() {
   textEditorFrame.classList.remove('visible');
+}
+
+function shouldHideActiveTextLayerInPreview() {
+  const activeLayer = getActiveTextLayer();
+  if (!activeLayer || state.activeTool !== 'text') return false;
+
+  return document.activeElement === textContent && textEditorFrame.classList.contains('visible');
 }
 
 function updateTextEditorOverlay() {
@@ -2006,6 +2014,7 @@ function handleCanvasPointerDown(event) {
     state.textSelectionRange = null;
     syncToolControlsFromDocument(doc);
     updateTextEditorOverlay();
+    renderPreview();
     state.canvasInteraction = {
       type: 'text',
       layerId: hitLayer.id,
