@@ -44,6 +44,17 @@ const presets = {
     faceSlim: 18,
     softGlow: 36,
   },
+  oldPhoto: {
+    brightness: 16,
+    contrast: 22,
+    saturation: 10,
+    sharpness: 34,
+    denoise: 36,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 10,
+  },
 };
 
 const defaultTools = {
