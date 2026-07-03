@@ -69,16 +69,18 @@ const defaultTools = {
     region: null,
   },
   text: {
-    content: '',
-    preset: 'custom',
-    fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
-    size: 48,
-    color: '#ffffff',
-    bold: false,
-    italic: false,
-    effect: 'shadow',
-    x: 50,
-    y: 82,
+    layers: [],
+    activeLayerId: null,
+    nextLayerId: 1,
+    defaults: {
+      preset: 'custom',
+      fontFamily: 'PingFang SC, Microsoft YaHei, sans-serif',
+      size: 48,
+      color: '#ffffff',
+      bold: false,
+      italic: false,
+      effect: 'shadow',
+    },
   },
 };
 
@@ -260,6 +262,7 @@ const state = {
   renderTimer: null,
   canvasInteraction: null,
   activeTool: null,
+  textSelectionRange: null,
 };
 
 const previewCanvas = document.getElementById('previewCanvas');
@@ -345,9 +348,6 @@ function setActiveTool(tool) {
   if (getActiveDocument()) {
     renderPreview();
   }
-  if (tool === 'text' && getActiveDocument()) {
-    window.setTimeout(() => textContent.focus(), 0);
-  }
 }
 
 function showToast(message) {
@@ -361,6 +361,172 @@ function getActiveDocument() {
   return state.documents.find((doc) => doc.id === state.activeDocumentId) || null;
 }
 
+function createDefaultTools() {
+  return {
+    mosaic: { ...defaultTools.mosaic },
+    text: {
+      layers: [],
+      activeLayerId: null,
+      nextLayerId: 1,
+      defaults: { ...defaultTools.text.defaults },
+    },
+  };
+}
+
+function getActiveTextLayer(doc = getActiveDocument()) {
+  if (!doc?.tools?.text?.layers) return null;
+  return doc.tools.text.layers.find((layer) => layer.id === doc.tools.text.activeLayerId) || null;
+}
+
+function getTextControlSource(doc) {
+  return getActiveTextLayer(doc) || doc?.tools?.text?.defaults || defaultTools.text.defaults;
+}
+
+function createTextLayer(doc, point) {
+  const defaults = doc.tools.text.defaults;
+  const layer = {
+    id: doc.tools.text.nextLayerId++,
+    html: '',
+    plainText: '',
+    x: point.x,
+    y: point.y,
+    width: 36,
+    preset: defaults.preset,
+    fontFamily: defaults.fontFamily,
+    size: defaults.size,
+    color: defaults.color,
+    bold: defaults.bold,
+    italic: defaults.italic,
+    effect: defaults.effect,
+  };
+
+  doc.tools.text.layers.push(layer);
+  doc.tools.text.activeLayerId = layer.id;
+  state.textSelectionRange = null;
+  return layer;
+}
+
+function selectTextLayer(doc, layerId) {
+  doc.tools.text.activeLayerId = layerId;
+  state.textSelectionRange = null;
+  syncToolControlsFromDocument(doc);
+  updateTextEditorOverlay();
+  renderPreview();
+}
+
+function syncActiveTextLayerFromEditor() {
+  const doc = getActiveDocument();
+  const layer = getActiveTextLayer(doc);
+  if (!layer) return;
+
+  layer.html = textContent.innerHTML;
+  layer.plainText = textContent.innerText.trim();
+  schedulePreviewRender();
+}
+
+function isSelectionInsideTextEditor() {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0 || selection.isCollapsed) {
+    return Boolean(state.textSelectionRange);
+  }
+
+  const range = selection.getRangeAt(0);
+  return textContent.contains(range.commonAncestorContainer);
+}
+
+function getTextEditorSelectionRange() {
+  const selection = window.getSelection();
+  if (selection && selection.rangeCount > 0 && !selection.isCollapsed) {
+    const range = selection.getRangeAt(0);
+    if (textContent.contains(range.commonAncestorContainer)) {
+      state.textSelectionRange = range.cloneRange();
+      return range;
+    }
+  }
+  return state.textSelectionRange;
+}
+
+function saveTextEditorSelection() {
+  const selection = window.getSelection();
+  if (!selection || selection.rangeCount === 0) return;
+  if (selection.isCollapsed) {
+    if (textContent.contains(selection.anchorNode)) {
+      state.textSelectionRange = null;
+    }
+    return;
+  }
+
+  const range = selection.getRangeAt(0);
+  if (textContent.contains(range.commonAncestorContainer)) {
+    state.textSelectionRange = range.cloneRange();
+  }
+}
+
+function applyInlineTextStyle(updates) {
+  if (!getActiveTextLayer()) return false;
+  if (!isSelectionInsideTextEditor()) return false;
+
+  const selection = window.getSelection();
+  const range = getTextEditorSelectionRange();
+  if (!range) return false;
+  const span = document.createElement('span');
+  if (updates.color) {
+    span.dataset.color = updates.color;
+  }
+  if (updates.size) {
+    span.dataset.size = String(updates.size);
+  }
+  if (updates.fontFamily) {
+    span.dataset.fontFamily = updates.fontFamily;
+  }
+  if (typeof updates.bold === 'boolean') {
+    span.dataset.bold = String(updates.bold);
+  }
+  if (typeof updates.italic === 'boolean') {
+    span.dataset.italic = String(updates.italic);
+  }
+
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  selection.removeAllRanges();
+  const nextRange = document.createRange();
+  nextRange.selectNodeContents(span);
+  selection.addRange(nextRange);
+
+  refreshEditorInlineStyles();
+  syncActiveTextLayerFromEditor();
+  return true;
+}
+
+function getTextLayerBounds(layer, canvasWidth, canvasHeight) {
+  const lines = (layer.plainText || textContent.innerText || '输入文字').split(/\r?\n/).length;
+  const scaledSize = Math.max(10, Math.round(layer.size * Math.min(canvasWidth, canvasHeight) / 1000));
+  const heightPercent = Math.max(5, (scaledSize * Math.max(1, lines) * 1.45 / canvasHeight) * 100);
+  const widthPercent = Math.max(12, layer.width || 36);
+  return {
+    left: layer.x - widthPercent / 2,
+    right: layer.x + widthPercent / 2,
+    top: layer.y - heightPercent / 2,
+    bottom: layer.y + heightPercent / 2,
+  };
+}
+
+function findTextLayerAtPoint(doc, point) {
+  const layers = doc.tools.text.layers || [];
+  for (let index = layers.length - 1; index >= 0; index -= 1) {
+    const bounds = getTextLayerBounds(layers[index], doc.image.naturalWidth, doc.image.naturalHeight);
+    if (
+      point.x >= bounds.left &&
+      point.x <= bounds.right &&
+      point.y >= bounds.top &&
+      point.y <= bounds.bottom
+    ) {
+      return layers[index];
+    }
+  }
+  return null;
+}
+
 function createDocument(result, image) {
   return {
     id: state.nextDocumentId++,
@@ -368,10 +534,7 @@ function createDocument(result, image) {
     image,
     meta: result,
     values: { ...presets.reset },
-    tools: {
-      mosaic: { ...defaultTools.mosaic },
-      text: { ...defaultTools.text },
-    },
+    tools: createDefaultTools(),
     grayscale: false,
     styleMode: 'none',
   };
@@ -451,6 +614,7 @@ function syncControlsFromDocument(doc) {
 function syncToolControlsFromDocument(doc) {
   const tools = doc?.tools || defaultTools;
   const { mosaic, text } = tools;
+  const textSource = getTextControlSource(doc);
 
   mosaicToggle.checked = Boolean(mosaic.enabled);
   mosaicPreset.value = mosaic.preset || 'custom';
@@ -460,17 +624,20 @@ function syncToolControlsFromDocument(doc) {
   mosaicSizeValue.textContent = String(mosaic.size);
   mosaicColor.value = mosaic.color;
   mosaicPattern.value = mosaic.pattern;
-  if (textContent.value !== text.content) {
-    textContent.value = text.content;
+  const activeLayer = getActiveTextLayer(doc);
+  if (!activeLayer) {
+    textContent.replaceChildren();
+  } else if (textContent.innerHTML !== activeLayer.html) {
+    textContent.innerHTML = activeLayer.html;
   }
-  textPreset.value = text.preset || 'custom';
-  textFont.value = text.fontFamily;
-  textEffect.value = text.effect;
-  textSize.value = text.size;
-  textSizeValue.textContent = String(text.size);
-  textColor.value = text.color;
-  textBold.checked = Boolean(text.bold);
-  textItalic.checked = Boolean(text.italic);
+  textPreset.value = textSource.preset || 'custom';
+  textFont.value = textSource.fontFamily;
+  textEffect.value = textSource.effect;
+  textSize.value = textSource.size;
+  textSizeValue.textContent = String(textSource.size);
+  textColor.value = textSource.color;
+  textBold.checked = Boolean(textSource.bold);
+  textItalic.checked = Boolean(textSource.italic);
 }
 
 function clearPreviewCanvas() {
@@ -558,6 +725,7 @@ function setAdjustmentsEnabled(enabled) {
   toolInputs.forEach((input) => {
     input.disabled = !enabled;
   });
+  textContent.contentEditable = String(enabled);
 }
 
 function setControlValues(values) {
@@ -591,15 +759,26 @@ function applyMosaicPreset(name) {
 function applyTextPreset(name) {
   const preset = textPresets[name];
   if (!preset) return;
-  updateTextTool({ ...preset, preset: name });
+  updateTextTool({ ...preset, preset: name }, true);
 }
 
-function updateTextTool(updates) {
+function updateTextTool(updates, applyToSelection = false) {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  Object.assign(doc.tools.text, updates);
+  if (applyToSelection && applyInlineTextStyle(updates)) {
+    syncToolControlsFromDocument(doc);
+    return;
+  }
+
+  const layer = getActiveTextLayer(doc);
+  if (layer) {
+    Object.assign(layer, updates);
+  } else {
+    Object.assign(doc.tools.text.defaults, updates);
+  }
   syncToolControlsFromDocument(doc);
+  updateTextEditorOverlay();
   schedulePreviewRender();
 }
 
@@ -758,7 +937,8 @@ function renderPreview() {
     1500,
     doc,
     state.activeTool === 'mosaic',
-    state.activeTool !== 'text'
+    true,
+    state.activeTool === 'text'
   );
   previewCanvas.width = canvas.width;
   previewCanvas.height = canvas.height;
@@ -793,7 +973,8 @@ function hideTextEditorOverlay() {
 
 function updateTextEditorOverlay() {
   const doc = getActiveDocument();
-  if (!doc || state.activeTool !== 'text' || previewCanvas.style.display === 'none') {
+  const layer = getActiveTextLayer(doc);
+  if (!doc || !layer || state.activeTool !== 'text' || previewCanvas.style.display === 'none') {
     hideTextEditorOverlay();
     return;
   }
@@ -805,12 +986,12 @@ function updateTextEditorOverlay() {
     return;
   }
 
-  const text = doc.tools.text;
   const displayScale = canvasRect.width / Math.max(1, previewCanvas.width);
-  const fontSize = Math.max(14, Math.round(text.size * Math.min(previewCanvas.width, previewCanvas.height) / 1000 * displayScale));
-  const width = Math.min(Math.max(220, fontSize * 8), canvasRect.width * 0.72);
-  const left = canvasRect.left - cardRect.left + canvasRect.width * (text.x / 100);
-  const top = canvasRect.top - cardRect.top + canvasRect.height * (text.y / 100);
+  const fontScale = Math.min(previewCanvas.width, previewCanvas.height) / 1000 * displayScale;
+  const fontSize = Math.max(14, Math.round(layer.size * fontScale));
+  const width = Math.min(Math.max(180, canvasRect.width * ((layer.width || 36) / 100)), canvasRect.width * 0.78);
+  const left = canvasRect.left - cardRect.left + canvasRect.width * (layer.x / 100);
+  const top = canvasRect.top - cardRect.top + canvasRect.height * (layer.y / 100);
 
   textEditorFrame.style.left = `${left}px`;
   textEditorFrame.style.top = `${top}px`;
@@ -818,15 +999,39 @@ function updateTextEditorOverlay() {
   textEditorFrame.style.transform = 'translate(-50%, -50%)';
   textEditorFrame.classList.add('visible');
 
-  if (textContent.value !== text.content) {
-    textContent.value = text.content;
+  if (textContent.innerHTML !== layer.html) {
+    textContent.innerHTML = layer.html;
   }
-  textContent.style.color = text.color;
-  textContent.style.fontFamily = text.fontFamily;
+  textContent.style.color = layer.color;
+  textContent.style.fontFamily = layer.fontFamily;
   textContent.style.fontSize = `${fontSize}px`;
-  textContent.style.fontWeight = text.bold ? '700' : '400';
-  textContent.style.fontStyle = text.italic ? 'italic' : 'normal';
-  applyTextEditorEffect(text, fontSize);
+  textContent.style.fontWeight = layer.bold ? '700' : '400';
+  textContent.style.fontStyle = layer.italic ? 'italic' : 'normal';
+  textContent.dataset.layerId = String(layer.id);
+  textContent.dataset.fontScale = String(fontScale);
+  refreshEditorInlineStyles();
+  applyTextEditorEffect(layer, fontSize);
+}
+
+function refreshEditorInlineStyles() {
+  const fontScale = Number(textContent.dataset.fontScale) || 1;
+  textContent.querySelectorAll('span').forEach((span) => {
+    if (span.dataset.color) {
+      span.style.color = span.dataset.color;
+    }
+    if (span.dataset.size) {
+      span.style.fontSize = `${Math.max(10, Number(span.dataset.size) * fontScale)}px`;
+    }
+    if (span.dataset.fontFamily) {
+      span.style.fontFamily = span.dataset.fontFamily;
+    }
+    if (span.dataset.bold) {
+      span.style.fontWeight = span.dataset.bold === 'true' ? '700' : '400';
+    }
+    if (span.dataset.italic) {
+      span.style.fontStyle = span.dataset.italic === 'true' ? 'italic' : 'normal';
+    }
+  });
 }
 
 function applyTextEditorEffect(text, fontSize) {
@@ -861,7 +1066,8 @@ function buildProcessedCanvas(
   maxSize,
   doc = getActiveDocument(),
   showGuides = false,
-  showTextLayer = true
+  showTextLayer = true,
+  hideActiveTextLayer = false
 ) {
   if (!doc) return createCanvas(1, 1);
 
@@ -908,7 +1114,7 @@ function buildProcessedCanvas(
   }
 
   if (showTextLayer) {
-    applyTextOverlay(context, width, height, doc.tools.text);
+    applyTextOverlay(context, width, height, doc.tools.text, hideActiveTextLayer);
   }
 
   return canvas;
@@ -1353,38 +1559,124 @@ function drawMosaicSelection(context, region, shape) {
   context.restore();
 }
 
-function applyTextOverlay(context, width, height, text) {
-  const content = text.content.trim();
-  if (!content) return;
+function applyTextOverlay(context, width, height, textTool, hideActiveTextLayer = false) {
+  const layers = textTool.layers || [];
+  layers.forEach((layer) => {
+    if (hideActiveTextLayer && layer.id === textTool.activeLayerId) return;
+    drawTextLayer(context, width, height, layer);
+  });
+}
 
-  const scaledSize = Math.max(10, Math.round(text.size * Math.min(width, height) / 1000));
-  const style = `${text.italic ? 'italic ' : ''}${text.bold ? '700 ' : '400 '}`;
-  const x = width * (text.x / 100);
-  const y = height * (text.y / 100);
+function drawTextLayer(context, width, height, layer) {
+  if (!layer.plainText && !layer.html) return;
+
+  const fontScale = Math.min(width, height) / 1000;
+  const baseSize = Math.max(10, Math.round(layer.size * fontScale));
+  const x = width * (layer.x / 100);
+  const y = height * (layer.y / 100);
+  const lines = parseTextLayerLines(layer, fontScale);
+  if (lines.length === 0) return;
 
   context.save();
-  context.font = `${style}${scaledSize}px ${text.fontFamily}`;
-  context.textAlign = 'center';
+  context.textAlign = 'left';
   context.textBaseline = 'middle';
   context.lineJoin = 'round';
-  context.shadowColor = text.effect === 'glow' ? text.color : 'rgba(0, 0, 0, 0.58)';
-  context.shadowBlur = getTextShadowBlur(text.effect, scaledSize);
-  context.shadowOffsetY = text.effect === 'float' ? Math.max(4, scaledSize * 0.16) : Math.max(1, scaledSize * 0.06);
+  context.shadowColor = layer.effect === 'glow' ? layer.color : 'rgba(0, 0, 0, 0.58)';
+  context.shadowBlur = getTextShadowBlur(layer.effect, baseSize);
+  context.shadowOffsetY = layer.effect === 'float' ? Math.max(4, baseSize * 0.16) : Math.max(1, baseSize * 0.06);
 
-  const lines = content.split(/\r?\n/);
-  const lineHeight = scaledSize * 1.22;
+  const lineHeight = getRichLineHeight(lines, baseSize);
   const startY = y - ((lines.length - 1) * lineHeight) / 2;
-
-  lines.forEach((line, index) => {
+  lines.forEach((segments, index) => {
+    const lineWidth = measureRichLine(context, segments);
+    let cursorX = x - lineWidth / 2;
     const lineY = startY + index * lineHeight;
-    context.lineWidth = getTextStrokeWidth(text.effect, scaledSize);
-    context.strokeStyle = text.effect === 'outline' ? 'rgba(255, 255, 255, 0.82)' : 'rgba(0, 0, 0, 0.62)';
-    context.strokeText(line, x, lineY);
-    context.fillStyle = text.color;
-    context.fillText(line, x, lineY);
+
+    segments.forEach((segment) => {
+      if (!segment.text) return;
+      context.font = getCanvasTextFont(segment);
+      context.lineWidth = getTextStrokeWidth(layer.effect, segment.size);
+      context.strokeStyle = layer.effect === 'outline' ? 'rgba(255, 255, 255, 0.82)' : 'rgba(0, 0, 0, 0.62)';
+      context.strokeText(segment.text, cursorX, lineY);
+      context.fillStyle = segment.color;
+      context.fillText(segment.text, cursorX, lineY);
+      cursorX += context.measureText(segment.text).width;
+    });
   });
 
   context.restore();
+}
+
+function parseTextLayerLines(layer, fontScale) {
+  const lines = [[]];
+  const root = document.createElement('div');
+  root.innerHTML = layer.html || layer.plainText || '';
+  const baseStyle = {
+    color: layer.color,
+    fontFamily: layer.fontFamily,
+    size: Math.max(10, Math.round(layer.size * fontScale)),
+    bold: layer.bold,
+    italic: layer.italic,
+  };
+
+  const appendText = (text, style) => {
+    text.split(/\n/).forEach((part, index) => {
+      if (index > 0) lines.push([]);
+      if (part) {
+        lines[lines.length - 1].push({ text: part, ...style });
+      }
+    });
+  };
+
+  const walk = (node, inheritedStyle) => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      appendText(node.textContent || '', inheritedStyle);
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    const element = node;
+    const nextStyle = {
+      ...inheritedStyle,
+      color: element.dataset.color || inheritedStyle.color,
+      fontFamily: element.dataset.fontFamily || inheritedStyle.fontFamily,
+      size: element.dataset.size ? Math.max(10, Math.round(Number(element.dataset.size) * fontScale)) : inheritedStyle.size,
+      bold: element.dataset.bold ? element.dataset.bold === 'true' : inheritedStyle.bold,
+      italic: element.dataset.italic ? element.dataset.italic === 'true' : inheritedStyle.italic,
+    };
+
+    if (element.tagName === 'BR') {
+      lines.push([]);
+      return;
+    }
+
+    Array.from(element.childNodes).forEach((child) => walk(child, nextStyle));
+    if (element.tagName === 'DIV' || element.tagName === 'P') {
+      lines.push([]);
+    }
+  };
+
+  Array.from(root.childNodes).forEach((child) => walk(child, baseStyle));
+  return lines.filter((line, index) => line.length > 0 || index === 0);
+}
+
+function getCanvasTextFont(segment) {
+  const style = `${segment.italic ? 'italic ' : ''}${segment.bold ? '700 ' : '400 '}`;
+  return `${style}${segment.size}px ${segment.fontFamily}`;
+}
+
+function measureRichLine(context, segments) {
+  return segments.reduce((total, segment) => {
+    context.font = getCanvasTextFont(segment);
+    return total + context.measureText(segment.text).width;
+  }, 0);
+}
+
+function getRichLineHeight(lines, fallbackSize) {
+  return lines.reduce((max, segments) => {
+    const maxSize = segments.reduce((lineMax, segment) => Math.max(lineMax, segment.size), fallbackSize);
+    return Math.max(max, maxSize * 1.22);
+  }, fallbackSize * 1.22);
 }
 
 function getTextShadowBlur(effect, scaledSize) {
@@ -1671,11 +1963,28 @@ function handleCanvasPointerDown(event) {
     return;
   }
 
-  if (state.activeTool === 'text' && doc.tools.text.content.trim()) {
+  if (state.activeTool === 'text') {
+    const hitLayer = findTextLayerAtPoint(doc, point);
+    if (!hitLayer) {
+      createTextLayer(doc, point);
+      syncToolControlsFromDocument(doc);
+      updateTextEditorOverlay();
+      renderPreview();
+      window.setTimeout(() => textContent.focus(), 0);
+      event.preventDefault();
+      return;
+    }
+
+    doc.tools.text.activeLayerId = hitLayer.id;
+    state.textSelectionRange = null;
+    syncToolControlsFromDocument(doc);
+    updateTextEditorOverlay();
+    window.setTimeout(() => textContent.focus(), 0);
     state.canvasInteraction = {
       type: 'text',
-      offsetX: point.x - doc.tools.text.x,
-      offsetY: point.y - doc.tools.text.y,
+      layerId: hitLayer.id,
+      offsetX: point.x - hitLayer.x,
+      offsetY: point.y - hitLayer.y,
     };
     previewCanvas.setPointerCapture(event.pointerId);
     event.preventDefault();
@@ -1685,13 +1994,15 @@ function handleCanvasPointerDown(event) {
 function handleTextDragPointerDown(event) {
   const doc = getActiveDocument();
   const point = getCanvasPoint(event);
-  if (!doc || !point) return;
+  const layer = getActiveTextLayer(doc);
+  if (!doc || !point || !layer) return;
 
   setActiveTool('text');
   state.canvasInteraction = {
     type: 'text',
-    offsetX: point.x - doc.tools.text.x,
-    offsetY: point.y - doc.tools.text.y,
+    layerId: layer.id,
+    offsetX: point.x - layer.x,
+    offsetY: point.y - layer.y,
   };
   textDragHandle.setPointerCapture(event.pointerId);
   event.preventDefault();
@@ -1705,8 +2016,11 @@ function handleCanvasPointerMove(event) {
   if (state.canvasInteraction.type === 'mosaic') {
     doc.tools.mosaic.region = createRegionFromPoints(state.canvasInteraction.start, point);
   } else if (state.canvasInteraction.type === 'text') {
-    doc.tools.text.x = Math.max(0, Math.min(100, point.x - state.canvasInteraction.offsetX));
-    doc.tools.text.y = Math.max(0, Math.min(100, point.y - state.canvasInteraction.offsetY));
+    const layer = doc.tools.text.layers.find((item) => item.id === state.canvasInteraction.layerId);
+    if (!layer) return;
+    layer.x = Math.max(0, Math.min(100, point.x - state.canvasInteraction.offsetX));
+    layer.y = Math.max(0, Math.min(100, point.y - state.canvasInteraction.offsetY));
+    updateTextEditorOverlay();
   }
 
   schedulePreviewRender();
@@ -1748,6 +2062,11 @@ adjustToolButton.addEventListener('click', () => {
 });
 
 textToolButton.addEventListener('click', () => {
+  const doc = getActiveDocument();
+  if (doc) {
+    doc.tools.text.activeLayerId = null;
+    state.textSelectionRange = null;
+  }
   setActiveTool('text');
 });
 
@@ -1798,7 +2117,7 @@ textContent.addEventListener('input', () => {
   if (state.activeTool !== 'text') {
     setActiveTool('text');
   }
-  updateTextTool({ content: textContent.value });
+  syncActiveTextLayerFromEditor();
 });
 
 textContent.addEventListener('focus', () => {
@@ -1807,12 +2126,15 @@ textContent.addEventListener('focus', () => {
   }
 });
 
+textContent.addEventListener('mouseup', saveTextEditorSelection);
+textContent.addEventListener('keyup', saveTextEditorSelection);
+
 textPreset.addEventListener('change', () => {
   applyTextPreset(textPreset.value);
 });
 
 textFont.addEventListener('change', () => {
-  updateTextTool({ fontFamily: textFont.value, preset: 'custom' });
+  updateTextTool({ fontFamily: textFont.value, preset: 'custom' }, true);
 });
 
 textEffect.addEventListener('change', () => {
@@ -1820,19 +2142,19 @@ textEffect.addEventListener('change', () => {
 });
 
 textSize.addEventListener('input', () => {
-  updateTextTool({ size: Number(textSize.value), preset: 'custom' });
+  updateTextTool({ size: Number(textSize.value), preset: 'custom' }, true);
 });
 
 textColor.addEventListener('input', () => {
-  updateTextTool({ color: textColor.value, preset: 'custom' });
+  updateTextTool({ color: textColor.value, preset: 'custom' }, true);
 });
 
 textBold.addEventListener('change', () => {
-  updateTextTool({ bold: textBold.checked, preset: 'custom' });
+  updateTextTool({ bold: textBold.checked, preset: 'custom' }, true);
 });
 
 textItalic.addEventListener('change', () => {
-  updateTextTool({ italic: textItalic.checked, preset: 'custom' });
+  updateTextTool({ italic: textItalic.checked, preset: 'custom' }, true);
 });
 
 previewCanvas.addEventListener('pointerdown', handleCanvasPointerDown);

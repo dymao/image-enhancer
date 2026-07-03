@@ -804,10 +804,13 @@ button:disabled {
   text-align: center;
   outline: none;
   overflow: visible;
+  white-space: pre-wrap;
 }
 
-.text-editor-overlay::placeholder {
+.text-editor-overlay:empty::before {
+  content: attr(data-placeholder);
   color: rgba(226, 232, 240, 0.76);
+  pointer-events: none;
 }
 
 .text-drag-handle {
@@ -836,7 +839,7 @@ button:disabled {
 }
 
 #previewCanvas[data-tool="text"] {
-  cursor: move;
+  cursor: text;
 }
 
 #previewCanvas[data-tool="mosaic"] {
