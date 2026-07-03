@@ -52,10 +52,18 @@
 在 Finder 中双击项目根目录下的：
 
 ```bash
+Image Enhancer.app
+```
+
+这种方式不会打开终端窗口；如果启动失败，会显示系统弹窗，详细日志在 `~/Library/Logs/Image Enhancer.log`。
+
+也可以双击备用启动脚本：
+
+```bash
 start_electron.command
 ```
 
-首次启动会自动执行 `npm install` 安装 Electron 依赖，然后打开新版界面。
+首次启动会自动执行 `npm install` 安装 Electron 依赖，然后打开新版界面。`.command` 文件由 macOS Terminal 执行，因此会显示终端窗口，适合排查启动问题。
 
 新版界面特点：
 

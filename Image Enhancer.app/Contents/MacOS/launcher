@@ -1,0 +1,33 @@
+#!/bin/bash
+set -euo pipefail
+
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+PROJECT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+LOG_DIR="$HOME/Library/Logs"
+LOG_FILE="$LOG_DIR/Image Enhancer.log"
+
+mkdir -p "$LOG_DIR"
+exec >>"$LOG_FILE" 2>&1
+
+show_error() {
+  local message="$1"
+  /usr/bin/osascript <<OSA >/dev/null 2>&1 || true
+display dialog "$message" buttons {"知道了"} default button "知道了" with title "Image Enhancer"
+OSA
+}
+
+cd "$PROJECT_DIR"
+
+if ! command -v node >/dev/null 2>&1 || ! command -v npm >/dev/null 2>&1; then
+  show_error "没有找到 Node.js 或 npm，请先安装 Node.js 后再启动。"
+  exit 1
+fi
+
+if [ ! -d "node_modules" ]; then
+  echo "Installing Electron dependencies..."
+  ELECTRON_MIRROR="${ELECTRON_MIRROR:-https://npmmirror.com/mirrors/electron/}" npm install
+fi
+
+echo "Launching Image Enhancer from $PROJECT_DIR"
+npm start
