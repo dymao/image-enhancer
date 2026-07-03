@@ -188,6 +188,7 @@ const previewCanvas = document.getElementById('previewCanvas');
 const previewContext = previewCanvas.getContext('2d', { willReadFrequently: true });
 const canvasCard = document.querySelector('.canvas-card');
 const controlsElement = document.getElementById('controls');
+const rightPanel = document.querySelector('.right-panel');
 const emptyState = document.getElementById('emptyState');
 const fileName = document.getElementById('fileName');
 const imageMeta = document.getElementById('imageMeta');
@@ -242,6 +243,15 @@ function createControls() {
   });
 }
 
+function setAdjustmentsEnabled(enabled) {
+  rightPanel.classList.toggle('disabled', !enabled);
+  rightPanel.setAttribute('aria-disabled', String(!enabled));
+  sliderElements.forEach((slider) => {
+    slider.disabled = !enabled;
+  });
+  grayscaleToggle.disabled = !enabled;
+}
+
 function setControlValues(values) {
   Object.entries(values).forEach(([key, value]) => {
     state.values[key] = value;
@@ -271,6 +281,7 @@ async function openImage() {
     emptyState.style.display = 'none';
     previewCanvas.style.display = 'block';
     saveButton.disabled = false;
+    setAdjustmentsEnabled(true);
     renderPreview();
   };
   image.onerror = () => showToast('图片加载失败');
@@ -929,6 +940,7 @@ grayscaleToggle.addEventListener('change', () => {
 });
 
 createControls();
+setAdjustmentsEnabled(false);
 
 window.addEventListener('resize', fitPreviewCanvasToContainer);
 

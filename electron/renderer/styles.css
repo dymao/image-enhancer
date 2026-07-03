@@ -356,6 +356,15 @@ p {
   -webkit-app-region: no-drag;
 }
 
+.right-panel.disabled .control,
+.right-panel.disabled .toggle-row {
+  opacity: 0.45;
+}
+
+.right-panel.disabled .control {
+  cursor: not-allowed;
+}
+
 .controls {
   display: grid;
   gap: 9px;
@@ -381,6 +390,11 @@ p {
 input[type="range"] {
   width: 100%;
   accent-color: var(--blue);
+}
+
+input[type="range"]:disabled,
+input[type="checkbox"]:disabled {
+  cursor: not-allowed;
 }
 
 .toggle-row {
