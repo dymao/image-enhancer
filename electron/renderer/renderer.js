@@ -523,12 +523,12 @@ function getTextLayerBounds(layer, canvasWidth, canvasHeight) {
   const scaledSize = Math.max(10, Math.round(layer.size * Math.min(canvasWidth, canvasHeight) / 1000));
   const canvasRect = previewCanvas.getBoundingClientRect();
   const minWidthPercent = canvasRect.width > 0 ? (180 / canvasRect.width) * 100 : 28;
-  const minHeightPercent = canvasRect.height > 0 ? (86 / canvasRect.height) * 100 : 12;
+  const minHeightPercent = canvasRect.height > 0 ? (62 / canvasRect.height) * 100 : 8;
   const textHeightPercent = (scaledSize * Math.max(1, lines) * 1.45 / canvasHeight) * 100;
-  const widthPercent = Math.min(82, Math.max(28, minWidthPercent, layer.width || 36));
-  const heightPercent = Math.min(45, Math.max(12, minHeightPercent, textHeightPercent + 7));
-  const hitPaddingX = Math.max(4, widthPercent * 0.12);
-  const hitPaddingY = Math.max(4, heightPercent * 0.18);
+  const widthPercent = Math.min(78, Math.max(22, minWidthPercent, layer.width || 36));
+  const heightPercent = Math.min(36, Math.max(8, minHeightPercent, textHeightPercent + 3));
+  const hitPaddingX = Math.max(1.2, widthPercent * 0.03);
+  const hitPaddingY = Math.max(1, heightPercent * 0.035);
 
   return {
     left: layer.x - widthPercent / 2 - hitPaddingX,
