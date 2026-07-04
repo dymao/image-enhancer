@@ -408,8 +408,6 @@ const qualityToggleButton = document.getElementById('qualityToggleButton');
 const qualityOptions = document.getElementById('qualityOptions');
 const toneToggleButton = document.getElementById('toneToggleButton');
 const toneOptions = document.getElementById('toneOptions');
-const utilityToggleButton = document.getElementById('utilityToggleButton');
-const utilityOptions = document.getElementById('utilityOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -1062,10 +1060,6 @@ function toggleQualityOptions() {
 
 function toggleToneOptions() {
   toggleCollapsibleOptions(toneToggleButton, toneOptions);
-}
-
-function toggleUtilityOptions() {
-  toggleCollapsibleOptions(utilityToggleButton, utilityOptions);
 }
 
 function toggleStyleOptions() {
@@ -2222,7 +2216,6 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 sceneToggleButton.addEventListener('click', toggleSceneOptions);
 qualityToggleButton.addEventListener('click', toggleQualityOptions);
 toneToggleButton.addEventListener('click', toggleToneOptions);
-utilityToggleButton.addEventListener('click', toggleUtilityOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 adjustToolButton.addEventListener('click', () => {

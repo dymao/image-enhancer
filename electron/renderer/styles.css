@@ -237,10 +237,6 @@ p {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(239, 68, 68, 0.12));
 }
 
-.utility-toggle {
-  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(45, 212, 191, 0.1));
-}
-
 .style-toggle::after {
   content: "展开";
   position: absolute;
