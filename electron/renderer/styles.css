@@ -48,6 +48,28 @@ button {
   -webkit-app-region: drag;
 }
 
+.left-panel {
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.48) transparent;
+}
+
+.left-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.left-panel::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.42);
+}
+
+.left-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .left-panel,
 .right-panel,
 .canvas-card,
