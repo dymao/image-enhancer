@@ -454,6 +454,316 @@ const stylePresets = {
 };
 
 const collageLayouts = {
+  'travel-memory': {
+    label: '旅行记忆海报',
+    type: 'poster',
+    width: 1200,
+    height: 1800,
+    gap: 0,
+    minImages: 1,
+    background: ['#dff8ff', '#fef3c7', '#f97316'],
+    slots: [
+      {
+        x: 0.1,
+        y: 0.18,
+        width: 0.8,
+        height: 0.58,
+        shape: 'ellipse',
+        radius: 46,
+        shadow: 'rgba(14, 116, 144, 0.28)',
+        tint: ['rgba(255, 255, 255, 0.02)', 'rgba(14, 165, 233, 0.18)'],
+        innerStroke: 'rgba(255, 255, 255, 0.72)',
+      },
+    ],
+    poster: {
+      eyebrow: 'TRAVEL MEMORY',
+      title: '把风景装进海报',
+      subtitle: '点击照片拖动位置，滚轮缩放，让主体自然落在画面中心',
+      align: 'left',
+      textColor: '#0f172a',
+      accentColor: '#0284c7',
+      decorations: 'travel',
+    },
+  },
+  'product-launch': {
+    label: '新品发布海报',
+    type: 'poster',
+    width: 1200,
+    height: 1600,
+    gap: 0,
+    minImages: 1,
+    background: ['#111827', '#312e81', '#7c3aed'],
+    slots: [
+      {
+        x: 0.16,
+        y: 0.22,
+        width: 0.68,
+        height: 0.48,
+        shape: 'square',
+        radius: 34,
+        shadow: 'rgba(0, 0, 0, 0.42)',
+        tint: ['rgba(255, 255, 255, 0.08)', 'rgba(124, 58, 237, 0.2)'],
+        innerStroke: 'rgba(255, 255, 255, 0.42)',
+      },
+    ],
+    poster: {
+      eyebrow: 'NEW ARRIVAL',
+      title: '新品质感海报',
+      subtitle: '光晕、相框和渐变背景会一起衬托主体',
+      align: 'center',
+      textColor: '#ffffff',
+      accentColor: '#c4b5fd',
+      decorations: 'product',
+    },
+  },
+  'festival-greeting': {
+    label: '节日祝福海报',
+    type: 'poster',
+    width: 1200,
+    height: 1800,
+    gap: 0,
+    minImages: 1,
+    background: ['#7f1d1d', '#dc2626', '#f59e0b'],
+    slots: [
+      {
+        x: 0.12,
+        y: 0.2,
+        width: 0.76,
+        height: 0.5,
+        shape: 'circle',
+        radius: 80,
+        shadow: 'rgba(127, 29, 29, 0.38)',
+        tint: ['rgba(255, 247, 237, 0.04)', 'rgba(251, 191, 36, 0.2)'],
+        innerStroke: 'rgba(254, 243, 199, 0.76)',
+      },
+    ],
+    poster: {
+      eyebrow: 'BEST WISHES',
+      title: '温暖节日祝福',
+      subtitle: '柔和暖光和圆角相框让照片更融入节日氛围',
+      align: 'center',
+      textColor: '#fff7ed',
+      accentColor: '#fde68a',
+      decorations: 'festival',
+    },
+  },
+  'magazine-cover': {
+    label: '极简杂志封面',
+    type: 'poster',
+    width: 1200,
+    height: 1700,
+    gap: 0,
+    minImages: 1,
+    background: ['#f8fafc', '#e2e8f0', '#cbd5e1'],
+    slots: [
+      {
+        x: 0.12,
+        y: 0.24,
+        width: 0.76,
+        height: 0.58,
+        shape: 'rectangle',
+        radius: 18,
+        shadow: 'rgba(15, 23, 42, 0.18)',
+        tint: ['rgba(255, 255, 255, 0)', 'rgba(15, 23, 42, 0.08)'],
+        innerStroke: 'rgba(15, 23, 42, 0.14)',
+      },
+    ],
+    poster: {
+      eyebrow: 'PHOTO MAGAZINE',
+      title: '极简视觉封面',
+      subtitle: '留白排版与细边框突出照片本身',
+      align: 'left',
+      textColor: '#0f172a',
+      accentColor: '#475569',
+      decorations: 'magazine',
+    },
+  },
+  'portrait-studio': {
+    label: '人像写真海报',
+    type: 'poster',
+    width: 1200,
+    height: 1800,
+    gap: 0,
+    minImages: 1,
+    background: ['#fff1f2', '#fbcfe8', '#c084fc'],
+    slots: [
+      {
+        x: 0.14,
+        y: 0.16,
+        width: 0.72,
+        height: 0.62,
+        shape: 'ellipse',
+        radius: 120,
+        shadow: 'rgba(190, 24, 93, 0.24)',
+        tint: ['rgba(255, 255, 255, 0.08)', 'rgba(244, 114, 182, 0.18)'],
+        innerStroke: 'rgba(255, 255, 255, 0.78)',
+      },
+    ],
+    poster: {
+      eyebrow: 'PORTRAIT STUDIO',
+      title: '自然写真封面',
+      subtitle: '柔和粉紫光影，适合人像和自拍照片',
+      align: 'center',
+      textColor: '#831843',
+      accentColor: '#db2777',
+      decorations: 'portrait',
+    },
+  },
+  'food-promo': {
+    label: '美食种草海报',
+    type: 'poster',
+    width: 1200,
+    height: 1600,
+    gap: 0,
+    minImages: 1,
+    background: ['#431407', '#ea580c', '#facc15'],
+    slots: [
+      {
+        x: 0.12,
+        y: 0.14,
+        width: 0.76,
+        height: 0.56,
+        shape: 'circle',
+        radius: 56,
+        shadow: 'rgba(67, 20, 7, 0.4)',
+        tint: ['rgba(255, 247, 237, 0.04)', 'rgba(251, 146, 60, 0.22)'],
+        innerStroke: 'rgba(254, 243, 199, 0.72)',
+      },
+    ],
+    poster: {
+      eyebrow: 'FOOD RECOMMEND',
+      title: '今日美味种草',
+      subtitle: '暖橙氛围增强食欲，适合餐饮和美食分享',
+      align: 'left',
+      textColor: '#fff7ed',
+      accentColor: '#fde68a',
+      decorations: 'food',
+    },
+  },
+  'event-promo': {
+    label: '活动宣传海报',
+    type: 'poster',
+    width: 1200,
+    height: 1700,
+    gap: 0,
+    minImages: 1,
+    background: ['#020617', '#1d4ed8', '#06b6d4'],
+    slots: [
+      {
+        x: 0.1,
+        y: 0.2,
+        width: 0.8,
+        height: 0.5,
+        shape: 'rectangle',
+        radius: 26,
+        shadow: 'rgba(2, 6, 23, 0.46)',
+        tint: ['rgba(34, 211, 238, 0.08)', 'rgba(37, 99, 235, 0.22)'],
+        innerStroke: 'rgba(125, 211, 252, 0.58)',
+      },
+    ],
+    poster: {
+      eyebrow: 'EVENT PROMO',
+      title: '活动即将开始',
+      subtitle: '动感蓝色视觉，适合演出、聚会和发布会',
+      align: 'center',
+      textColor: '#ecfeff',
+      accentColor: '#67e8f9',
+      decorations: 'event',
+    },
+  },
+  'cinema-story': {
+    label: '电影质感海报',
+    type: 'poster',
+    width: 1200,
+    height: 1800,
+    gap: 0,
+    minImages: 1,
+    background: ['#030712', '#111827', '#92400e'],
+    slots: [
+      {
+        x: 0.08,
+        y: 0.12,
+        width: 0.84,
+        height: 0.66,
+        shape: 'rectangle',
+        radius: 14,
+        shadow: 'rgba(0, 0, 0, 0.54)',
+        tint: ['rgba(0, 0, 0, 0.06)', 'rgba(245, 158, 11, 0.18)'],
+        innerStroke: 'rgba(251, 191, 36, 0.32)',
+      },
+    ],
+    poster: {
+      eyebrow: 'CINEMA STORY',
+      title: '电影感视觉海报',
+      subtitle: '暗调、暖光和高对比适合夜景与街拍',
+      align: 'left',
+      textColor: '#fef3c7',
+      accentColor: '#f59e0b',
+      decorations: 'cinema',
+    },
+  },
+  'course-share': {
+    label: '课程分享海报',
+    type: 'poster',
+    width: 1200,
+    height: 1600,
+    gap: 0,
+    minImages: 1,
+    background: ['#eff6ff', '#dbeafe', '#93c5fd'],
+    slots: [
+      {
+        x: 0.15,
+        y: 0.18,
+        width: 0.7,
+        height: 0.46,
+        shape: 'square',
+        radius: 38,
+        shadow: 'rgba(37, 99, 235, 0.2)',
+        tint: ['rgba(255, 255, 255, 0.1)', 'rgba(59, 130, 246, 0.14)'],
+        innerStroke: 'rgba(255, 255, 255, 0.82)',
+      },
+    ],
+    poster: {
+      eyebrow: 'COURSE SHARE',
+      title: '知识分享封面',
+      subtitle: '清爽蓝白布局，适合课程、教程和笔记分享',
+      align: 'left',
+      textColor: '#1e3a8a',
+      accentColor: '#2563eb',
+      decorations: 'course',
+    },
+  },
+  'recruit-poster': {
+    label: '招聘宣传海报',
+    type: 'poster',
+    width: 1200,
+    height: 1700,
+    gap: 0,
+    minImages: 1,
+    background: ['#172554', '#4338ca', '#a855f7'],
+    slots: [
+      {
+        x: 0.13,
+        y: 0.2,
+        width: 0.74,
+        height: 0.48,
+        shape: 'ellipse',
+        radius: 28,
+        shadow: 'rgba(30, 64, 175, 0.4)',
+        tint: ['rgba(255, 255, 255, 0.06)', 'rgba(168, 85, 247, 0.2)'],
+        innerStroke: 'rgba(221, 214, 254, 0.58)',
+      },
+    ],
+    poster: {
+      eyebrow: 'WE ARE HIRING',
+      title: '加入我们',
+      subtitle: '商务蓝紫色视觉，适合招聘、公告和团队宣传',
+      align: 'center',
+      textColor: '#ffffff',
+      accentColor: '#ddd6fe',
+      decorations: 'recruit',
+    },
+  },
   'two-vertical': {
     label: '两张竖拼',
     width: 1200,
@@ -485,6 +795,41 @@ const collageLayouts = {
       { x: 0.5, y: 0.62, width: 0.5, height: 0.38 },
     ],
   },
+  'three-vertical': {
+    label: '三张竖排拼图',
+    width: 900,
+    height: 1600,
+    gap: 16,
+    slots: Array.from({ length: 3 }, (_, index) => ({
+      x: 0,
+      y: index / 3,
+      width: 1,
+      height: 1 / 3,
+    })),
+  },
+  'three-horizontal': {
+    label: '三张横排拼图',
+    width: 1600,
+    height: 900,
+    gap: 16,
+    slots: Array.from({ length: 3 }, (_, index) => ({
+      x: index / 3,
+      y: 0,
+      width: 1 / 3,
+      height: 1,
+    })),
+  },
+  'three-side-feature': {
+    label: '三张侧主图',
+    width: 1400,
+    height: 1000,
+    gap: 16,
+    slots: [
+      { x: 0, y: 0, width: 0.62, height: 1 },
+      { x: 0.62, y: 0, width: 0.38, height: 0.5 },
+      { x: 0.62, y: 0.5, width: 0.38, height: 0.5 },
+    ],
+  },
   'four-grid': {
     label: '四宫格拼图',
     width: 1200,
@@ -495,6 +840,68 @@ const collageLayouts = {
       { x: 0.5, y: 0, width: 0.5, height: 0.5 },
       { x: 0, y: 0.5, width: 0.5, height: 0.5 },
       { x: 0.5, y: 0.5, width: 0.5, height: 0.5 },
+    ],
+  },
+  'four-vertical': {
+    label: '四张竖排拼图',
+    width: 900,
+    height: 1600,
+    gap: 14,
+    slots: Array.from({ length: 4 }, (_, index) => ({
+      x: 0,
+      y: index / 4,
+      width: 1,
+      height: 0.25,
+    })),
+  },
+  'four-horizontal': {
+    label: '四张横排拼图',
+    width: 1600,
+    height: 900,
+    gap: 14,
+    slots: Array.from({ length: 4 }, (_, index) => ({
+      x: index / 4,
+      y: 0,
+      width: 0.25,
+      height: 1,
+    })),
+  },
+  'four-feature': {
+    label: '四张主次拼图',
+    width: 1400,
+    height: 1000,
+    gap: 16,
+    slots: [
+      { x: 0, y: 0, width: 0.58, height: 1 },
+      { x: 0.58, y: 0, width: 0.42, height: 1 / 3 },
+      { x: 0.58, y: 1 / 3, width: 0.42, height: 1 / 3 },
+      { x: 0.58, y: 2 / 3, width: 0.42, height: 1 / 3 },
+    ],
+  },
+  'five-feature': {
+    label: '五张主图拼图',
+    width: 1200,
+    height: 1600,
+    gap: 14,
+    slots: [
+      { x: 0, y: 0, width: 1, height: 0.5 },
+      { x: 0, y: 0.5, width: 0.5, height: 0.25 },
+      { x: 0.5, y: 0.5, width: 0.5, height: 0.25 },
+      { x: 0, y: 0.75, width: 0.5, height: 0.25 },
+      { x: 0.5, y: 0.75, width: 0.5, height: 0.25 },
+    ],
+  },
+  'five-grid': {
+    label: '五张错落拼图',
+    width: 1200,
+    height: 1200,
+    gap: 14,
+    slots: [
+      { x: 0, y: 0, width: 0.5, height: 0.5 },
+      { x: 0.5, y: 0, width: 0.5, height: 0.33 },
+      { x: 0.5, y: 0.33, width: 0.5, height: 0.34 },
+      { x: 0, y: 0.5, width: 0.5, height: 0.5 },
+      { x: 0.5, y: 0.67, width: 0.5, height: 0.33 },
     ],
   },
   'six-grid': {
@@ -509,11 +916,49 @@ const collageLayouts = {
       height: 1 / 3,
     })),
   },
+  'six-horizontal': {
+    label: '六张横向拼图',
+    width: 1800,
+    height: 1200,
+    gap: 12,
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      x: (index % 3) / 3,
+      y: Math.floor(index / 3) * 0.5,
+      width: 1 / 3,
+      height: 0.5,
+    })),
+  },
+  'six-feature': {
+    label: '六张主次拼图',
+    width: 1200,
+    height: 1600,
+    gap: 14,
+    slots: [
+      { x: 0, y: 0, width: 1, height: 0.42 },
+      { x: 0, y: 0.42, width: 0.5, height: 0.29 },
+      { x: 0.5, y: 0.42, width: 0.5, height: 0.29 },
+      { x: 0, y: 0.71, width: 1 / 3, height: 0.29 },
+      { x: 1 / 3, y: 0.71, width: 1 / 3, height: 0.29 },
+      { x: 2 / 3, y: 0.71, width: 1 / 3, height: 0.29 },
+    ],
+  },
   'nine-grid': {
     label: '九宫格拼图',
     width: 1200,
     height: 1200,
     gap: 12,
+    slots: Array.from({ length: 9 }, (_, index) => ({
+      x: (index % 3) / 3,
+      y: Math.floor(index / 3) / 3,
+      width: 1 / 3,
+      height: 1 / 3,
+    })),
+  },
+  'nine-vertical': {
+    label: '九张竖版拼图',
+    width: 1200,
+    height: 1800,
+    gap: 10,
     slots: Array.from({ length: 9 }, (_, index) => ({
       x: (index % 3) / 3,
       y: Math.floor(index / 3) / 3,
@@ -531,6 +976,11 @@ const state = {
   canvasInteraction: null,
   activeTool: null,
   textSelectionRange: null,
+  pendingTextHistorySnapshot: null,
+  pendingTextHistoryLabel: null,
+  pendingTextHistoryId: null,
+  suppressNextTextCanvasCreate: false,
+  pendingCollageTrim: null,
 };
 
 const previewCanvas = document.getElementById('previewCanvas');
@@ -575,6 +1025,8 @@ const textBold = document.getElementById('textBold');
 const textItalic = document.getElementById('textItalic');
 const historyUndoButton = document.getElementById('historyUndoButton');
 const historyList = document.getElementById('historyList');
+const posterToggleButton = document.getElementById('posterToggleButton');
+const posterOptions = document.getElementById('posterOptions');
 const sceneToggleButton = document.getElementById('sceneToggleButton');
 const sceneOptions = document.getElementById('sceneOptions');
 const qualityToggleButton = document.getElementById('qualityToggleButton');
@@ -591,6 +1043,9 @@ const collageToggleButton = document.getElementById('collageToggleButton');
 const collageOptions = document.getElementById('collageOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
+const themeModeSelect = document.getElementById('themeModeSelect');
+const systemThemeQuery = window.matchMedia?.('(prefers-color-scheme: light)');
+const themeStorageKey = 'image-enhancer-theme-mode';
 
 const sliderElements = new Map();
 const valueElements = new Map();
@@ -619,7 +1074,49 @@ const toolInputs = [
   historyUndoButton,
 ];
 
+function readStoredThemeMode() {
+  try {
+    const storedMode = localStorage.getItem(themeStorageKey);
+    return ['system', 'dark', 'light'].includes(storedMode) ? storedMode : 'system';
+  } catch {
+    return 'system';
+  }
+}
+
+function resolveThemeMode(mode) {
+  if (mode === 'light' || mode === 'dark') return mode;
+  return systemThemeQuery?.matches ? 'light' : 'dark';
+}
+
+function applyThemeMode(mode = readStoredThemeMode()) {
+  const safeMode = ['system', 'dark', 'light'].includes(mode) ? mode : 'system';
+  const resolvedTheme = resolveThemeMode(safeMode);
+  document.body.dataset.themeMode = safeMode;
+  document.body.dataset.theme = resolvedTheme;
+  if (themeModeSelect) {
+    themeModeSelect.value = safeMode;
+  }
+}
+
+function saveThemeMode(mode) {
+  try {
+    localStorage.setItem(themeStorageKey, mode);
+  } catch {
+    // Ignore storage failures; the current session can still switch themes.
+  }
+  applyThemeMode(mode);
+}
+
+function handleSystemThemeChange() {
+  if (document.body.dataset.themeMode === 'system') {
+    applyThemeMode('system');
+  }
+}
+
 function setActiveTool(tool) {
+  if (tool !== 'text') {
+    commitTextEditorChanges();
+  }
   state.activeTool = tool;
   adjustToolButton.classList.toggle('active', tool === 'adjust');
   textToolButton.classList.toggle('active', tool === 'text');
@@ -653,6 +1150,244 @@ function getActiveDocument() {
 
 function isCollageDocument(doc) {
   return doc?.type === 'collage';
+}
+
+function isPosterDocument(doc) {
+  if (!isCollageDocument(doc)) return false;
+  return collageLayouts[doc.collage.layoutName]?.type === 'poster';
+}
+
+function clonePlainObject(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function cloneCollageState(collage) {
+  if (!collage) return collage;
+  return {
+    ...clonePlainObject({
+      layoutName: collage.layoutName,
+      activeSlotIndex: collage.activeSlotIndex,
+    }),
+    slots: (collage.slots || []).map((slot) => ({
+      ...clonePlainObject({
+        sourceName: slot.sourceName,
+        sourceMeta: slot.sourceMeta,
+        scale: slot.scale,
+        offsetX: slot.offsetX,
+        offsetY: slot.offsetY,
+      }),
+      image: slot.image,
+    })),
+  };
+}
+
+function createPosterHistorySnapshot(doc) {
+  if (!doc?.tools) return null;
+  const snapshot = {
+    type: doc.type,
+    values: clonePlainObject(doc.values),
+    tools: clonePlainObject(doc.tools),
+    grayscale: doc.grayscale,
+    styleMode: doc.styleMode,
+    styleModes: clonePlainObject(doc.styleModes || []),
+  };
+  if (isCollageDocument(doc)) {
+    snapshot.collage = cloneCollageState(doc.collage);
+  }
+  return snapshot;
+}
+
+function restorePosterHistorySnapshot(doc, snapshot) {
+  if (!doc || !snapshot) return;
+  doc.values = clonePlainObject(snapshot.values);
+  doc.tools = clonePlainObject(snapshot.tools);
+  if (snapshot.collage) {
+    doc.collage = cloneCollageState(snapshot.collage);
+  }
+  doc.grayscale = snapshot.grayscale;
+  doc.styleMode = snapshot.styleMode || 'none';
+  doc.styleModes = clonePlainObject(snapshot.styleModes || []);
+  state.textSelectionRange = null;
+  state.pendingTextHistorySnapshot = null;
+  state.pendingTextHistoryLabel = null;
+  state.pendingTextHistoryId = null;
+  syncControlsFromDocument(doc);
+  syncToolControlsFromDocument(doc);
+  updateTextEditorOverlay();
+}
+
+function pushPosterEditHistory(doc, label, beforeSnapshot) {
+  if (!doc || !beforeSnapshot) return null;
+  const afterSnapshot = createPosterHistorySnapshot(doc);
+  const snapshotReplacer = (key, value) => (key === 'image' ? undefined : value);
+  if (JSON.stringify(beforeSnapshot, snapshotReplacer) === JSON.stringify(afterSnapshot, snapshotReplacer)) return null;
+  if (!Array.isArray(doc.effectHistory)) doc.effectHistory = [];
+  if (!doc.nextHistoryId) doc.nextHistoryId = 1;
+  const entry = {
+    id: doc.nextHistoryId++,
+    type: 'edit',
+    name: 'edit',
+    label,
+    beforeSnapshot,
+    afterSnapshot,
+  };
+  doc.effectHistory.push(entry);
+  renderHistoryPanel(doc);
+  return entry;
+}
+
+function upsertPendingTextHistory(label = '编辑文字') {
+  const doc = getActiveDocument();
+  if (!doc || !state.pendingTextHistorySnapshot) return;
+
+  if (state.pendingTextHistoryId) {
+    const entry = doc.effectHistory.find((item) => item.id === state.pendingTextHistoryId);
+    if (entry) {
+      entry.afterSnapshot = createPosterHistorySnapshot(doc);
+      entry.label = state.pendingTextHistoryLabel || label;
+      renderHistoryPanel(doc);
+      return;
+    }
+    state.pendingTextHistoryId = null;
+  }
+
+  const entry = pushPosterEditHistory(doc, state.pendingTextHistoryLabel || label, state.pendingTextHistorySnapshot);
+  if (entry) {
+    state.pendingTextHistoryId = entry.id;
+  }
+}
+
+function flushPendingTextHistory(label = '编辑文字') {
+  const doc = getActiveDocument();
+  if (!doc || !state.pendingTextHistorySnapshot) return;
+  upsertPendingTextHistory(label);
+  state.pendingTextHistorySnapshot = null;
+  state.pendingTextHistoryLabel = null;
+  state.pendingTextHistoryId = null;
+  renderHistoryPanel(doc);
+}
+
+function isTextLayerEmpty(layer) {
+  return !layer || !String(layer.plainText || '').trim();
+}
+
+function discardEmptyPendingTextLayer(doc, suppressNextTextCreate = false) {
+  const layer = getActiveTextLayer(doc);
+  if (
+    !doc?.tools?.text ||
+    state.pendingTextHistoryLabel !== '新增文字' ||
+    !isTextLayerEmpty(layer)
+  ) {
+    return false;
+  }
+
+  if (state.pendingTextHistoryId) {
+    const historyIndex = doc.effectHistory.findIndex((entry) => entry.id === state.pendingTextHistoryId);
+    if (historyIndex !== -1) doc.effectHistory.splice(historyIndex, 1);
+  }
+
+  doc.tools.text.layers = doc.tools.text.layers.filter((item) => item.id !== layer.id);
+  doc.tools.text.activeLayerId = null;
+  state.textSelectionRange = null;
+  state.pendingTextHistorySnapshot = null;
+  state.pendingTextHistoryLabel = null;
+  state.pendingTextHistoryId = null;
+  if (suppressNextTextCreate) {
+    state.suppressNextTextCanvasCreate = true;
+  }
+  hideTextEditorOverlay();
+  syncToolControlsFromDocument(doc);
+  renderHistoryPanel(doc);
+  renderPreview();
+  return true;
+}
+
+function commitTextEditorChanges(label = '编辑文字', suppressNextTextCreate = false) {
+  const doc = getActiveDocument();
+  if (doc?.tools?.text && getActiveTextLayer(doc) && textEditorFrame.classList.contains('visible')) {
+    syncActiveTextLayerFromEditor();
+  }
+  if (discardEmptyPendingTextLayer(doc, suppressNextTextCreate)) return true;
+  flushPendingTextHistory(label);
+  return false;
+}
+
+function getSnapshotTextLayers(snapshot) {
+  return snapshot?.tools?.text?.layers || [];
+}
+
+function createLayerMap(layers) {
+  return new Map(layers.map((layer) => [layer.id, layer]));
+}
+
+function isSameTextLayer(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
+function applyTextHistoryInverse(doc, entry) {
+  if (!doc?.tools?.text || !entry.beforeSnapshot || !entry.afterSnapshot) return false;
+
+  const beforeLayers = getSnapshotTextLayers(entry.beforeSnapshot);
+  const afterLayers = getSnapshotTextLayers(entry.afterSnapshot);
+  const beforeMap = createLayerMap(beforeLayers);
+  const afterMap = createLayerMap(afterLayers);
+  const currentLayers = doc.tools.text.layers || [];
+  let nextLayers = currentLayers.map((layer) => clonePlainObject(layer));
+  let touchedTextLayer = false;
+
+  const addedIds = afterLayers
+    .filter((layer) => !beforeMap.has(layer.id))
+    .map((layer) => layer.id);
+  if (addedIds.length > 0) {
+    const addedIdSet = new Set(addedIds);
+    nextLayers = nextLayers.filter((layer) => !addedIdSet.has(layer.id));
+    touchedTextLayer = true;
+  }
+
+  beforeLayers.forEach((beforeLayer) => {
+    const afterLayer = afterMap.get(beforeLayer.id);
+    const currentIndex = nextLayers.findIndex((layer) => layer.id === beforeLayer.id);
+
+    if (!afterLayer) {
+      if (currentIndex === -1) {
+        nextLayers.push(clonePlainObject(beforeLayer));
+      }
+      touchedTextLayer = true;
+      return;
+    }
+
+    if (!isSameTextLayer(beforeLayer, afterLayer)) {
+      if (currentIndex === -1) {
+        nextLayers.push(clonePlainObject(beforeLayer));
+      } else {
+        nextLayers[currentIndex] = clonePlainObject(beforeLayer);
+      }
+      touchedTextLayer = true;
+    }
+  });
+
+  if (!touchedTextLayer) return false;
+
+  const beforeOrder = beforeLayers.map((layer) => layer.id);
+  const currentOrder = nextLayers.map((layer) => layer.id);
+  nextLayers.sort((left, right) => {
+    const leftIndex = beforeOrder.includes(left.id) ? beforeOrder.indexOf(left.id) : currentOrder.indexOf(left.id) + beforeOrder.length;
+    const rightIndex = beforeOrder.includes(right.id) ? beforeOrder.indexOf(right.id) : currentOrder.indexOf(right.id) + beforeOrder.length;
+    return leftIndex - rightIndex;
+  });
+
+  doc.tools.text.layers = nextLayers;
+  if (!nextLayers.some((layer) => layer.id === doc.tools.text.activeLayerId)) {
+    doc.tools.text.activeLayerId = null;
+  }
+  doc.tools.text.nextLayerId = Math.max(1, ...nextLayers.map((layer) => layer.id)) + 1;
+  state.textSelectionRange = null;
+  state.pendingTextHistorySnapshot = null;
+  state.pendingTextHistoryLabel = null;
+  state.pendingTextHistoryId = null;
+  syncToolControlsFromDocument(doc);
+  updateTextEditorOverlay();
+  return true;
 }
 
 function createDefaultTools() {
@@ -713,6 +1448,7 @@ function deleteActiveTextLayer() {
   const textTool = doc?.tools?.text;
   if (!textTool?.activeLayerId) return false;
 
+  const beforeSnapshot = createPosterHistorySnapshot(doc);
   const nextLayers = textTool.layers.filter((layer) => layer.id !== textTool.activeLayerId);
   if (nextLayers.length === textTool.layers.length) return false;
 
@@ -722,6 +1458,7 @@ function deleteActiveTextLayer() {
   hideTextEditorOverlay();
   syncToolControlsFromDocument(doc);
   renderPreview();
+  pushPosterEditHistory(doc, '删除文字', beforeSnapshot);
   showToast('已删除文字框');
   return true;
 }
@@ -832,8 +1569,9 @@ function getTextLayerBounds(layer, canvasWidth, canvasHeight) {
 
 function findTextLayerAtPoint(doc, point) {
   const layers = doc.tools.text.layers || [];
+  const canvasSize = getDocumentCanvasSize(doc);
   for (let index = layers.length - 1; index >= 0; index -= 1) {
-    const bounds = getTextLayerBounds(layers[index], doc.image.naturalWidth, doc.image.naturalHeight);
+    const bounds = getTextLayerBounds(layers[index], canvasSize.width, canvasSize.height);
     if (
       point.x >= bounds.left &&
       point.x <= bounds.right &&
@@ -844,6 +1582,20 @@ function findTextLayerAtPoint(doc, point) {
     }
   }
   return null;
+}
+
+function getDocumentCanvasSize(doc) {
+  if (isPosterDocument(doc) || isCollageDocument(doc)) {
+    const layout = collageLayouts[doc.collage.layoutName];
+    return {
+      width: layout?.width || 1,
+      height: layout?.height || 1,
+    };
+  }
+  return {
+    width: doc?.image?.naturalWidth || 1,
+    height: doc?.image?.naturalHeight || 1,
+  };
 }
 
 function createDocument(result, image) {
@@ -871,6 +1623,7 @@ function createCollageDocument(layoutName, items) {
     return {
       image: item?.image || null,
       sourceName: item?.result.name || `空位 ${index + 1}`,
+      sourceMeta: item?.result || null,
       scale: 1,
       offsetX: 0,
       offsetY: 0,
@@ -919,6 +1672,355 @@ function loadCollageItem(result) {
     image.onerror = () => reject(new Error(result.name));
     image.src = result.dataUrl;
   });
+}
+
+function getPosterSourceItemFromDocument(doc) {
+  if (!doc) return null;
+
+  if (doc.type === 'image' && doc.image) {
+    return {
+      image: doc.image,
+      result: doc.meta,
+    };
+  }
+
+  if (isPosterDocument(doc)) {
+    const activeSlot = doc.collage.slots[doc.collage.activeSlotIndex];
+    const slot = activeSlot?.image ? activeSlot : doc.collage.slots.find((item) => item.image);
+    if (!slot?.image) return null;
+    return {
+      image: slot.image,
+      result: slot.sourceMeta || {
+        name: slot.sourceName || '当前海报图片',
+        path: slot.sourceName || '当前海报图片',
+        size: 0,
+      },
+    };
+  }
+
+  return null;
+}
+
+function createCollageItemFromImageDocument(doc) {
+  if (!doc?.image) return null;
+  return {
+    image: doc.image,
+    result: doc.meta,
+  };
+}
+
+function createCollageItemFromSlot(slot) {
+  if (!slot?.image) return null;
+  return {
+    image: slot.image,
+    result: slot.sourceMeta || {
+      name: slot.sourceName || '当前拼图图片',
+      path: slot.sourceName || '当前拼图图片',
+      size: 0,
+    },
+  };
+}
+
+function getCurrentCollageItems() {
+  const activeDocument = getActiveDocument();
+  if (isCollageDocument(activeDocument)) {
+    return activeDocument.collage.slots
+      .map(createCollageItemFromSlot)
+      .filter(Boolean);
+  }
+
+  const activeItem = activeDocument?.type === 'image'
+    ? createCollageItemFromImageDocument(activeDocument)
+    : getPosterSourceItemFromDocument(activeDocument);
+  const otherItems = state.documents
+    .filter((doc) => doc.id !== state.activeDocumentId && doc.type === 'image')
+    .map(createCollageItemFromImageDocument)
+    .filter(Boolean);
+
+  return activeItem ? [activeItem, ...otherItems] : otherItems;
+}
+
+function getSelectionLayoutNameForCount(count) {
+  const candidates = ['two-vertical', 'three-feature', 'four-grid', 'five-grid', 'six-grid', 'nine-grid'];
+  return candidates.find((name) => collageLayouts[name].slots.length >= count) || 'nine-grid';
+}
+
+function isCollageTrimPending(doc) {
+  return Boolean(
+    state.pendingCollageTrim &&
+    isCollageDocument(doc) &&
+    doc.id === state.pendingCollageTrim.documentId
+  );
+}
+
+function shouldShowCollageDeleteButtons(doc) {
+  return isCollageDocument(doc) && !isPosterDocument(doc);
+}
+
+function createCollageDocumentFromItems(layoutName, items) {
+  const collageDocument = createCollageDocument(layoutName, items);
+  replaceActiveDocument(collageDocument);
+  setActiveTool(null);
+  syncUiWithActiveDocument();
+  return collageDocument;
+}
+
+function finishPendingCollageTrimIfReady(doc) {
+  if (!isCollageTrimPending(doc)) return false;
+  const { targetLayoutName, targetSlotCount } = state.pendingCollageTrim;
+  const items = getCurrentCollageItems();
+  if (items.length > targetSlotCount) return false;
+
+  state.pendingCollageTrim = null;
+  createCollageDocumentFromItems(targetLayoutName, items);
+  const layout = collageLayouts[targetLayoutName];
+  showToast(`已应用${layout.label}`);
+  return true;
+}
+
+function getCollageDeleteButtonAtPoint(doc, point) {
+  if (!shouldShowCollageDeleteButtons(doc)) return -1;
+  const layout = collageLayouts[doc.collage.layoutName];
+  if (!layout) return -1;
+
+  for (let index = 0; index < layout.slots.length; index += 1) {
+    if (!doc.collage.slots[index]?.image) continue;
+    const button = getCollageDeleteButtonMetrics(layout.slots[index]);
+    const distance = Math.hypot(point.x - button.centerX, point.y - button.centerY);
+    if (distance <= button.radius) return index;
+  }
+
+  return -1;
+}
+
+function getCollageDeleteButtonMetrics(layoutSlot) {
+  return {
+    centerX: Math.max(4.5, Math.min(95.5, (layoutSlot.x + layoutSlot.width) * 100 - 4)),
+    centerY: Math.max(4.5, Math.min(95.5, layoutSlot.y * 100 + 4)),
+    radius: 3.8,
+  };
+}
+
+function deletePendingCollageImage(slotIndex) {
+  const doc = getActiveDocument();
+  if (!isCollageTrimPending(doc)) return false;
+  const slot = doc.collage.slots[slotIndex];
+  if (!slot?.image) return false;
+
+  doc.collage.slots.splice(slotIndex, 1);
+  doc.collage.slots.push({
+    image: null,
+    sourceName: `空位 ${doc.collage.slots.length + 1}`,
+    sourceMeta: null,
+    scale: 1,
+    offsetX: 0,
+    offsetY: 0,
+  });
+  doc.collage.activeSlotIndex = Math.min(doc.collage.activeSlotIndex, doc.collage.slots.length - 1);
+  if (!finishPendingCollageTrimIfReady(doc)) {
+    updateImageMeta(doc);
+    renderPreview();
+    const { targetSlotCount } = state.pendingCollageTrim;
+    showToast(`已删除一张，请保留 ${targetSlotCount} 张图片`);
+  }
+  return true;
+}
+
+function resetCollageSlot(slot, index) {
+  slot.image = null;
+  slot.sourceName = `空位 ${index + 1}`;
+  slot.sourceMeta = null;
+  slot.scale = 1;
+  slot.offsetX = 0;
+  slot.offsetY = 0;
+}
+
+function deleteCollageImage(slotIndex) {
+  const doc = getActiveDocument();
+  if (!isCollageDocument(doc) || isPosterDocument(doc)) return false;
+  if (isCollageTrimPending(doc)) {
+    return deletePendingCollageImage(slotIndex);
+  }
+
+  const slot = doc.collage.slots[slotIndex];
+  if (!slot?.image) return false;
+
+  resetCollageSlot(slot, slotIndex);
+  doc.collage.activeSlotIndex = slotIndex;
+  updateCollageDocumentSourceMeta(doc);
+  updateImageMeta(doc);
+  renderPreview();
+  showToast('已删除当前格子的图片');
+  return true;
+}
+
+function cloneCollageSlotForMove(slot) {
+  if (!slot?.image) return null;
+  return {
+    image: slot.image,
+    sourceName: slot.sourceName,
+    sourceMeta: slot.sourceMeta,
+    scale: slot.scale || 1,
+    offsetX: slot.offsetX || 0,
+    offsetY: slot.offsetY || 0,
+  };
+}
+
+function moveCollageImageToSlot(doc, sourceSlotIndex, targetSlotIndex, sourceSnapshot) {
+  if (!isCollageDocument(doc) || isPosterDocument(doc) || isCollageTrimPending(doc)) return false;
+  if (sourceSlotIndex === targetSlotIndex) return false;
+
+  const sourceSlot = doc.collage.slots[sourceSlotIndex];
+  const targetSlot = doc.collage.slots[targetSlotIndex];
+  const sourceItem = sourceSnapshot || cloneCollageSlotForMove(sourceSlot);
+  if (!sourceItem?.image || !sourceSlot || !targetSlot) return false;
+  const targetItem = cloneCollageSlotForMove(targetSlot);
+
+  targetSlot.image = sourceItem.image;
+  targetSlot.sourceName = sourceItem.sourceName;
+  targetSlot.sourceMeta = sourceItem.sourceMeta;
+  targetSlot.scale = sourceItem.scale || 1;
+  targetSlot.offsetX = sourceItem.offsetX || 0;
+  targetSlot.offsetY = sourceItem.offsetY || 0;
+
+  if (targetItem?.image) {
+    sourceSlot.image = targetItem.image;
+    sourceSlot.sourceName = targetItem.sourceName;
+    sourceSlot.sourceMeta = targetItem.sourceMeta;
+    sourceSlot.scale = targetItem.scale || 1;
+    sourceSlot.offsetX = targetItem.offsetX || 0;
+    sourceSlot.offsetY = targetItem.offsetY || 0;
+  } else {
+    resetCollageSlot(sourceSlot, sourceSlotIndex);
+  }
+
+  doc.collage.activeSlotIndex = targetSlotIndex;
+  updateCollageDocumentSourceMeta(doc);
+  updateImageMeta(doc);
+  renderPreview();
+  showToast(targetItem?.image ? '已交换两张拼图图片' : '已将图片移动到目标空位');
+  return true;
+}
+
+function getCollageFillSlotIndexes(doc, preferredSlotIndex = null) {
+  if (!isCollageDocument(doc) || isPosterDocument(doc)) return [];
+  const emptyIndexes = doc.collage.slots
+    .map((slot, index) => (slot.image ? -1 : index))
+    .filter((index) => index !== -1);
+
+  if (!Number.isInteger(preferredSlotIndex)) {
+    return emptyIndexes;
+  }
+
+  const validPreferredIndex = preferredSlotIndex >= 0 && preferredSlotIndex < doc.collage.slots.length;
+  if (!validPreferredIndex) return emptyIndexes;
+  return [
+    preferredSlotIndex,
+    ...emptyIndexes.filter((index) => index !== preferredSlotIndex),
+  ];
+}
+
+function updateCollageDocumentSourceMeta(doc) {
+  if (!isCollageDocument(doc)) return;
+  const layout = collageLayouts[doc.collage.layoutName];
+  const filledSlots = doc.collage.slots.filter((slot) => slot.image);
+  const sourceNames = filledSlots.map((slot) => slot.sourceName).filter(Boolean);
+  const totalSize = filledSlots.reduce((total, slot) => total + (slot.sourceMeta?.size || 0), 0);
+
+  doc.sourceName = `${layout?.label || '拼图'} ${filledSlots.length}张`;
+  doc.meta = {
+    ...doc.meta,
+    extension: 'PNG',
+    path: sourceNames.join(' / '),
+    size: totalSize,
+    modifiedAt: new Date().toISOString(),
+  };
+}
+
+function fillCollageSlotsWithItems(doc, items, preferredSlotIndex = null) {
+  if (!isCollageDocument(doc) || isPosterDocument(doc) || items.length === 0) return 0;
+  const slotIndexes = getCollageFillSlotIndexes(doc, preferredSlotIndex);
+  if (slotIndexes.length === 0) return 0;
+
+  const fillCount = Math.min(items.length, slotIndexes.length);
+  for (let index = 0; index < fillCount; index += 1) {
+    const slot = doc.collage.slots[slotIndexes[index]];
+    const item = items[index];
+    slot.image = item.image;
+    slot.sourceName = item.result.name;
+    slot.sourceMeta = item.result;
+    slot.scale = 1;
+    slot.offsetX = 0;
+    slot.offsetY = 0;
+  }
+
+  doc.collage.activeSlotIndex = slotIndexes[0];
+  updateCollageDocumentSourceMeta(doc);
+  updateImageMeta(doc);
+  renderPreview();
+  return fillCount;
+}
+
+async function fillCollageSlotsFromResults(doc, results, preferredSlotIndex = null) {
+  const files = Array.isArray(results) ? results : [results];
+  if (!isCollageDocument(doc) || isPosterDocument(doc) || files.length === 0) return false;
+
+  const slotIndexes = getCollageFillSlotIndexes(doc, preferredSlotIndex);
+  if (slotIndexes.length === 0) {
+    showToast('当前拼图没有空位，请先删除或更换图片');
+    return true;
+  }
+
+  try {
+    const loadedItems = await Promise.all(files.slice(0, slotIndexes.length).map(loadCollageItem));
+    const fillCount = fillCollageSlotsWithItems(doc, loadedItems, preferredSlotIndex);
+    const emptyCount = doc.collage.slots.filter((slot) => !slot.image).length;
+    showToast(emptyCount > 0
+      ? `已添加 ${fillCount} 张图片，还剩 ${emptyCount} 个空位`
+      : '拼图图片已填满');
+  } catch (error) {
+    showToast(`拼图图片加载失败：${error.message}`);
+  }
+  return true;
+}
+
+async function chooseImageForCollageSlot(slotIndex) {
+  const doc = getActiveDocument();
+  if (!isCollageDocument(doc) || isPosterDocument(doc)) return false;
+  const documentId = doc.id;
+  const results = await window.imageEnhancer.openImage();
+  if (!results) return false;
+
+  const activeDocument = getActiveDocument();
+  if (!isCollageDocument(activeDocument) || activeDocument.id !== documentId) return false;
+  return fillCollageSlotsFromResults(activeDocument, results, slotIndex);
+}
+
+function replaceActiveDocument(nextDocument) {
+  const currentIndex = state.documents.findIndex((doc) => doc.id === state.activeDocumentId);
+  if (currentIndex === -1) {
+    state.documents.push(nextDocument);
+    state.activeDocumentId = nextDocument.id;
+    return;
+  }
+
+  const currentId = state.documents[currentIndex].id;
+  nextDocument.id = currentId;
+  state.documents[currentIndex] = nextDocument;
+  state.activeDocumentId = currentId;
+}
+
+function restoreImageFromPosterLayoutHistory(doc, entry) {
+  const fallbackItem = getPosterSourceItemFromDocument(doc);
+  const image = entry.sourceImage || fallbackItem?.image;
+  const meta = entry.sourceMeta || fallbackItem?.result;
+  if (!image || !meta) return false;
+
+  const imageDocument = createDocument(meta, image);
+  replaceActiveDocument(imageDocument);
+  setActiveTool(null);
+  syncUiWithActiveDocument();
+  return true;
 }
 
 function renderDocumentTabs() {
@@ -1023,7 +2125,8 @@ function renderHistoryPanel(doc = getActiveDocument()) {
     return;
   }
 
-  history.slice().reverse().forEach((entry, index) => {
+  const latestHistoryId = history[history.length - 1]?.id;
+  history.forEach((entry) => {
     const item = document.createElement('div');
     item.className = 'history-item';
 
@@ -1034,7 +2137,17 @@ function renderHistoryPanel(doc = getActiveDocument()) {
     title.textContent = entry.label;
 
     const meta = document.createElement('span');
-    meta.textContent = index === 0 ? '最新操作' : entry.type === 'style' ? '风格效果' : '快捷效果';
+    meta.textContent = entry.id === latestHistoryId
+      ? '最新操作'
+      : entry.type === 'edit'
+        ? '编辑操作'
+        : entry.type === 'poster-edit'
+          ? '海报编辑'
+          : entry.type === 'poster-layout'
+          ? '海报样式'
+          : entry.type === 'style'
+            ? '风格效果'
+            : '快捷效果';
 
     const remove = document.createElement('button');
     remove.type = 'button';
@@ -1056,7 +2169,30 @@ function removeHistoryEntry(historyId) {
   const index = doc.effectHistory.findIndex((entry) => entry.id === historyId);
   if (index === -1) return;
 
-  const [entry] = doc.effectHistory.splice(index, 1);
+  const entry = doc.effectHistory[index];
+  if (entry.type === 'edit' || entry.type === 'poster-edit') {
+    doc.effectHistory.splice(index, 1);
+    if (!applyTextHistoryInverse(doc, entry)) {
+      restorePosterHistorySnapshot(doc, entry.beforeSnapshot);
+    }
+    renderHistoryPanel(doc);
+    renderPreview();
+    showToast(`已删除并回退：${entry.label}`);
+    return;
+  }
+
+  if (entry.type === 'poster-layout') {
+    if (restoreImageFromPosterLayoutHistory(doc, entry)) {
+      showToast('已删除海报样式，恢复为原图片');
+    } else {
+      doc.effectHistory.splice(index, 1);
+      renderHistoryPanel(doc);
+      showToast(`已删除历史：${entry.label}`);
+    }
+    return;
+  }
+
+  doc.effectHistory.splice(index, 1);
   Object.entries(entry.appliedValues || {}).forEach(([key, value]) => {
     updateControlValue(doc, key, doc.values[key] - value);
   });
@@ -1083,7 +2219,7 @@ function undoLastHistoryEntry() {
 
 function syncToolControlsFromDocument(doc) {
   const tools = doc?.tools || defaultTools;
-  const { mosaic, text } = tools;
+  const { mosaic } = tools;
   const textSource = getTextControlSource(doc);
 
   mosaicToggle.checked = Boolean(mosaic.enabled);
@@ -1144,10 +2280,10 @@ function syncUiWithActiveDocument() {
   emptyState.style.display = 'none';
   previewCanvas.style.display = 'block';
   saveButton.disabled = false;
-  setAdjustmentsEnabled(!isCollageDocument(activeDocument));
+  setAdjustmentsEnabled(!isCollageDocument(activeDocument) || isPosterDocument(activeDocument));
   syncControlsFromDocument(activeDocument);
   renderHistoryPanel(activeDocument);
-  if (isCollageDocument(activeDocument)) {
+  if (isCollageDocument(activeDocument) && !isPosterDocument(activeDocument)) {
     setActiveTool(null);
   }
   renderPreview();
@@ -1216,9 +2352,12 @@ function updateMosaicTool(updates) {
   const doc = getActiveDocument();
   if (!doc) return;
 
+  flushPendingTextHistory();
+  const beforeSnapshot = createPosterHistorySnapshot(doc);
   Object.assign(doc.tools.mosaic, updates);
   syncToolControlsFromDocument(doc);
   schedulePreviewRender();
+  pushPosterEditHistory(doc, isPosterDocument(doc) ? '调整海报马赛克' : '调整马赛克', beforeSnapshot);
 }
 
 function applyMosaicPreset(name) {
@@ -1237,8 +2376,11 @@ function updateTextTool(updates, applyToSelection = false) {
   const doc = getActiveDocument();
   if (!doc) return;
 
+  flushPendingTextHistory();
+  const beforeSnapshot = createPosterHistorySnapshot(doc);
   if (applyToSelection && applyInlineTextStyle(updates)) {
     syncToolControlsFromDocument(doc);
+    pushPosterEditHistory(doc, '调整文字样式', beforeSnapshot);
     return;
   }
 
@@ -1251,6 +2393,7 @@ function updateTextTool(updates, applyToSelection = false) {
   syncToolControlsFromDocument(doc);
   updateTextEditorOverlay();
   schedulePreviewRender();
+  pushPosterEditHistory(doc, '调整文字样式', beforeSnapshot);
 }
 
 function formatFileSize(bytes) {
@@ -1291,12 +2434,13 @@ function updateImageMeta(doc) {
     const layout = collageLayouts[doc.collage.layoutName];
     const filledSlots = doc.collage.slots.filter((slot) => slot.image).length;
     const activeSlot = doc.collage.slots[doc.collage.activeSlotIndex];
+    const isPoster = layout.type === 'poster';
     const rows = [
       ['画布', `${layout.width} x ${layout.height}`],
-      ['布局', layout.label],
+      [isPoster ? '模板' : '布局', layout.label],
       ['图片', `${filledSlots} / ${layout.slots.length} 张`],
       ['选中', activeSlot?.image ? activeSlot.sourceName : '空位'],
-      ['操作', '点击格子选中，拖动移动，滚轮缩放'],
+      ['操作', isPoster ? '拖动照片移动，滚轮缩放融合位置' : '点击空格子选择图片，已有图片可拖动移动、滚轮缩放'],
     ];
 
     rows.forEach(([label, value]) => {
@@ -1360,6 +2504,16 @@ async function openImage() {
   const files = Array.isArray(results) ? results : [results];
   if (files.length === 0) return;
 
+  const activeDocument = getActiveDocument();
+  if (
+    isCollageDocument(activeDocument) &&
+    !isPosterDocument(activeDocument) &&
+    activeDocument.collage.slots.some((slot) => !slot.image)
+  ) {
+    await fillCollageSlotsFromResults(activeDocument, files);
+    return;
+  }
+
   try {
     const loadedDocuments = await Promise.all(files.map(loadDocument));
     state.documents.push(...loadedDocuments);
@@ -1376,27 +2530,93 @@ async function createCollageFromLayout(layoutName) {
   const layout = collageLayouts[layoutName];
   if (!layout) return;
 
-  showToast(`请选择用于${layout.label}的图片`);
-  const results = await window.imageEnhancer.openImage();
-  if (!results) return;
+  state.pendingCollageTrim = null;
+  const targetSlotCount = layout.slots.length;
+  const currentItems = getCurrentCollageItems();
+  let items = currentItems.slice();
 
-  const files = (Array.isArray(results) ? results : [results]).slice(0, layout.slots.length);
-  if (files.length === 0) return;
-  if (files.length < 2) {
-    showToast('拼图至少需要选择 2 张图片');
+  if (items.length > targetSlotCount) {
+    const activeDocument = getActiveDocument();
+    const selectionLayoutName = isCollageDocument(activeDocument) && activeDocument.collage.slots.length >= items.length
+      ? activeDocument.collage.layoutName
+      : getSelectionLayoutNameForCount(items.length);
+    const selectionDocument = createCollageDocumentFromItems(selectionLayoutName, items);
+    state.pendingCollageTrim = {
+      documentId: selectionDocument.id,
+      targetLayoutName: layoutName,
+      targetSlotCount,
+    };
+    renderPreview();
+    showToast(`${layout.label}需要 ${targetSlotCount} 张，请点击图片右上角删除多余图片`);
     return;
   }
 
   try {
-    const loadedItems = await Promise.all(files.map(loadCollageItem));
-    const collageDocument = createCollageDocument(layoutName, loadedItems);
-    state.documents.push(collageDocument);
-    state.activeDocumentId = collageDocument.id;
-    setActiveTool(null);
-    syncUiWithActiveDocument();
-    showToast(`已创建${layout.label}，点击格子后可拖动或滚轮缩放`);
+    createCollageDocumentFromItems(layoutName, items);
+    const remainingCount = targetSlotCount - items.length;
+    showToast(remainingCount > 0
+      ? `已创建${layout.label}，还有 ${remainingCount} 个空位，点击空格子选择图片`
+      : `已创建${layout.label}，点击格子后可拖动或滚轮缩放`);
   } catch (error) {
     showToast(`拼图图片加载失败：${error.message}`);
+  }
+}
+
+async function createPosterFromLayout(layoutName) {
+  const layout = collageLayouts[layoutName];
+  if (!layout || layout.type !== 'poster') return;
+
+  commitTextEditorChanges();
+  const activeDocument = getActiveDocument();
+  const currentItem = getPosterSourceItemFromDocument(activeDocument);
+  if (currentItem) {
+    const posterDocument = createCollageDocument(layoutName, [currentItem]);
+    if (isPosterDocument(activeDocument)) {
+      const beforeSnapshot = createPosterHistorySnapshot(activeDocument);
+      activeDocument.sourceName = posterDocument.sourceName;
+      activeDocument.collage = posterDocument.collage;
+      pushPosterEditHistory(activeDocument, `切换海报样式：${layout.label}`, beforeSnapshot);
+    } else {
+      posterDocument.effectHistory.push({
+        id: posterDocument.nextHistoryId++,
+        type: 'poster-layout',
+        name: layoutName,
+        label: `应用海报样式：${layout.label}`,
+        sourceImage: currentItem.image,
+        sourceMeta: currentItem.result,
+      });
+      replaceActiveDocument(posterDocument);
+    }
+    setActiveTool(null);
+    syncUiWithActiveDocument();
+    showToast(`已用当前图片切换为${layout.label}`);
+    return;
+  }
+
+  try {
+    showToast(`请选择插入${layout.label}的照片`);
+    const results = await window.imageEnhancer.openImage();
+    if (!results) return;
+
+    const files = (Array.isArray(results) ? results : [results]).slice(0, 1);
+    if (files.length === 0) return;
+
+    const loadedItems = await Promise.all(files.map(loadCollageItem));
+    const posterDocument = createCollageDocument(layoutName, loadedItems);
+    posterDocument.effectHistory.push({
+      id: posterDocument.nextHistoryId++,
+      type: 'poster-layout',
+      name: layoutName,
+      label: `应用海报样式：${layout.label}`,
+      sourceImage: loadedItems[0].image,
+      sourceMeta: loadedItems[0].result,
+    });
+    replaceActiveDocument(posterDocument);
+    setActiveTool(null);
+    syncUiWithActiveDocument();
+    showToast(`已生成${layout.label}，可拖动照片或滚轮缩放融合位置`);
+  } catch (error) {
+    showToast(`海报图片加载失败：${error.message}`);
   }
 }
 
@@ -1409,7 +2629,7 @@ async function saveImage() {
 
   showToast('正在生成全尺寸图片...');
   const outputCanvas = isCollageDocument(doc)
-    ? buildCollageCanvas(doc, Number.POSITIVE_INFINITY, false)
+    ? buildCollageCanvas(doc, Number.POSITIVE_INFINITY, false, true, false)
     : buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false, true);
   const dataUrl = outputCanvas.toDataURL('image/png');
   const savedPath = await window.imageEnhancer.saveImage({
@@ -1503,6 +2723,10 @@ function toggleCollapsibleOptions(button, options) {
   button.setAttribute('aria-expanded', String(!isCollapsed));
 }
 
+function togglePosterOptions() {
+  toggleCollapsibleOptions(posterToggleButton, posterOptions);
+}
+
 function toggleSceneOptions() {
   toggleCollapsibleOptions(sceneToggleButton, sceneOptions);
 }
@@ -1540,14 +2764,25 @@ function renderPreview() {
   if (!doc) return;
   previewCanvas.dataset.mode = isCollageDocument(doc) ? 'collage' : 'image';
   if (isCollageDocument(doc)) {
-    const collageCanvas = buildCollageCanvas(doc, 1500, true);
+    const hideActiveTextLayer = isPosterDocument(doc) && shouldHideActiveTextLayerInPreview();
+    const collageCanvas = buildCollageCanvas(
+      doc,
+      1500,
+      true,
+      isPosterDocument(doc),
+      hideActiveTextLayer
+    );
     previewCanvas.width = collageCanvas.width;
     previewCanvas.height = collageCanvas.height;
     previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
     previewContext.drawImage(collageCanvas, 0, 0);
     fitPreviewCanvasToContainer();
     updateImageMeta(doc);
-    hideTextEditorOverlay();
+    if (isPosterDocument(doc)) {
+      updateTextEditorOverlay();
+    } else {
+      hideTextEditorOverlay();
+    }
     return;
   }
 
@@ -1706,6 +2941,20 @@ function buildProcessedCanvas(
   const context = canvas.getContext('2d', { willReadFrequently: true });
 
   context.drawImage(image, 0, 0, width, height);
+  applyDocumentEffectsToCanvas(context, canvas, doc, showGuides, showTextLayer, hideActiveTextLayer);
+
+  return canvas;
+}
+
+function applyDocumentEffectsToCanvas(
+  context,
+  canvas,
+  doc,
+  showGuides = false,
+  showTextLayer = true,
+  hideActiveTextLayer = false
+) {
+  const { width, height } = canvas;
   applyPixelAdjustments(context, width, height, doc.values);
   const skinMask = buildSkinMask(context, width, height);
 
@@ -1749,11 +2998,15 @@ function buildProcessedCanvas(
   if (showTextLayer) {
     applyTextOverlay(context, width, height, doc.tools.text, hideActiveTextLayer);
   }
-
-  return canvas;
 }
 
-function buildCollageCanvas(doc, maxSize, showGuides = false) {
+function buildCollageCanvas(
+  doc,
+  maxSize,
+  showGuides = false,
+  showTextLayer = true,
+  hideActiveTextLayer = false
+) {
   const layout = collageLayouts[doc.collage.layoutName];
   if (!layout) return createCanvas(1, 1);
 
@@ -1762,19 +3015,41 @@ function buildCollageCanvas(doc, maxSize, showGuides = false) {
   const height = Math.max(1, Math.round(layout.height * scale));
   const gap = Math.max(0, Math.round(layout.gap * scale));
   const canvas = createCanvas(width, height);
-  const context = canvas.getContext('2d');
+  const context = canvas.getContext('2d', { willReadFrequently: layout.type === 'poster' });
 
-  context.fillStyle = '#f8fafc';
-  context.fillRect(0, 0, width, height);
+  if (layout.type === 'poster') {
+    drawPosterBackground(context, width, height, layout);
+  } else {
+    context.fillStyle = '#f8fafc';
+    context.fillRect(0, 0, width, height);
+  }
+
+  const activeRects = [];
+  const showSlotGuide = showGuides && !(layout.type === 'poster' && ['mosaic', 'text'].includes(state.activeTool));
 
   layout.slots.forEach((layoutSlot, index) => {
     const slot = doc.collage.slots[index];
     const rect = getCollageSlotRect(layoutSlot, width, height, gap);
-    drawCollageSlot(context, rect, slot, index);
-    if (showGuides && index === doc.collage.activeSlotIndex) {
-      drawCollageActiveSlot(context, rect);
+    drawCollageSlot(context, rect, slot, layoutSlot, scale);
+    if (showSlotGuide && index === doc.collage.activeSlotIndex) {
+      activeRects.push({ rect, layoutSlot, scale });
     }
   });
+
+  if (layout.type === 'poster') {
+    drawPosterDecorations(context, width, height, layout);
+    applyDocumentEffectsToCanvas(context, canvas, doc, showGuides, showTextLayer, hideActiveTextLayer);
+  }
+
+  activeRects.forEach(({ rect, layoutSlot, scale }) => drawCollageActiveSlot(context, rect, layoutSlot, scale));
+
+  if (showGuides && shouldShowCollageDeleteButtons(doc)) {
+    layout.slots.forEach((layoutSlot, index) => {
+      if (doc.collage.slots[index]?.image) {
+        drawCollageDeleteButton(context, layoutSlot, width, height);
+      }
+    });
+  }
 
   return canvas;
 }
@@ -1796,46 +3071,471 @@ function getCollageSlotRect(layoutSlot, canvasWidth, canvasHeight, gap) {
   };
 }
 
-function drawCollageSlot(context, rect, slot, index) {
+function drawCollageSlot(context, rect, slot, layoutSlot = {}, scale = 1) {
+  const shapeRect = getSlotShapeRect(rect, layoutSlot);
+  const radius = Math.round((layoutSlot.radius || 0) * scale);
+
+  if (layoutSlot.shadow) {
+    context.save();
+    context.shadowColor = layoutSlot.shadow;
+    context.shadowBlur = Math.max(12, Math.round(46 * scale));
+    context.shadowOffsetY = Math.max(8, Math.round(22 * scale));
+    context.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    drawSlotShapePath(context, shapeRect, layoutSlot, radius);
+    context.fill();
+    context.restore();
+  }
+
   context.save();
-  context.beginPath();
-  context.rect(rect.x, rect.y, rect.width, rect.height);
+  drawSlotShapePath(context, shapeRect, layoutSlot, radius);
   context.clip();
 
   if (!slot?.image) {
-    context.fillStyle = '#e2e8f0';
-    context.fillRect(rect.x, rect.y, rect.width, rect.height);
-    context.fillStyle = '#64748b';
-    context.font = `700 ${Math.max(18, Math.round(Math.min(rect.width, rect.height) * 0.08))}px sans-serif`;
-    context.textAlign = 'center';
-    context.textBaseline = 'middle';
-    context.fillText(`空位 ${index + 1}`, rect.x + rect.width / 2, rect.y + rect.height / 2);
+    drawTransparentCheckerboard(context, shapeRect, scale);
     context.restore();
     return;
   }
 
   const image = slot.image;
-  const coverScale = Math.max(rect.width / image.naturalWidth, rect.height / image.naturalHeight) * (slot.scale || 1);
+  const coverScale = Math.max(shapeRect.width / image.naturalWidth, shapeRect.height / image.naturalHeight) * (slot.scale || 1);
   const drawWidth = image.naturalWidth * coverScale;
   const drawHeight = image.naturalHeight * coverScale;
-  const drawX = rect.x + (rect.width - drawWidth) / 2 + ((slot.offsetX || 0) / 100) * rect.width;
-  const drawY = rect.y + (rect.height - drawHeight) / 2 + ((slot.offsetY || 0) / 100) * rect.height;
+  const drawX = shapeRect.x + (shapeRect.width - drawWidth) / 2 + ((slot.offsetX || 0) / 100) * shapeRect.width;
+  const drawY = shapeRect.y + (shapeRect.height - drawHeight) / 2 + ((slot.offsetY || 0) / 100) * shapeRect.height;
 
   context.imageSmoothingQuality = 'high';
   context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+
+  if (Array.isArray(layoutSlot.tint)) {
+    const gradient = context.createLinearGradient(shapeRect.x, shapeRect.y, shapeRect.x + shapeRect.width, shapeRect.y + shapeRect.height);
+    gradient.addColorStop(0, layoutSlot.tint[0]);
+    gradient.addColorStop(1, layoutSlot.tint[1]);
+    context.fillStyle = gradient;
+    context.fillRect(shapeRect.x, shapeRect.y, shapeRect.width, shapeRect.height);
+  }
+
+  if (layoutSlot.innerStroke) {
+    context.lineWidth = Math.max(2, Math.round(4 * scale));
+    context.strokeStyle = layoutSlot.innerStroke;
+    const strokeRect = insetRect(shapeRect, context.lineWidth / 2);
+    drawSlotShapePath(context, strokeRect, layoutSlot, Math.max(0, radius - context.lineWidth / 2));
+    context.stroke();
+  }
+
   context.restore();
 }
 
-function drawCollageActiveSlot(context, rect) {
+function drawTransparentCheckerboard(context, rect, scale = 1) {
+  const cellSize = Math.max(8, Math.round(18 * scale));
+  const startX = Math.floor(rect.x / cellSize) * cellSize;
+  const startY = Math.floor(rect.y / cellSize) * cellSize;
+  const endX = rect.x + rect.width;
+  const endY = rect.y + rect.height;
+
+  context.fillStyle = '#f8fafc';
+  context.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+  context.fillStyle = '#e2e8f0';
+  for (let y = startY; y < endY; y += cellSize) {
+    for (let x = startX; x < endX; x += cellSize) {
+      const column = Math.floor(x / cellSize);
+      const row = Math.floor(y / cellSize);
+      if ((column + row) % 2 === 0) {
+        context.fillRect(x, y, cellSize, cellSize);
+      }
+    }
+  }
+}
+
+function drawCollageDeleteButton(context, layoutSlot, canvasWidth, canvasHeight) {
+  const button = getCollageDeleteButtonMetrics(layoutSlot);
+  const centerX = (button.centerX / 100) * canvasWidth;
+  const centerY = (button.centerY / 100) * canvasHeight;
+  const radius = Math.max(12, Math.min(24, (button.radius / 100) * Math.min(canvasWidth, canvasHeight)));
+  const lineOffset = radius * 0.36;
+
+  context.save();
+  context.shadowColor = 'rgba(15, 23, 42, 0.28)';
+  context.shadowBlur = Math.max(6, radius * 0.45);
+  context.shadowOffsetY = Math.max(2, radius * 0.16);
+  context.fillStyle = '#ef4444';
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, Math.PI * 2);
+  context.fill();
+
+  context.shadowColor = 'transparent';
+  context.strokeStyle = '#ffffff';
+  context.lineWidth = Math.max(2.2, radius * 0.16);
+  context.lineCap = 'round';
+  context.beginPath();
+  context.moveTo(centerX - lineOffset, centerY - lineOffset);
+  context.lineTo(centerX + lineOffset, centerY + lineOffset);
+  context.moveTo(centerX + lineOffset, centerY - lineOffset);
+  context.lineTo(centerX - lineOffset, centerY + lineOffset);
+  context.stroke();
+  context.restore();
+}
+
+function drawPosterBackground(context, width, height, layout) {
+  const colors = layout.background || ['#f8fafc', '#e2e8f0'];
+  const gradient = context.createLinearGradient(0, 0, width, height);
+  colors.forEach((color, index) => {
+    gradient.addColorStop(colors.length === 1 ? 0 : index / (colors.length - 1), color);
+  });
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, width, height);
+
+  context.save();
+  context.globalAlpha = 0.2;
+  context.fillStyle = '#ffffff';
+  context.beginPath();
+  context.arc(width * 0.82, height * 0.14, width * 0.22, 0, Math.PI * 2);
+  context.fill();
+  context.beginPath();
+  context.arc(width * 0.12, height * 0.88, width * 0.28, 0, Math.PI * 2);
+  context.fill();
+  context.restore();
+}
+
+function drawPosterThumbnailPhoto(context, rect, layoutSlot = {}, scale = 1) {
+  const shapeRect = getSlotShapeRect(rect, layoutSlot);
+  const radius = Math.round((layoutSlot.radius || 0) * scale);
+
+  if (layoutSlot.shadow) {
+    context.save();
+    context.shadowColor = layoutSlot.shadow;
+    context.shadowBlur = Math.max(8, Math.round(32 * scale));
+    context.shadowOffsetY = Math.max(5, Math.round(15 * scale));
+    context.fillStyle = 'rgba(255, 255, 255, 0.92)';
+    drawSlotShapePath(context, shapeRect, layoutSlot, radius);
+    context.fill();
+    context.restore();
+  }
+
+  context.save();
+  drawSlotShapePath(context, shapeRect, layoutSlot, radius);
+  context.clip();
+
+  const photoGradient = context.createLinearGradient(
+    shapeRect.x,
+    shapeRect.y,
+    shapeRect.x + shapeRect.width,
+    shapeRect.y + shapeRect.height
+  );
+  photoGradient.addColorStop(0, 'rgba(255, 255, 255, 0.82)');
+  photoGradient.addColorStop(0.48, 'rgba(148, 163, 184, 0.48)');
+  photoGradient.addColorStop(1, 'rgba(15, 23, 42, 0.18)');
+  context.fillStyle = photoGradient;
+  context.fillRect(shapeRect.x, shapeRect.y, shapeRect.width, shapeRect.height);
+
+  context.globalAlpha = 0.42;
+  context.fillStyle = '#ffffff';
+  context.beginPath();
+  context.arc(shapeRect.x + shapeRect.width * 0.32, shapeRect.y + shapeRect.height * 0.32, shapeRect.width * 0.12, 0, Math.PI * 2);
+  context.fill();
+  context.beginPath();
+  context.moveTo(shapeRect.x, shapeRect.y + shapeRect.height);
+  context.lineTo(shapeRect.x + shapeRect.width * 0.42, shapeRect.y + shapeRect.height * 0.55);
+  context.lineTo(shapeRect.x + shapeRect.width * 0.7, shapeRect.y + shapeRect.height);
+  context.closePath();
+  context.fill();
+  context.globalAlpha = 0.34;
+  context.beginPath();
+  context.moveTo(shapeRect.x + shapeRect.width * 0.36, shapeRect.y + shapeRect.height);
+  context.lineTo(shapeRect.x + shapeRect.width * 0.74, shapeRect.y + shapeRect.height * 0.48);
+  context.lineTo(shapeRect.x + shapeRect.width, shapeRect.y + shapeRect.height);
+  context.closePath();
+  context.fill();
+
+  if (Array.isArray(layoutSlot.tint)) {
+    const tintGradient = context.createLinearGradient(shapeRect.x, shapeRect.y, shapeRect.x + shapeRect.width, shapeRect.y + shapeRect.height);
+    tintGradient.addColorStop(0, layoutSlot.tint[0]);
+    tintGradient.addColorStop(1, layoutSlot.tint[1]);
+    context.globalAlpha = 1;
+    context.fillStyle = tintGradient;
+    context.fillRect(shapeRect.x, shapeRect.y, shapeRect.width, shapeRect.height);
+  }
+
+  if (layoutSlot.innerStroke) {
+    context.lineWidth = Math.max(1, Math.round(4 * scale));
+    context.strokeStyle = layoutSlot.innerStroke;
+    drawSlotShapePath(context, insetRect(shapeRect, context.lineWidth / 2), layoutSlot, Math.max(0, radius - context.lineWidth / 2));
+    context.stroke();
+  }
+
+  context.restore();
+}
+
+function renderPosterThumbnails() {
+  document.querySelectorAll('[data-poster-layout]').forEach((button) => {
+    const layout = collageLayouts[button.dataset.posterLayout];
+    const thumb = button.querySelector('.poster-thumb');
+    if (!layout || !thumb) return;
+
+    const canvas = createCanvas(220, 120);
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'rgba(15, 23, 42, 0.28)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const scale = Math.min(canvas.width / layout.width, canvas.height / layout.height);
+    const previewWidth = layout.width * scale;
+    const previewHeight = layout.height * scale;
+    const offsetX = (canvas.width - previewWidth) / 2;
+    const offsetY = (canvas.height - previewHeight) / 2;
+
+    context.save();
+    context.translate(offsetX, offsetY);
+    context.scale(scale, scale);
+    drawPosterBackground(context, layout.width, layout.height, layout);
+    layout.slots.forEach((layoutSlot) => {
+      const rect = getCollageSlotRect(layoutSlot, layout.width, layout.height, 0);
+      drawPosterThumbnailPhoto(context, rect, layoutSlot, 1);
+    });
+    drawPosterDecorations(context, layout.width, layout.height, layout);
+    context.restore();
+
+    thumb.replaceChildren(canvas);
+  });
+}
+
+function renderCollageThumbnails() {
+  document.querySelectorAll('[data-collage-layout]').forEach((button) => {
+    const layout = collageLayouts[button.dataset.collageLayout];
+    const thumb = button.querySelector('.collage-thumb');
+    if (!layout || !thumb) return;
+
+    const canvas = createCanvas(220, 120);
+    const context = canvas.getContext('2d');
+    context.fillStyle = 'rgba(15, 23, 42, 0.28)';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    const scale = Math.min(canvas.width / layout.width, canvas.height / layout.height);
+    const previewWidth = layout.width * scale;
+    const previewHeight = layout.height * scale;
+    const offsetX = (canvas.width - previewWidth) / 2;
+    const offsetY = (canvas.height - previewHeight) / 2;
+
+    context.save();
+    context.translate(offsetX, offsetY);
+    context.scale(scale, scale);
+    context.fillStyle = '#f8fafc';
+    context.fillRect(0, 0, layout.width, layout.height);
+    layout.slots.forEach((layoutSlot, index) => {
+      const rect = getCollageSlotRect(layoutSlot, layout.width, layout.height, layout.gap || 0);
+      drawCollageThumbnailSlot(context, rect, layoutSlot, index);
+    });
+    context.restore();
+
+    thumb.replaceChildren(canvas);
+  });
+}
+
+function drawCollageThumbnailSlot(context, rect, layoutSlot = {}, index = 0) {
+  const shapeRect = getSlotShapeRect(rect, layoutSlot);
+  const radius = Math.round(layoutSlot.radius || 0);
+  const gradients = [
+    ['#bfdbfe', '#60a5fa'],
+    ['#fecdd3', '#fb7185'],
+    ['#bbf7d0', '#34d399'],
+    ['#fde68a', '#f59e0b'],
+    ['#ddd6fe', '#8b5cf6'],
+    ['#bae6fd', '#06b6d4'],
+  ];
+  const colors = gradients[index % gradients.length];
+  const gradient = context.createLinearGradient(shapeRect.x, shapeRect.y, shapeRect.x + shapeRect.width, shapeRect.y + shapeRect.height);
+  gradient.addColorStop(0, colors[0]);
+  gradient.addColorStop(1, colors[1]);
+
+  context.save();
+  drawSlotShapePath(context, shapeRect, layoutSlot, radius);
+  context.clip();
+  context.fillStyle = gradient;
+  context.fillRect(shapeRect.x, shapeRect.y, shapeRect.width, shapeRect.height);
+  context.globalAlpha = 0.36;
+  context.fillStyle = '#ffffff';
+  context.beginPath();
+  context.arc(shapeRect.x + shapeRect.width * 0.32, shapeRect.y + shapeRect.height * 0.32, Math.min(shapeRect.width, shapeRect.height) * 0.13, 0, Math.PI * 2);
+  context.fill();
+  context.beginPath();
+  context.moveTo(shapeRect.x, shapeRect.y + shapeRect.height);
+  context.lineTo(shapeRect.x + shapeRect.width * 0.45, shapeRect.y + shapeRect.height * 0.58);
+  context.lineTo(shapeRect.x + shapeRect.width * 0.72, shapeRect.y + shapeRect.height);
+  context.closePath();
+  context.fill();
+  context.restore();
+
+  context.save();
+  context.lineWidth = 3;
+  context.strokeStyle = 'rgba(255, 255, 255, 0.82)';
+  drawSlotShapePath(context, insetRect(shapeRect, 1.5), layoutSlot, Math.max(0, radius - 1.5));
+  context.stroke();
+  context.restore();
+}
+
+function drawPosterDecorations(context, width, height, layout) {
+  const poster = layout.poster;
+  if (!poster) return;
+
+  context.save();
+  context.fillStyle = poster.accentColor;
+  context.globalAlpha = 0.72;
+
+  if (poster.decorations === 'travel') {
+    context.fillRect(width * 0.1, height * 0.1, width * 0.18, Math.max(4, height * 0.004));
+    context.beginPath();
+    context.arc(width * 0.84, height * 0.82, width * 0.035, 0, Math.PI * 2);
+    context.fill();
+  } else if (poster.decorations === 'product') {
+    context.beginPath();
+    context.arc(width * 0.5, height * 0.46, width * 0.32, 0, Math.PI * 2);
+    context.strokeStyle = poster.accentColor;
+    context.lineWidth = Math.max(2, width * 0.006);
+    context.stroke();
+  } else if (poster.decorations === 'festival') {
+    for (let i = 0; i < 8; i += 1) {
+      context.beginPath();
+      context.arc(width * (0.16 + i * 0.1), height * 0.11, width * 0.01, 0, Math.PI * 2);
+      context.fill();
+    }
+  } else if (poster.decorations === 'magazine') {
+    context.strokeStyle = poster.accentColor;
+    context.lineWidth = Math.max(2, width * 0.004);
+    context.strokeRect(width * 0.07, height * 0.06, width * 0.86, height * 0.88);
+  } else if (poster.decorations === 'portrait') {
+    context.beginPath();
+    context.arc(width * 0.18, height * 0.12, width * 0.045, 0, Math.PI * 2);
+    context.fill();
+    context.globalAlpha = 0.36;
+    context.beginPath();
+    context.arc(width * 0.82, height * 0.78, width * 0.09, 0, Math.PI * 2);
+    context.fill();
+  } else if (poster.decorations === 'food') {
+    context.fillRect(width * 0.1, height * 0.76, width * 0.2, Math.max(5, height * 0.006));
+    context.beginPath();
+    context.arc(width * 0.82, height * 0.13, width * 0.038, 0, Math.PI * 2);
+    context.fill();
+  } else if (poster.decorations === 'event') {
+    context.strokeStyle = poster.accentColor;
+    context.lineWidth = Math.max(3, width * 0.008);
+    context.beginPath();
+    context.moveTo(width * 0.08, height * 0.14);
+    context.lineTo(width * 0.34, height * 0.08);
+    context.moveTo(width * 0.68, height * 0.84);
+    context.lineTo(width * 0.92, height * 0.78);
+    context.stroke();
+  } else if (poster.decorations === 'cinema') {
+    context.globalAlpha = 0.42;
+    for (let i = 0; i < 5; i += 1) {
+      context.fillRect(width * 0.08, height * (0.08 + i * 0.035), width * 0.05, height * 0.014);
+      context.fillRect(width * 0.87, height * (0.08 + i * 0.035), width * 0.05, height * 0.014);
+    }
+  } else if (poster.decorations === 'course') {
+    context.strokeStyle = poster.accentColor;
+    context.lineWidth = Math.max(2, width * 0.004);
+    context.strokeRect(width * 0.1, height * 0.72, width * 0.28, height * 0.07);
+    context.fillRect(width * 0.68, height * 0.1, width * 0.2, Math.max(4, height * 0.005));
+  } else if (poster.decorations === 'recruit') {
+    context.fillRect(width * 0.14, height * 0.12, width * 0.14, Math.max(5, height * 0.006));
+    context.globalAlpha = 0.28;
+    context.beginPath();
+    context.arc(width * 0.78, height * 0.18, width * 0.12, 0, Math.PI * 2);
+    context.fill();
+  }
+
+  context.restore();
+  drawPosterTextBlock(context, width, height, poster);
+}
+
+function drawPosterTextBlock(context, width, height, poster) {
+  const isCenter = poster.align === 'center';
+  const x = isCenter ? width / 2 : width * 0.1;
+  const align = isCenter ? 'center' : 'left';
+  const titleY = height * 0.83;
+
+  context.save();
+  context.textAlign = align;
+  context.fillStyle = poster.textColor;
+  context.textBaseline = 'alphabetic';
+  context.font = `700 ${Math.round(width * 0.035)}px sans-serif`;
+  context.globalAlpha = 0.78;
+  context.fillText(poster.eyebrow, x, titleY - height * 0.07);
+  context.globalAlpha = 1;
+  context.font = `900 ${Math.round(width * 0.064)}px sans-serif`;
+  context.fillText(poster.title, x, titleY);
+  context.font = `500 ${Math.round(width * 0.026)}px sans-serif`;
+  context.fillText(poster.subtitle, x, titleY + height * 0.048);
+  context.restore();
+}
+
+function drawRoundedRectPath(context, x, y, width, height, radius = 0) {
+  const safeRadius = Math.max(0, Math.min(radius, width / 2, height / 2));
+  context.beginPath();
+  context.moveTo(x + safeRadius, y);
+  context.lineTo(x + width - safeRadius, y);
+  context.quadraticCurveTo(x + width, y, x + width, y + safeRadius);
+  context.lineTo(x + width, y + height - safeRadius);
+  context.quadraticCurveTo(x + width, y + height, x + width - safeRadius, y + height);
+  context.lineTo(x + safeRadius, y + height);
+  context.quadraticCurveTo(x, y + height, x, y + height - safeRadius);
+  context.lineTo(x, y + safeRadius);
+  context.quadraticCurveTo(x, y, x + safeRadius, y);
+  context.closePath();
+}
+
+function getSlotShapeRect(rect, layoutSlot = {}) {
+  if (!['square', 'circle'].includes(layoutSlot.shape)) {
+    return rect;
+  }
+  const size = Math.min(rect.width, rect.height);
+  return {
+    x: rect.x + (rect.width - size) / 2,
+    y: rect.y + (rect.height - size) / 2,
+    width: size,
+    height: size,
+  };
+}
+
+function insetRect(rect, inset) {
+  return {
+    x: rect.x + inset,
+    y: rect.y + inset,
+    width: Math.max(1, rect.width - inset * 2),
+    height: Math.max(1, rect.height - inset * 2),
+  };
+}
+
+function drawSlotShapePath(context, rect, layoutSlot = {}, radius = 0) {
+  if (layoutSlot.shape === 'circle' || layoutSlot.shape === 'ellipse') {
+    context.beginPath();
+    context.ellipse(
+      rect.x + rect.width / 2,
+      rect.y + rect.height / 2,
+      rect.width / 2,
+      rect.height / 2,
+      0,
+      0,
+      Math.PI * 2
+    );
+    context.closePath();
+    return;
+  }
+  drawRoundedRectPath(context, rect.x, rect.y, rect.width, rect.height, radius);
+}
+
+function drawCollageActiveSlot(context, rect, layoutSlot = {}, scale = 1) {
+  const shapeRect = getSlotShapeRect(rect, layoutSlot);
+  const radius = Math.round((layoutSlot.radius || 0) * scale);
   context.save();
   context.lineWidth = 4;
   context.setLineDash([14, 8]);
   context.strokeStyle = 'rgba(37, 99, 235, 0.95)';
-  context.strokeRect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6);
+  drawSlotShapePath(context, insetRect(shapeRect, 3), layoutSlot, Math.max(0, radius - 3));
+  context.stroke();
   context.setLineDash([]);
   context.lineWidth = 2;
   context.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-  context.strokeRect(rect.x + 7, rect.y + 7, rect.width - 14, rect.height - 14);
+  drawSlotShapePath(context, insetRect(shapeRect, 7), layoutSlot, Math.max(0, radius - 7));
+  context.stroke();
   context.restore();
 }
 
@@ -2682,8 +4382,25 @@ function handleCanvasPointerDown(event) {
   const doc = getActiveDocument();
   const point = getCanvasPoint(event);
   if (!doc || !point) return;
+  if (commitTextEditorChanges()) {
+    event.preventDefault();
+    return;
+  }
+  if (state.suppressNextTextCanvasCreate && state.activeTool === 'text') {
+    state.suppressNextTextCanvasCreate = false;
+    event.preventDefault();
+    return;
+  }
 
-  if (isCollageDocument(doc)) {
+  const posterToolActive = isPosterDocument(doc) && ['mosaic', 'text'].includes(state.activeTool);
+  if (isCollageDocument(doc) && !posterToolActive) {
+    const deleteSlotIndex = getCollageDeleteButtonAtPoint(doc, point);
+    if (deleteSlotIndex !== -1) {
+      deleteCollageImage(deleteSlotIndex);
+      event.preventDefault();
+      return;
+    }
+
     const slotIndex = findCollageSlotAtPoint(doc, point);
     if (slotIndex === -1) return;
 
@@ -2692,6 +4409,12 @@ function handleCanvasPointerDown(event) {
     updateImageMeta(doc);
     renderPreview();
 
+    if (!slot?.image && !isCollageTrimPending(doc)) {
+      chooseImageForCollageSlot(slotIndex);
+      event.preventDefault();
+      return;
+    }
+
     if (slot?.image) {
       state.canvasInteraction = {
         type: 'collage',
@@ -2699,6 +4422,8 @@ function handleCanvasPointerDown(event) {
         start: point,
         offsetX: slot.offsetX || 0,
         offsetY: slot.offsetY || 0,
+        sourceSlotSnapshot: cloneCollageSlotForMove(slot),
+        beforeSnapshot: createPosterHistorySnapshot(doc),
       };
       previewCanvas.dataset.dragging = 'true';
       previewCanvas.setPointerCapture(event.pointerId);
@@ -2711,6 +4436,7 @@ function handleCanvasPointerDown(event) {
     state.canvasInteraction = {
       type: 'mosaic',
       start: point,
+      beforeSnapshot: createPosterHistorySnapshot(doc),
     };
     doc.tools.mosaic.region = { x: point.x, y: point.y, width: 0, height: 0 };
     previewCanvas.setPointerCapture(event.pointerId);
@@ -2721,7 +4447,12 @@ function handleCanvasPointerDown(event) {
   if (state.activeTool === 'text') {
     const hitLayer = findTextLayerAtPoint(doc, point);
     if (!hitLayer) {
+      const beforeSnapshot = createPosterHistorySnapshot(doc);
       createTextLayer(doc, point);
+      if (beforeSnapshot) {
+        state.pendingTextHistorySnapshot = beforeSnapshot;
+        state.pendingTextHistoryLabel = '新增文字';
+      }
       syncToolControlsFromDocument(doc);
       updateTextEditorOverlay();
       renderPreview();
@@ -2740,6 +4471,7 @@ function handleCanvasPointerDown(event) {
       layerId: hitLayer.id,
       offsetX: point.x - hitLayer.x,
       offsetY: point.y - hitLayer.y,
+      beforeSnapshot: createPosterHistorySnapshot(doc),
     };
     previewCanvas.setPointerCapture(event.pointerId);
     event.preventDefault();
@@ -2758,6 +4490,7 @@ function handleTextDragPointerDown(event) {
     layerId: layer.id,
     offsetX: point.x - layer.x,
     offsetY: point.y - layer.y,
+    beforeSnapshot: createPosterHistorySnapshot(doc),
   };
   textDragHandle.setPointerCapture(event.pointerId);
   event.preventDefault();
@@ -2802,16 +4535,51 @@ function handleCanvasWheel(event) {
   const slot = doc.collage.slots[doc.collage.activeSlotIndex];
   if (!slot?.image) return;
 
+  const beforeSnapshot = createPosterHistorySnapshot(doc);
   const direction = event.deltaY < 0 ? 1 : -1;
   const factor = direction > 0 ? 1.08 : 0.92;
   slot.scale = Math.max(0.65, Math.min(3.2, (slot.scale || 1) * factor));
   updateImageMeta(doc);
   renderPreview();
+  pushPosterEditHistory(doc, '缩放海报照片', beforeSnapshot);
   event.preventDefault();
 }
 
 function handleCanvasPointerUp(event) {
   if (!state.canvasInteraction) return;
+  const doc = getActiveDocument();
+  const interaction = state.canvasInteraction;
+  const point = getCanvasPoint(event);
+  let handledCollageMove = false;
+  if (
+    doc &&
+    point &&
+    interaction.type === 'collage' &&
+    !isPosterDocument(doc) &&
+    !isCollageTrimPending(doc)
+  ) {
+    const targetSlotIndex = findCollageSlotAtPoint(doc, point);
+    if (targetSlotIndex !== -1 && targetSlotIndex !== interaction.slotIndex) {
+      handledCollageMove = moveCollageImageToSlot(
+        doc,
+        interaction.slotIndex,
+        targetSlotIndex,
+        interaction.sourceSlotSnapshot
+      );
+    }
+  }
+
+  if (doc && interaction.beforeSnapshot) {
+    const labels = {
+      collage: isPosterDocument(doc) ? '调整海报照片位置' : '调整拼图照片位置',
+      mosaic: isPosterDocument(doc) ? '绘制海报马赛克' : '绘制马赛克',
+      text: '移动文字',
+    };
+    pushPosterEditHistory(doc, labels[interaction.type] || '编辑图片', interaction.beforeSnapshot);
+  }
+  if (handledCollageMove) {
+    event.preventDefault();
+  }
   state.canvasInteraction = null;
   delete previewCanvas.dataset.dragging;
   try {
@@ -2821,15 +4589,36 @@ function handleCanvasPointerUp(event) {
   }
 }
 
+function isEditableKeyTarget(target) {
+  return Boolean(
+    target &&
+    (
+      target === textContent ||
+      textContent.contains(target) ||
+      target.isContentEditable ||
+      ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
+    )
+  );
+}
+
 function handleTextDeleteKey(event) {
   if (event.key !== 'Delete' && event.key !== 'Backspace') return;
-  if (state.activeTool !== 'text' || !getActiveTextLayer()) return;
-
   const target = event.target;
-  const isEditingText = target === textContent || textContent.contains(target);
-  if (isEditingText) return;
+  if (isEditableKeyTarget(target)) return;
 
-  if (deleteActiveTextLayer()) {
+  if (state.activeTool === 'text' && getActiveTextLayer() && deleteActiveTextLayer()) {
+    event.preventDefault();
+    return;
+  }
+
+  const doc = getActiveDocument();
+  const activeSlotIndex = doc?.collage?.activeSlotIndex;
+  if (
+    shouldShowCollageDeleteButtons(doc) &&
+    Number.isInteger(activeSlotIndex) &&
+    doc.collage.slots[activeSlotIndex]?.image &&
+    deleteCollageImage(activeSlotIndex)
+  ) {
     event.preventDefault();
   }
 }
@@ -2845,18 +4634,29 @@ emptyState.addEventListener('keydown', (event) => {
 saveButton.addEventListener('click', saveImage);
 
 document.querySelectorAll('[data-preset]').forEach((button) => {
-  const label = button.querySelector('span')?.textContent || '快捷效果';
-  button.addEventListener('click', () => applyPreset(button.dataset.preset, label));
+  const label = button.querySelector('span:not(.poster-thumb)')?.textContent || '快捷效果';
+  button.addEventListener('click', () => {
+    commitTextEditorChanges();
+    applyPreset(button.dataset.preset, label);
+  });
 });
 
 document.querySelectorAll('[data-style-preset]').forEach((button) => {
-  button.addEventListener('click', () => applyStylePreset(button.dataset.stylePreset));
+  button.addEventListener('click', () => {
+    commitTextEditorChanges();
+    applyStylePreset(button.dataset.stylePreset);
+  });
 });
 
 document.querySelectorAll('[data-collage-layout]').forEach((button) => {
   button.addEventListener('click', () => createCollageFromLayout(button.dataset.collageLayout));
 });
 
+document.querySelectorAll('[data-poster-layout]').forEach((button) => {
+  button.addEventListener('click', () => createPosterFromLayout(button.dataset.posterLayout));
+});
+
+posterToggleButton.addEventListener('click', togglePosterOptions);
 sceneToggleButton.addEventListener('click', toggleSceneOptions);
 qualityToggleButton.addEventListener('click', toggleQualityOptions);
 toneToggleButton.addEventListener('click', toggleToneOptions);
@@ -2865,6 +4665,8 @@ portraitDetailToggleButton.addEventListener('click', togglePortraitDetailOptions
 socialToggleButton.addEventListener('click', toggleSocialOptions);
 collageToggleButton.addEventListener('click', toggleCollageOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
+themeModeSelect.addEventListener('change', () => saveThemeMode(themeModeSelect.value));
+systemThemeQuery?.addEventListener?.('change', handleSystemThemeChange);
 
 adjustToolButton.addEventListener('click', () => {
   setActiveTool('adjust');
@@ -2880,6 +4682,7 @@ historyUndoButton.addEventListener('click', undoLastHistoryEntry);
 textToolButton.addEventListener('click', () => {
   const doc = getActiveDocument();
   if (state.activeTool === 'text') {
+    commitTextEditorChanges();
     if (doc) {
       doc.tools.text.activeLayerId = null;
       state.textSelectionRange = null;
@@ -2889,6 +4692,7 @@ textToolButton.addEventListener('click', () => {
   }
 
   if (doc) {
+    commitTextEditorChanges();
     doc.tools.text.activeLayerId = null;
     state.textSelectionRange = null;
   }
@@ -2942,7 +4746,13 @@ textContent.addEventListener('input', () => {
   if (state.activeTool !== 'text') {
     setActiveTool('text');
   }
+  const doc = getActiveDocument();
+  if (doc?.tools?.text && !state.pendingTextHistorySnapshot) {
+    state.pendingTextHistorySnapshot = createPosterHistorySnapshot(doc);
+    state.pendingTextHistoryLabel = '编辑文字';
+  }
   syncActiveTextLayerFromEditor();
+  upsertPendingTextHistory();
 });
 
 textContent.addEventListener('focus', () => {
@@ -2950,6 +4760,7 @@ textContent.addEventListener('focus', () => {
     setActiveTool('text');
   }
 });
+textContent.addEventListener('blur', () => commitTextEditorChanges('编辑文字', true));
 
 textContent.addEventListener('mouseup', saveTextEditorSelection);
 textContent.addEventListener('keyup', saveTextEditorSelection);
@@ -2997,7 +4808,10 @@ textDragHandle.addEventListener('pointerup', handleCanvasPointerUp);
 textDragHandle.addEventListener('pointercancel', handleCanvasPointerUp);
 document.addEventListener('keydown', handleTextDeleteKey);
 
+applyThemeMode();
 createControls();
+renderPosterThumbnails();
+renderCollageThumbnails();
 setActiveTool(null);
 syncUiWithActiveDocument();
 

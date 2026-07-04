@@ -17,15 +17,75 @@
           </div>
         </div>
 
+        <label class="theme-switcher" for="themeModeSelect">
+          <span>界面风格</span>
+          <select id="themeModeSelect" aria-label="界面风格">
+            <option value="system">跟随系统</option>
+            <option value="dark">深色风格</option>
+            <option value="light">白色风格</option>
+          </select>
+        </label>
+
         <button id="openButton" class="primary-action">打开图片</button>
         <button id="saveButton" class="secondary-action" disabled>导出成片</button>
 
-        <section class="preset-section">
-          <h2>快捷处理</h2>
-          <button class="preset-card" data-preset="reset">
-            <span>重置效果</span>
-            <small>恢复原图参数</small>
+        <section class="preset-section style-section">
+          <button id="posterToggleButton" class="preset-card style-toggle poster-toggle" aria-expanded="false" aria-controls="posterOptions">
+            <span>一键生成海报</span>
+            <small>点击展开旅行、商品、节日、杂志等海报样式</small>
           </button>
+          <div id="posterOptions" class="style-options collapsed">
+            <button class="preset-card poster-travel" data-poster-layout="travel-memory">
+              <span class="poster-thumb poster-thumb-travel" aria-hidden="true"></span>
+              <span>旅行记忆海报</span>
+              <small>大图融入明亮渐变背景，适合风景和旅拍</small>
+            </button>
+            <button class="preset-card poster-product" data-poster-layout="product-launch">
+              <span class="poster-thumb poster-thumb-product" aria-hidden="true"></span>
+              <span>新品发布海报</span>
+              <small>居中商品相框、光晕衬托，适合商品展示</small>
+            </button>
+            <button class="preset-card poster-festival" data-poster-layout="festival-greeting">
+              <span class="poster-thumb poster-thumb-festival" aria-hidden="true"></span>
+              <span>节日祝福海报</span>
+              <small>暖色氛围和柔和装饰，适合节日照片</small>
+            </button>
+            <button class="preset-card poster-magazine" data-poster-layout="magazine-cover">
+              <span class="poster-thumb poster-thumb-magazine" aria-hidden="true"></span>
+              <span>极简杂志封面</span>
+              <small>留白标题和质感边框，适合人像写真</small>
+            </button>
+            <button class="preset-card poster-portrait" data-poster-layout="portrait-studio">
+              <span class="poster-thumb poster-thumb-portrait" aria-hidden="true"></span>
+              <span>人像写真海报</span>
+              <small>柔粉背景和光影层次，适合自拍、写真、头像</small>
+            </button>
+            <button class="preset-card poster-food" data-poster-layout="food-promo">
+              <span class="poster-thumb poster-thumb-food" aria-hidden="true"></span>
+              <span>美食种草海报</span>
+              <small>暖橙氛围和促销排版，适合餐饮美食分享</small>
+            </button>
+            <button class="preset-card poster-event" data-poster-layout="event-promo">
+              <span class="poster-thumb poster-thumb-event" aria-hidden="true"></span>
+              <span>活动宣传海报</span>
+              <small>强对比动感排版，适合聚会、演出、活动预告</small>
+            </button>
+            <button class="preset-card poster-cinema" data-poster-layout="cinema-story">
+              <span class="poster-thumb poster-thumb-cinema" aria-hidden="true"></span>
+              <span>电影质感海报</span>
+              <small>暗调大片氛围，适合街拍、人像和夜景照片</small>
+            </button>
+            <button class="preset-card poster-course" data-poster-layout="course-share">
+              <span class="poster-thumb poster-thumb-course" aria-hidden="true"></span>
+              <span>课程分享海报</span>
+              <small>清爽蓝白布局，适合知识、课程、教程封面</small>
+            </button>
+            <button class="preset-card poster-recruit" data-poster-layout="recruit-poster">
+              <span class="poster-thumb poster-thumb-recruit" aria-hidden="true"></span>
+              <span>招聘宣传海报</span>
+              <small>醒目标题和商务蓝紫色，适合招募与公告</small>
+            </button>
+          </div>
         </section>
 
         <section class="preset-section style-section">
@@ -169,32 +229,93 @@
         <section class="preset-section style-section">
           <button id="collageToggleButton" class="preset-card style-toggle collage-toggle" aria-expanded="false" aria-controls="collageOptions">
             <span>拼图一键排版</span>
-            <small>点击展开双图、三图、四宫格、九宫格等拼接样式</small>
+            <small>点击展开双图、三图、多宫格、主次拼等拼接样式</small>
           </button>
           <div id="collageOptions" class="style-options collapsed">
             <button class="preset-card collage-two" data-collage-layout="two-vertical">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>两张竖拼</span>
               <small>上下拼接，适合对比和长图展示</small>
             </button>
             <button class="preset-card collage-two" data-collage-layout="two-horizontal">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>两张横拼</span>
               <small>左右拼接，适合横向对比</small>
             </button>
             <button class="preset-card collage-three" data-collage-layout="three-feature">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>三张主次拼</span>
               <small>一张大图配两张小图，适合故事感排版</small>
             </button>
+            <button class="preset-card collage-three" data-collage-layout="three-vertical">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>三张竖排拼</span>
+              <small>三张上下排列，适合长图对比</small>
+            </button>
+            <button class="preset-card collage-three" data-collage-layout="three-horizontal">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>三张横排拼</span>
+              <small>三张左右排列，适合横向展示</small>
+            </button>
+            <button class="preset-card collage-three" data-collage-layout="three-side-feature">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>三张侧主图</span>
+              <small>左侧大图、右侧双图，适合突出主体</small>
+            </button>
             <button class="preset-card collage-grid" data-collage-layout="four-grid">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>四宫格拼图</span>
               <small>2 x 2 网格，适合日常合集</small>
             </button>
+            <button class="preset-card collage-grid" data-collage-layout="four-vertical">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>四张竖排拼</span>
+              <small>四张上下排列，适合步骤和对比</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="four-horizontal">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>四张横排拼</span>
+              <small>四张左右排列，适合宽屏展示</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="four-feature">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>四张主次拼</span>
+              <small>一张大图配三张小图，突出重点</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="five-feature">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>五张主图拼</span>
+              <small>上方大图、下方四图，适合合集封面</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="five-grid">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>五张错落拼</span>
+              <small>大小错落排列，适合生活记录</small>
+            </button>
             <button class="preset-card collage-grid" data-collage-layout="six-grid">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>六宫格拼图</span>
               <small>2 x 3 网格，适合旅行和商品展示</small>
             </button>
+            <button class="preset-card collage-grid" data-collage-layout="six-horizontal">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>六张横向拼</span>
+              <small>3 x 2 横版网格，适合宽图合集</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="six-feature">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>六张主次拼</span>
+              <small>一张主图配五张小图，层次更丰富</small>
+            </button>
             <button class="preset-card collage-grid" data-collage-layout="nine-grid">
+              <span class="collage-thumb" aria-hidden="true"></span>
               <span>九宫格拼图</span>
               <small>最多 9 张图片，适合社交分享</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="nine-vertical">
+              <span class="collage-thumb" aria-hidden="true"></span>
+              <span>九张竖版拼</span>
+              <small>竖版九宫格，适合长图海报式分享</small>
             </button>
           </div>
         </section>
