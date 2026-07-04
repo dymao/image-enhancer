@@ -8,6 +8,8 @@
   <string>launcher</string>
   <key>CFBundleIdentifier</key>
   <string>com.local.image-enhancer</string>
+  <key>CFBundleIconFile</key>
+  <string>AppIcon</string>
   <key>CFBundleName</key>
   <string>Image Enhancer</string>
   <key>CFBundlePackageType</key>

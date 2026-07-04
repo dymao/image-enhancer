@@ -49,13 +49,21 @@
 
 ### Electron 新界面（推荐）
 
-在 Finder 中双击项目根目录下的：
+macOS 在 Finder 中双击项目根目录下的：
 
 ```bash
 Image Enhancer.app
 ```
 
 这种方式不会打开终端窗口；如果启动失败，会显示系统弹窗，详细日志在 `~/Library/Logs/Image Enhancer.log`。
+
+Windows 系统双击项目根目录下的：
+
+```bat
+start_image_enhancer_windows.cmd
+```
+
+首次启动会自动检查 Node.js/npm，并执行 `npm install` 安装 Electron 依赖，然后打开新版界面。
 
 也可以双击备用启动脚本：
 

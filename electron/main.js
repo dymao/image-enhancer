@@ -6,6 +6,13 @@ const IMAGE_FILTERS = [
   { name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp', 'bmp'] },
 ];
 
+const APP_ICON_PATH = path.join(
+  __dirname,
+  '..',
+  'assets',
+  process.platform === 'win32' ? 'app-icon.ico' : 'app-icon.png',
+);
+
 function createWindow() {
   const window = new BrowserWindow({
     width: 1680,
@@ -13,6 +20,7 @@ function createWindow() {
     minWidth: 1280,
     minHeight: 820,
     title: 'Image Enhancer',
+    icon: APP_ICON_PATH,
     backgroundColor: '#1f1f1f',
     titleBarStyle: 'hiddenInset',
     webPreferences: {
@@ -27,6 +35,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  if (process.platform === 'darwin' && app.dock) {
+    app.dock.setIcon(APP_ICON_PATH);
+  }
+
   createWindow();
 
   app.on('activate', () => {
