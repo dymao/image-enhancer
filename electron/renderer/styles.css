@@ -207,6 +207,18 @@ p {
   background: linear-gradient(135deg, rgba(52, 211, 153, 0.22), rgba(91, 140, 255, 0.14));
 }
 
+.quality-toggle {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.24), rgba(99, 102, 241, 0.12));
+}
+
+.tone-toggle {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(239, 68, 68, 0.12));
+}
+
+.utility-toggle {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.22), rgba(45, 212, 191, 0.1));
+}
+
 .style-toggle::after {
   content: "展开";
   position: absolute;
@@ -284,6 +296,24 @@ p {
 
 .preset-card.bw {
   background: linear-gradient(135deg, rgba(229, 231, 235, 0.18), rgba(75, 85, 99, 0.18));
+}
+
+.preset-card.clarity,
+.preset-card.denoise,
+.preset-card.bright {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(99, 102, 241, 0.1));
+}
+
+.preset-card.warm,
+.preset-card.cool,
+.preset-card.contrast {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2), rgba(14, 165, 233, 0.1));
+}
+
+.preset-card.id-photo,
+.preset-card.product,
+.preset-card.food {
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(34, 197, 94, 0.1));
 }
 
 .preset-card.active {

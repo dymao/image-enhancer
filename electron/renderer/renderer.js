@@ -55,6 +55,105 @@ const presets = {
     faceSlim: 0,
     softGlow: 10,
   },
+  clarityBoost: {
+    brightness: 4,
+    contrast: 14,
+    saturation: 4,
+    sharpness: 48,
+    denoise: 14,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 0,
+  },
+  cleanDenoise: {
+    brightness: 5,
+    contrast: -4,
+    saturation: 2,
+    sharpness: 8,
+    denoise: 58,
+    whitening: 4,
+    skinSmooth: 14,
+    faceSlim: 0,
+    softGlow: 8,
+  },
+  transparentBright: {
+    brightness: 18,
+    contrast: 8,
+    saturation: 8,
+    sharpness: 16,
+    denoise: 16,
+    whitening: 12,
+    skinSmooth: 8,
+    faceSlim: 0,
+    softGlow: 10,
+  },
+  warmLight: {
+    brightness: 10,
+    contrast: 6,
+    saturation: 14,
+    sharpness: 8,
+    denoise: 8,
+    whitening: 6,
+    skinSmooth: 6,
+    faceSlim: 0,
+    softGlow: 20,
+  },
+  coolClean: {
+    brightness: 8,
+    contrast: 10,
+    saturation: -8,
+    sharpness: 18,
+    denoise: 10,
+    whitening: 8,
+    skinSmooth: 4,
+    faceSlim: 0,
+    softGlow: 4,
+  },
+  dramaticContrast: {
+    brightness: -4,
+    contrast: 34,
+    saturation: 10,
+    sharpness: 26,
+    denoise: 6,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 0,
+  },
+  idPhotoClean: {
+    brightness: 12,
+    contrast: 6,
+    saturation: 2,
+    sharpness: 18,
+    denoise: 22,
+    whitening: 24,
+    skinSmooth: 24,
+    faceSlim: 8,
+    softGlow: 0,
+  },
+  productPolish: {
+    brightness: 16,
+    contrast: 18,
+    saturation: 8,
+    sharpness: 36,
+    denoise: 10,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 0,
+  },
+  foodFresh: {
+    brightness: 8,
+    contrast: 12,
+    saturation: 24,
+    sharpness: 18,
+    denoise: 8,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 6,
+  },
 };
 
 const defaultTools = {
@@ -305,6 +404,12 @@ const textBold = document.getElementById('textBold');
 const textItalic = document.getElementById('textItalic');
 const sceneToggleButton = document.getElementById('sceneToggleButton');
 const sceneOptions = document.getElementById('sceneOptions');
+const qualityToggleButton = document.getElementById('qualityToggleButton');
+const qualityOptions = document.getElementById('qualityOptions');
+const toneToggleButton = document.getElementById('toneToggleButton');
+const toneOptions = document.getElementById('toneOptions');
+const utilityToggleButton = document.getElementById('utilityToggleButton');
+const utilityOptions = document.getElementById('utilityOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -949,6 +1054,18 @@ function toggleCollapsibleOptions(button, options) {
 
 function toggleSceneOptions() {
   toggleCollapsibleOptions(sceneToggleButton, sceneOptions);
+}
+
+function toggleQualityOptions() {
+  toggleCollapsibleOptions(qualityToggleButton, qualityOptions);
+}
+
+function toggleToneOptions() {
+  toggleCollapsibleOptions(toneToggleButton, toneOptions);
+}
+
+function toggleUtilityOptions() {
+  toggleCollapsibleOptions(utilityToggleButton, utilityOptions);
 }
 
 function toggleStyleOptions() {
@@ -2103,6 +2220,9 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 });
 
 sceneToggleButton.addEventListener('click', toggleSceneOptions);
+qualityToggleButton.addEventListener('click', toggleQualityOptions);
+toneToggleButton.addEventListener('click', toggleToneOptions);
+utilityToggleButton.addEventListener('click', toggleUtilityOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 adjustToolButton.addEventListener('click', () => {
