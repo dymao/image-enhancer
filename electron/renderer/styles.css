@@ -253,6 +253,10 @@ p {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.24), rgba(236, 72, 153, 0.1));
 }
 
+.collage-toggle {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.24), rgba(168, 85, 247, 0.12));
+}
+
 .style-toggle::after {
   content: "展开";
   position: absolute;
@@ -368,6 +372,12 @@ p {
 .preset-card.avatar,
 .preset-card.travel {
   background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.1));
+}
+
+.preset-card.collage-two,
+.preset-card.collage-three,
+.preset-card.collage-grid {
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.2), rgba(168, 85, 247, 0.1));
 }
 
 .preset-card.active {
@@ -1024,6 +1034,14 @@ button:disabled {
 
 #previewCanvas[data-tool="mosaic"] {
   cursor: crosshair;
+}
+
+#previewCanvas[data-mode="collage"] {
+  cursor: grab;
+}
+
+#previewCanvas[data-mode="collage"][data-dragging="true"] {
+  cursor: grabbing;
 }
 
 .toast {

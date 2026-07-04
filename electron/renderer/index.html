@@ -167,6 +167,39 @@
         </section>
 
         <section class="preset-section style-section">
+          <button id="collageToggleButton" class="preset-card style-toggle collage-toggle" aria-expanded="false" aria-controls="collageOptions">
+            <span>拼图一键排版</span>
+            <small>点击展开双图、三图、四宫格、九宫格等拼接样式</small>
+          </button>
+          <div id="collageOptions" class="style-options collapsed">
+            <button class="preset-card collage-two" data-collage-layout="two-vertical">
+              <span>两张竖拼</span>
+              <small>上下拼接，适合对比和长图展示</small>
+            </button>
+            <button class="preset-card collage-two" data-collage-layout="two-horizontal">
+              <span>两张横拼</span>
+              <small>左右拼接，适合横向对比</small>
+            </button>
+            <button class="preset-card collage-three" data-collage-layout="three-feature">
+              <span>三张主次拼</span>
+              <small>一张大图配两张小图，适合故事感排版</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="four-grid">
+              <span>四宫格拼图</span>
+              <small>2 x 2 网格，适合日常合集</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="six-grid">
+              <span>六宫格拼图</span>
+              <small>2 x 3 网格，适合旅行和商品展示</small>
+            </button>
+            <button class="preset-card collage-grid" data-collage-layout="nine-grid">
+              <span>九宫格拼图</span>
+              <small>最多 9 张图片，适合社交分享</small>
+            </button>
+          </div>
+        </section>
+
+        <section class="preset-section style-section">
           <button id="styleToggleButton" class="preset-card style-toggle" aria-expanded="false" aria-controls="styleOptions">
             <span>风格化一键修图</span>
             <small>点击展开蓝天、青春、胶片、复古等风格</small>

@@ -453,6 +453,76 @@ const stylePresets = {
   },
 };
 
+const collageLayouts = {
+  'two-vertical': {
+    label: '两张竖拼',
+    width: 1200,
+    height: 1600,
+    gap: 18,
+    slots: [
+      { x: 0, y: 0, width: 1, height: 0.5 },
+      { x: 0, y: 0.5, width: 1, height: 0.5 },
+    ],
+  },
+  'two-horizontal': {
+    label: '两张横拼',
+    width: 1600,
+    height: 900,
+    gap: 18,
+    slots: [
+      { x: 0, y: 0, width: 0.5, height: 1 },
+      { x: 0.5, y: 0, width: 0.5, height: 1 },
+    ],
+  },
+  'three-feature': {
+    label: '三张主次拼',
+    width: 1200,
+    height: 1600,
+    gap: 18,
+    slots: [
+      { x: 0, y: 0, width: 1, height: 0.62 },
+      { x: 0, y: 0.62, width: 0.5, height: 0.38 },
+      { x: 0.5, y: 0.62, width: 0.5, height: 0.38 },
+    ],
+  },
+  'four-grid': {
+    label: '四宫格拼图',
+    width: 1200,
+    height: 1200,
+    gap: 16,
+    slots: [
+      { x: 0, y: 0, width: 0.5, height: 0.5 },
+      { x: 0.5, y: 0, width: 0.5, height: 0.5 },
+      { x: 0, y: 0.5, width: 0.5, height: 0.5 },
+      { x: 0.5, y: 0.5, width: 0.5, height: 0.5 },
+    ],
+  },
+  'six-grid': {
+    label: '六宫格拼图',
+    width: 1200,
+    height: 1800,
+    gap: 14,
+    slots: Array.from({ length: 6 }, (_, index) => ({
+      x: (index % 2) * 0.5,
+      y: Math.floor(index / 2) / 3,
+      width: 0.5,
+      height: 1 / 3,
+    })),
+  },
+  'nine-grid': {
+    label: '九宫格拼图',
+    width: 1200,
+    height: 1200,
+    gap: 12,
+    slots: Array.from({ length: 9 }, (_, index) => ({
+      x: (index % 3) / 3,
+      y: Math.floor(index / 3) / 3,
+      width: 1 / 3,
+      height: 1 / 3,
+    })),
+  },
+};
+
 const state = {
   documents: [],
   activeDocumentId: null,
@@ -517,6 +587,8 @@ const portraitDetailToggleButton = document.getElementById('portraitDetailToggle
 const portraitDetailOptions = document.getElementById('portraitDetailOptions');
 const socialToggleButton = document.getElementById('socialToggleButton');
 const socialOptions = document.getElementById('socialOptions');
+const collageToggleButton = document.getElementById('collageToggleButton');
+const collageOptions = document.getElementById('collageOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -577,6 +649,10 @@ function showToast(message) {
 
 function getActiveDocument() {
   return state.documents.find((doc) => doc.id === state.activeDocumentId) || null;
+}
+
+function isCollageDocument(doc) {
+  return doc?.type === 'collage';
 }
 
 function createDefaultTools() {
@@ -773,6 +849,7 @@ function findTextLayerAtPoint(doc, point) {
 function createDocument(result, image) {
   return {
     id: state.nextDocumentId++,
+    type: 'image',
     sourceName: result.name,
     image,
     meta: result,
@@ -786,10 +863,59 @@ function createDocument(result, image) {
   };
 }
 
+function createCollageDocument(layoutName, items) {
+  const layout = collageLayouts[layoutName];
+  const sourceNames = items.map((item) => item.result.name);
+  const slots = layout.slots.map((_slot, index) => {
+    const item = items[index] || null;
+    return {
+      image: item?.image || null,
+      sourceName: item?.result.name || `空位 ${index + 1}`,
+      scale: 1,
+      offsetX: 0,
+      offsetY: 0,
+    };
+  });
+
+  return {
+    id: state.nextDocumentId++,
+    type: 'collage',
+    sourceName: `${layout.label} ${sourceNames.length}张`,
+    meta: {
+      extension: 'PNG',
+      path: sourceNames.join(' / '),
+      size: items.reduce((total, item) => total + (item.result.size || 0), 0),
+      createdAt: new Date().toISOString(),
+      modifiedAt: new Date().toISOString(),
+    },
+    values: { ...presets.reset },
+    effectHistory: [],
+    nextHistoryId: 1,
+    tools: createDefaultTools(),
+    grayscale: false,
+    styleMode: 'none',
+    styleModes: [],
+    collage: {
+      layoutName,
+      activeSlotIndex: 0,
+      slots,
+    },
+  };
+}
+
 function loadDocument(result) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.onload = () => resolve(createDocument(result, image));
+    image.onerror = () => reject(new Error(result.name));
+    image.src = result.dataUrl;
+  });
+}
+
+function loadCollageItem(result) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve({ result, image });
     image.onerror = () => reject(new Error(result.name));
     image.src = result.dataUrl;
   });
@@ -1018,9 +1144,12 @@ function syncUiWithActiveDocument() {
   emptyState.style.display = 'none';
   previewCanvas.style.display = 'block';
   saveButton.disabled = false;
-  setAdjustmentsEnabled(true);
+  setAdjustmentsEnabled(!isCollageDocument(activeDocument));
   syncControlsFromDocument(activeDocument);
   renderHistoryPanel(activeDocument);
+  if (isCollageDocument(activeDocument)) {
+    setActiveTool(null);
+  }
   renderPreview();
 }
 
@@ -1158,6 +1287,37 @@ function formatDateTime(value) {
 function updateImageMeta(doc) {
   imageMeta.replaceChildren();
 
+  if (isCollageDocument(doc)) {
+    const layout = collageLayouts[doc.collage.layoutName];
+    const filledSlots = doc.collage.slots.filter((slot) => slot.image).length;
+    const activeSlot = doc.collage.slots[doc.collage.activeSlotIndex];
+    const rows = [
+      ['画布', `${layout.width} x ${layout.height}`],
+      ['布局', layout.label],
+      ['图片', `${filledSlots} / ${layout.slots.length} 张`],
+      ['选中', activeSlot?.image ? activeSlot.sourceName : '空位'],
+      ['操作', '点击格子选中，拖动移动，滚轮缩放'],
+    ];
+
+    rows.forEach(([label, value]) => {
+      const row = document.createElement('div');
+      row.className = label === '操作' ? 'meta-row meta-path' : 'meta-row';
+
+      const labelElement = document.createElement('span');
+      labelElement.className = 'meta-label';
+      labelElement.textContent = label;
+
+      const valueElement = document.createElement('span');
+      valueElement.className = 'meta-value';
+      valueElement.textContent = value;
+      valueElement.title = value;
+
+      row.append(labelElement, valueElement);
+      imageMeta.appendChild(row);
+    });
+    return;
+  }
+
   const result = doc.meta;
   const { image } = doc;
   const rows = [
@@ -1212,6 +1372,34 @@ async function openImage() {
   }
 }
 
+async function createCollageFromLayout(layoutName) {
+  const layout = collageLayouts[layoutName];
+  if (!layout) return;
+
+  showToast(`请选择用于${layout.label}的图片`);
+  const results = await window.imageEnhancer.openImage();
+  if (!results) return;
+
+  const files = (Array.isArray(results) ? results : [results]).slice(0, layout.slots.length);
+  if (files.length === 0) return;
+  if (files.length < 2) {
+    showToast('拼图至少需要选择 2 张图片');
+    return;
+  }
+
+  try {
+    const loadedItems = await Promise.all(files.map(loadCollageItem));
+    const collageDocument = createCollageDocument(layoutName, loadedItems);
+    state.documents.push(collageDocument);
+    state.activeDocumentId = collageDocument.id;
+    setActiveTool(null);
+    syncUiWithActiveDocument();
+    showToast(`已创建${layout.label}，点击格子后可拖动或滚轮缩放`);
+  } catch (error) {
+    showToast(`拼图图片加载失败：${error.message}`);
+  }
+}
+
 async function saveImage() {
   const doc = getActiveDocument();
   if (!doc) {
@@ -1220,7 +1408,9 @@ async function saveImage() {
   }
 
   showToast('正在生成全尺寸图片...');
-  const outputCanvas = buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false, true);
+  const outputCanvas = isCollageDocument(doc)
+    ? buildCollageCanvas(doc, Number.POSITIVE_INFINITY, false)
+    : buildProcessedCanvas(doc.image, Number.POSITIVE_INFINITY, doc, false, true);
   const dataUrl = outputCanvas.toDataURL('image/png');
   const savedPath = await window.imageEnhancer.saveImage({
     sourceName: doc.sourceName,
@@ -1337,6 +1527,10 @@ function toggleSocialOptions() {
   toggleCollapsibleOptions(socialToggleButton, socialOptions);
 }
 
+function toggleCollageOptions() {
+  toggleCollapsibleOptions(collageToggleButton, collageOptions);
+}
+
 function toggleStyleOptions() {
   toggleCollapsibleOptions(styleToggleButton, styleOptions);
 }
@@ -1344,6 +1538,19 @@ function toggleStyleOptions() {
 function renderPreview() {
   const doc = getActiveDocument();
   if (!doc) return;
+  previewCanvas.dataset.mode = isCollageDocument(doc) ? 'collage' : 'image';
+  if (isCollageDocument(doc)) {
+    const collageCanvas = buildCollageCanvas(doc, 1500, true);
+    previewCanvas.width = collageCanvas.width;
+    previewCanvas.height = collageCanvas.height;
+    previewContext.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    previewContext.drawImage(collageCanvas, 0, 0);
+    fitPreviewCanvasToContainer();
+    updateImageMeta(doc);
+    hideTextEditorOverlay();
+    return;
+  }
+
   const hideActiveTextLayer = shouldHideActiveTextLayerInPreview();
 
   const canvas = buildProcessedCanvas(
@@ -1544,6 +1751,92 @@ function buildProcessedCanvas(
   }
 
   return canvas;
+}
+
+function buildCollageCanvas(doc, maxSize, showGuides = false) {
+  const layout = collageLayouts[doc.collage.layoutName];
+  if (!layout) return createCanvas(1, 1);
+
+  const scale = Math.min(1, maxSize / Math.max(layout.width, layout.height));
+  const width = Math.max(1, Math.round(layout.width * scale));
+  const height = Math.max(1, Math.round(layout.height * scale));
+  const gap = Math.max(0, Math.round(layout.gap * scale));
+  const canvas = createCanvas(width, height);
+  const context = canvas.getContext('2d');
+
+  context.fillStyle = '#f8fafc';
+  context.fillRect(0, 0, width, height);
+
+  layout.slots.forEach((layoutSlot, index) => {
+    const slot = doc.collage.slots[index];
+    const rect = getCollageSlotRect(layoutSlot, width, height, gap);
+    drawCollageSlot(context, rect, slot, index);
+    if (showGuides && index === doc.collage.activeSlotIndex) {
+      drawCollageActiveSlot(context, rect);
+    }
+  });
+
+  return canvas;
+}
+
+function getCollageSlotRect(layoutSlot, canvasWidth, canvasHeight, gap) {
+  const halfGap = gap / 2;
+  const x = Math.round(layoutSlot.x * canvasWidth + (layoutSlot.x === 0 ? gap : halfGap));
+  const y = Math.round(layoutSlot.y * canvasHeight + (layoutSlot.y === 0 ? gap : halfGap));
+  const rightInset = layoutSlot.x + layoutSlot.width >= 1 ? gap : halfGap;
+  const bottomInset = layoutSlot.y + layoutSlot.height >= 1 ? gap : halfGap;
+  const right = Math.round((layoutSlot.x + layoutSlot.width) * canvasWidth - rightInset);
+  const bottom = Math.round((layoutSlot.y + layoutSlot.height) * canvasHeight - bottomInset);
+
+  return {
+    x,
+    y,
+    width: Math.max(1, right - x),
+    height: Math.max(1, bottom - y),
+  };
+}
+
+function drawCollageSlot(context, rect, slot, index) {
+  context.save();
+  context.beginPath();
+  context.rect(rect.x, rect.y, rect.width, rect.height);
+  context.clip();
+
+  if (!slot?.image) {
+    context.fillStyle = '#e2e8f0';
+    context.fillRect(rect.x, rect.y, rect.width, rect.height);
+    context.fillStyle = '#64748b';
+    context.font = `700 ${Math.max(18, Math.round(Math.min(rect.width, rect.height) * 0.08))}px sans-serif`;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(`空位 ${index + 1}`, rect.x + rect.width / 2, rect.y + rect.height / 2);
+    context.restore();
+    return;
+  }
+
+  const image = slot.image;
+  const coverScale = Math.max(rect.width / image.naturalWidth, rect.height / image.naturalHeight) * (slot.scale || 1);
+  const drawWidth = image.naturalWidth * coverScale;
+  const drawHeight = image.naturalHeight * coverScale;
+  const drawX = rect.x + (rect.width - drawWidth) / 2 + ((slot.offsetX || 0) / 100) * rect.width;
+  const drawY = rect.y + (rect.height - drawHeight) / 2 + ((slot.offsetY || 0) / 100) * rect.height;
+
+  context.imageSmoothingQuality = 'high';
+  context.drawImage(image, drawX, drawY, drawWidth, drawHeight);
+  context.restore();
+}
+
+function drawCollageActiveSlot(context, rect) {
+  context.save();
+  context.lineWidth = 4;
+  context.setLineDash([14, 8]);
+  context.strokeStyle = 'rgba(37, 99, 235, 0.95)';
+  context.strokeRect(rect.x + 3, rect.y + 3, rect.width - 6, rect.height - 6);
+  context.setLineDash([]);
+  context.lineWidth = 2;
+  context.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+  context.strokeRect(rect.x + 7, rect.y + 7, rect.width - 14, rect.height - 14);
+  context.restore();
 }
 
 function createCanvas(width, height) {
@@ -2373,10 +2666,46 @@ function createRegionFromPoints(start, end) {
   return { x, y, width, height };
 }
 
+function findCollageSlotAtPoint(doc, point) {
+  const layout = collageLayouts[doc.collage.layoutName];
+  if (!layout) return -1;
+
+  return layout.slots.findIndex((slot) => (
+    point.x >= slot.x * 100 &&
+    point.x <= (slot.x + slot.width) * 100 &&
+    point.y >= slot.y * 100 &&
+    point.y <= (slot.y + slot.height) * 100
+  ));
+}
+
 function handleCanvasPointerDown(event) {
   const doc = getActiveDocument();
   const point = getCanvasPoint(event);
   if (!doc || !point) return;
+
+  if (isCollageDocument(doc)) {
+    const slotIndex = findCollageSlotAtPoint(doc, point);
+    if (slotIndex === -1) return;
+
+    doc.collage.activeSlotIndex = slotIndex;
+    const slot = doc.collage.slots[slotIndex];
+    updateImageMeta(doc);
+    renderPreview();
+
+    if (slot?.image) {
+      state.canvasInteraction = {
+        type: 'collage',
+        slotIndex,
+        start: point,
+        offsetX: slot.offsetX || 0,
+        offsetY: slot.offsetY || 0,
+      };
+      previewCanvas.dataset.dragging = 'true';
+      previewCanvas.setPointerCapture(event.pointerId);
+    }
+    event.preventDefault();
+    return;
+  }
 
   if (state.activeTool === 'mosaic' && doc.tools.mosaic.enabled) {
     state.canvasInteraction = {
@@ -2441,6 +2770,15 @@ function handleCanvasPointerMove(event) {
 
   if (state.canvasInteraction.type === 'mosaic') {
     doc.tools.mosaic.region = createRegionFromPoints(state.canvasInteraction.start, point);
+  } else if (state.canvasInteraction.type === 'collage') {
+    const layout = collageLayouts[doc.collage.layoutName];
+    const layoutSlot = layout?.slots[state.canvasInteraction.slotIndex];
+    const slot = doc.collage.slots[state.canvasInteraction.slotIndex];
+    if (!layoutSlot || !slot) return;
+    const deltaX = (point.x - state.canvasInteraction.start.x) / layoutSlot.width;
+    const deltaY = (point.y - state.canvasInteraction.start.y) / layoutSlot.height;
+    slot.offsetX = Math.max(-55, Math.min(55, state.canvasInteraction.offsetX + deltaX));
+    slot.offsetY = Math.max(-55, Math.min(55, state.canvasInteraction.offsetY + deltaY));
   } else if (state.canvasInteraction.type === 'text') {
     const layer = doc.tools.text.layers.find((item) => item.id === state.canvasInteraction.layerId);
     if (!layer) return;
@@ -2452,9 +2790,30 @@ function handleCanvasPointerMove(event) {
   schedulePreviewRender();
 }
 
+function handleCanvasWheel(event) {
+  const doc = getActiveDocument();
+  const point = getCanvasPoint(event);
+  if (!isCollageDocument(doc) || !point) return;
+
+  const slotIndex = findCollageSlotAtPoint(doc, point);
+  if (slotIndex !== -1) {
+    doc.collage.activeSlotIndex = slotIndex;
+  }
+  const slot = doc.collage.slots[doc.collage.activeSlotIndex];
+  if (!slot?.image) return;
+
+  const direction = event.deltaY < 0 ? 1 : -1;
+  const factor = direction > 0 ? 1.08 : 0.92;
+  slot.scale = Math.max(0.65, Math.min(3.2, (slot.scale || 1) * factor));
+  updateImageMeta(doc);
+  renderPreview();
+  event.preventDefault();
+}
+
 function handleCanvasPointerUp(event) {
   if (!state.canvasInteraction) return;
   state.canvasInteraction = null;
+  delete previewCanvas.dataset.dragging;
   try {
     event.currentTarget.releasePointerCapture(event.pointerId);
   } catch {
@@ -2494,12 +2853,17 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
   button.addEventListener('click', () => applyStylePreset(button.dataset.stylePreset));
 });
 
+document.querySelectorAll('[data-collage-layout]').forEach((button) => {
+  button.addEventListener('click', () => createCollageFromLayout(button.dataset.collageLayout));
+});
+
 sceneToggleButton.addEventListener('click', toggleSceneOptions);
 qualityToggleButton.addEventListener('click', toggleQualityOptions);
 toneToggleButton.addEventListener('click', toggleToneOptions);
 repairToggleButton.addEventListener('click', toggleRepairOptions);
 portraitDetailToggleButton.addEventListener('click', togglePortraitDetailOptions);
 socialToggleButton.addEventListener('click', toggleSocialOptions);
+collageToggleButton.addEventListener('click', toggleCollageOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 adjustToolButton.addEventListener('click', () => {
@@ -2626,6 +2990,7 @@ previewCanvas.addEventListener('pointerdown', handleCanvasPointerDown);
 previewCanvas.addEventListener('pointermove', handleCanvasPointerMove);
 previewCanvas.addEventListener('pointerup', handleCanvasPointerUp);
 previewCanvas.addEventListener('pointercancel', handleCanvasPointerUp);
+previewCanvas.addEventListener('wheel', handleCanvasWheel, { passive: false });
 textDragHandle.addEventListener('pointerdown', handleTextDragPointerDown);
 textDragHandle.addEventListener('pointermove', handleCanvasPointerMove);
 textDragHandle.addEventListener('pointerup', handleCanvasPointerUp);
