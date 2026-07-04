@@ -2111,6 +2111,15 @@ adjustToolButton.addEventListener('click', () => {
 
 textToolButton.addEventListener('click', () => {
   const doc = getActiveDocument();
+  if (state.activeTool === 'text') {
+    if (doc) {
+      doc.tools.text.activeLayerId = null;
+      state.textSelectionRange = null;
+    }
+    setActiveTool(null);
+    return;
+  }
+
   if (doc) {
     doc.tools.text.activeLayerId = null;
     state.textSelectionRange = null;
