@@ -378,9 +378,11 @@ const toast = document.getElementById('toast');
 const adjustToolButton = document.getElementById('adjustToolButton');
 const textToolButton = document.getElementById('textToolButton');
 const mosaicToolButton = document.getElementById('mosaicToolButton');
+const historyToolButton = document.getElementById('historyToolButton');
 const adjustToolPanel = document.getElementById('adjustToolPanel');
 const textToolPanel = document.getElementById('textToolPanel');
 const mosaicToolPanel = document.getElementById('mosaicToolPanel');
+const historyToolPanel = document.getElementById('historyToolPanel');
 const mosaicToggle = document.getElementById('mosaicToggle');
 const mosaicPreset = document.getElementById('mosaicPreset');
 const mosaicShape = document.getElementById('mosaicShape');
@@ -402,6 +404,8 @@ const textSizeValue = document.getElementById('textSizeValue');
 const textColor = document.getElementById('textColor');
 const textBold = document.getElementById('textBold');
 const textItalic = document.getElementById('textItalic');
+const historyUndoButton = document.getElementById('historyUndoButton');
+const historyList = document.getElementById('historyList');
 const sceneToggleButton = document.getElementById('sceneToggleButton');
 const sceneOptions = document.getElementById('sceneOptions');
 const qualityToggleButton = document.getElementById('qualityToggleButton');
@@ -417,6 +421,7 @@ const toolInputs = [
   adjustToolButton,
   textToolButton,
   mosaicToolButton,
+  historyToolButton,
   mosaicToggle,
   mosaicPreset,
   mosaicShape,
@@ -434,6 +439,7 @@ const toolInputs = [
   textColor,
   textBold,
   textItalic,
+  historyUndoButton,
 ];
 
 function setActiveTool(tool) {
@@ -441,9 +447,11 @@ function setActiveTool(tool) {
   adjustToolButton.classList.toggle('active', tool === 'adjust');
   textToolButton.classList.toggle('active', tool === 'text');
   mosaicToolButton.classList.toggle('active', tool === 'mosaic');
+  historyToolButton.classList.toggle('active', tool === 'history');
   adjustToolPanel.classList.toggle('active', tool === 'adjust');
   textToolPanel.classList.toggle('active', tool === 'text');
   mosaicToolPanel.classList.toggle('active', tool === 'mosaic');
+  historyToolPanel.classList.toggle('active', tool === 'history');
   if (tool) {
     previewCanvas.dataset.tool = tool;
   } else {
@@ -664,9 +672,12 @@ function createDocument(result, image) {
     image,
     meta: result,
     values: { ...presets.reset },
+    effectHistory: [],
+    nextHistoryId: 1,
     tools: createDefaultTools(),
     grayscale: false,
     styleMode: 'none',
+    styleModes: [],
   };
 }
 
@@ -740,6 +751,104 @@ function syncControlsFromDocument(doc) {
   });
 }
 
+function getControlConfig(key) {
+  return controlsConfig.find((config) => config.key === key);
+}
+
+function clampControlValue(key, value) {
+  const config = getControlConfig(key);
+  if (!config) return value;
+  return Math.min(config.max, Math.max(config.min, Math.round(value)));
+}
+
+function updateControlValue(doc, key, value) {
+  const nextValue = clampControlValue(key, value);
+  doc.values[key] = nextValue;
+  const slider = sliderElements.get(key);
+  const valueLabel = valueElements.get(key);
+  if (slider) slider.value = nextValue;
+  if (valueLabel) valueLabel.textContent = String(nextValue);
+  return nextValue;
+}
+
+function renderHistoryPanel(doc = getActiveDocument()) {
+  historyList.replaceChildren();
+  const history = doc?.effectHistory || [];
+  historyUndoButton.disabled = !doc || history.length === 0;
+
+  if (!doc) {
+    const empty = document.createElement('p');
+    empty.className = 'history-empty';
+    empty.textContent = '请先打开图片';
+    historyList.appendChild(empty);
+    return;
+  }
+
+  if (history.length === 0) {
+    const empty = document.createElement('p');
+    empty.className = 'history-empty';
+    empty.textContent = '还没有一键效果记录';
+    historyList.appendChild(empty);
+    return;
+  }
+
+  history.slice().reverse().forEach((entry, index) => {
+    const item = document.createElement('div');
+    item.className = 'history-item';
+
+    const info = document.createElement('div');
+    info.className = 'history-info';
+
+    const title = document.createElement('strong');
+    title.textContent = entry.label;
+
+    const meta = document.createElement('span');
+    meta.textContent = index === 0 ? '最新操作' : entry.type === 'style' ? '风格效果' : '快捷效果';
+
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'history-remove';
+    remove.textContent = '删除';
+    remove.setAttribute('aria-label', `删除历史操作 ${entry.label}`);
+    remove.addEventListener('click', () => removeHistoryEntry(entry.id));
+
+    info.append(title, meta);
+    item.append(info, remove);
+    historyList.appendChild(item);
+  });
+}
+
+function removeHistoryEntry(historyId) {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
+  const index = doc.effectHistory.findIndex((entry) => entry.id === historyId);
+  if (index === -1) return;
+
+  const [entry] = doc.effectHistory.splice(index, 1);
+  Object.entries(entry.appliedValues || {}).forEach(([key, value]) => {
+    updateControlValue(doc, key, doc.values[key] - value);
+  });
+
+  if (entry.styleMode && Array.isArray(doc.styleModes)) {
+    const styleIndex = doc.styleModes.lastIndexOf(entry.styleMode);
+    if (styleIndex !== -1) doc.styleModes.splice(styleIndex, 1);
+  }
+
+  doc.styleMode = doc.styleModes?.[doc.styleModes.length - 1] || 'none';
+  doc.grayscale = false;
+  renderHistoryPanel(doc);
+  renderPreview();
+  showToast(`已删除历史：${entry.label}`);
+}
+
+function undoLastHistoryEntry() {
+  const doc = getActiveDocument();
+  const lastEntry = doc?.effectHistory?.[doc.effectHistory.length - 1];
+  if (!lastEntry) return;
+  removeHistoryEntry(lastEntry.id);
+}
+
 
 function syncToolControlsFromDocument(doc) {
   const tools = doc?.tools || defaultTools;
@@ -793,6 +902,7 @@ function syncUiWithActiveDocument() {
     saveButton.disabled = true;
     setAdjustmentsEnabled(false);
     syncControlsFromDocument(null);
+    renderHistoryPanel(null);
     setActiveTool(null);
     clearPreviewCanvas();
     return;
@@ -805,6 +915,7 @@ function syncUiWithActiveDocument() {
   saveButton.disabled = false;
   setAdjustmentsEnabled(true);
   syncControlsFromDocument(activeDocument);
+  renderHistoryPanel(activeDocument);
   renderPreview();
 }
 
@@ -863,11 +974,7 @@ function setControlValues(values) {
   if (!doc) return;
 
   Object.entries(values).forEach(([key, value]) => {
-    doc.values[key] = value;
-    const slider = sliderElements.get(key);
-    const valueLabel = valueElements.get(key);
-    if (slider) slider.value = value;
-    if (valueLabel) valueLabel.textContent = String(value);
+    updateControlValue(doc, key, value);
   });
 }
 
@@ -1020,28 +1127,79 @@ async function saveImage() {
   }
 }
 
-function applyPreset(name) {
+function applyStackedEffect({ type, name, label, values, styleMode = null }) {
   const doc = getActiveDocument();
   if (!doc) return;
 
-  setControlValues(presets[name]);
+  const appliedValues = {};
+  Object.entries(values).forEach(([key, value]) => {
+    const before = doc.values[key] ?? 0;
+    const after = updateControlValue(doc, key, before + value);
+    appliedValues[key] = after - before;
+  });
+
+  if (!Array.isArray(doc.effectHistory)) doc.effectHistory = [];
+  if (!Array.isArray(doc.styleModes)) doc.styleModes = [];
+  if (!doc.nextHistoryId) doc.nextHistoryId = 1;
+  if (styleMode) doc.styleModes.push(styleMode);
+
+  doc.grayscale = false;
+  doc.styleMode = doc.styleModes[doc.styleModes.length - 1] || 'none';
+  doc.effectHistory.push({
+    id: doc.nextHistoryId++,
+    type,
+    name,
+    label,
+    appliedValues,
+    styleMode,
+  });
+  renderHistoryPanel(doc);
+  renderPreview();
+  showToast(`已叠加：${label}`);
+}
+
+function resetEffects() {
+  const doc = getActiveDocument();
+  if (!doc) return;
+
+  setControlValues(presets.reset);
+  doc.effectHistory = [];
+  doc.nextHistoryId = 1;
+  doc.styleModes = [];
   doc.grayscale = false;
   doc.styleMode = 'none';
+  renderHistoryPanel(doc);
   renderPreview();
+  showToast('已重置效果');
+}
+
+function applyPreset(name, label = '快捷效果') {
+  const values = presets[name];
+  if (!values) return;
+  if (name === 'reset') {
+    resetEffects();
+    return;
+  }
+
+  applyStackedEffect({
+    type: 'preset',
+    name,
+    label,
+    values,
+  });
 }
 
 function applyStylePreset(name) {
-  const doc = getActiveDocument();
-  if (!doc) return;
-
   const style = stylePresets[name];
   if (!style) return;
 
-  setControlValues(style.controls);
-  doc.grayscale = false;
-  doc.styleMode = name;
-  renderPreview();
-  showToast(`已应用：${style.label}`);
+  applyStackedEffect({
+    type: 'style',
+    name,
+    label: style.label,
+    values: style.controls,
+    styleMode: name,
+  });
 }
 
 function toggleCollapsibleOptions(button, options) {
@@ -1247,9 +1405,14 @@ function buildProcessedCanvas(
     applySoftGlow(context, canvas, doc.values.softGlow);
   }
 
-  if (doc.styleMode !== 'none') {
-    applyStyleGrade(context, width, height, doc.styleMode);
-  }
+  const activeStyleModes = Array.isArray(doc.styleModes) && doc.styleModes.length > 0
+    ? doc.styleModes
+    : doc.styleMode !== 'none'
+      ? [doc.styleMode]
+      : [];
+  activeStyleModes.forEach((styleMode) => {
+    applyStyleGrade(context, width, height, styleMode);
+  });
 
   if (doc.grayscale) {
     applyGrayscale(context, width, height);
@@ -2206,7 +2369,8 @@ emptyState.addEventListener('keydown', (event) => {
 saveButton.addEventListener('click', saveImage);
 
 document.querySelectorAll('[data-preset]').forEach((button) => {
-  button.addEventListener('click', () => applyPreset(button.dataset.preset));
+  const label = button.querySelector('span')?.textContent || '快捷效果';
+  button.addEventListener('click', () => applyPreset(button.dataset.preset, label));
 });
 
 document.querySelectorAll('[data-style-preset]').forEach((button) => {
@@ -2221,6 +2385,13 @@ styleToggleButton.addEventListener('click', toggleStyleOptions);
 adjustToolButton.addEventListener('click', () => {
   setActiveTool('adjust');
 });
+
+historyToolButton.addEventListener('click', () => {
+  setActiveTool(state.activeTool === 'history' ? null : 'history');
+  renderHistoryPanel();
+});
+
+historyUndoButton.addEventListener('click', undoLastHistoryEntry);
 
 textToolButton.addEventListener('click', () => {
   const doc = getActiveDocument();

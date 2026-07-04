@@ -714,6 +714,21 @@ button:disabled {
   background-size: 9px 9px, 9px 9px, 100% 100%;
 }
 
+.history-icon {
+  font-size: 0;
+}
+
+.history-icon::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background:
+    linear-gradient(currentColor, currentColor) 50% 50% / 2px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) 62% 62% / 7px 2px no-repeat;
+}
+
 .tool-popover {
   display: none;
   min-width: 0;
@@ -781,6 +796,63 @@ button:disabled {
 
 .field-control select {
   min-height: 28px;
+}
+
+.history-list {
+  display: grid;
+  gap: 6px;
+  max-height: 360px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 7px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.history-info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.history-info strong {
+  overflow: hidden;
+  color: #e5f0ff;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-info span,
+.history-empty {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.history-empty {
+  margin: 0;
+  border: 1px dashed var(--line);
+  border-radius: 7px;
+  padding: 10px 8px;
+  text-align: center;
+}
+
+.history-remove {
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border-radius: 6px;
+  color: #fecaca;
+  background: rgba(239, 68, 68, 0.14);
+  box-shadow: none;
+  font-size: 11px;
 }
 
 .inline-field {

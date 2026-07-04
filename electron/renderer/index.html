@@ -30,7 +30,7 @@
 
         <section class="preset-section style-section">
           <button id="sceneToggleButton" class="preset-card style-toggle scene-toggle" aria-expanded="false" aria-controls="sceneOptions">
-            <span>使用场景一键修图</span>
+            <span>实用场景一键修图</span>
             <small>点击展开人像、婚纱、证件、商品、美食等场景处理</small>
           </button>
           <div id="sceneOptions" class="style-options collapsed">
@@ -193,6 +193,7 @@
             <button id="adjustToolButton" class="tool-icon adjust-icon" type="button" title="微调工具" aria-label="微调工具"></button>
             <button id="textToolButton" class="tool-icon" type="button" title="文字工具" aria-label="文字工具">T</button>
             <button id="mosaicToolButton" class="tool-icon mosaic-icon" type="button" title="马赛克工具" aria-label="马赛克工具"></button>
+            <button id="historyToolButton" class="tool-icon history-icon" type="button" title="历史记录" aria-label="历史记录">H</button>
           </div>
 
           <div id="adjustToolPanel" class="tool-popover">
@@ -325,6 +326,17 @@
 
             <button id="clearMosaicRegion" class="secondary-action compact-action">清除区域</button>
             <p class="tool-hint">选择马赛克工具后，在图片上拖拽选定区域。</p>
+          </div>
+
+          <div id="historyToolPanel" class="tool-popover">
+            <div class="panel-header compact inside-panel">
+              <span class="eyebrow">History</span>
+              <h2>历史记录</h2>
+            </div>
+
+            <button id="historyUndoButton" class="secondary-action compact-action" type="button">回退上一步</button>
+            <div id="historyList" class="history-list" aria-live="polite"></div>
+            <p class="tool-hint">记录当前图片的一键效果；删除某条记录会同步移除对应效果。</p>
           </div>
         </section>
       </aside>
