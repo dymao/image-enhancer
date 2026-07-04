@@ -154,6 +154,105 @@ const presets = {
     faceSlim: 0,
     softGlow: 6,
   },
+  backlightRescue: {
+    brightness: 24,
+    contrast: -6,
+    saturation: 8,
+    sharpness: 12,
+    denoise: 14,
+    whitening: 8,
+    skinSmooth: 6,
+    faceSlim: 0,
+    softGlow: 12,
+  },
+  indoorYellowFix: {
+    brightness: 12,
+    contrast: 6,
+    saturation: -10,
+    sharpness: 14,
+    denoise: 18,
+    whitening: 14,
+    skinSmooth: 10,
+    faceSlim: 0,
+    softGlow: 4,
+  },
+  nightNoiseClean: {
+    brightness: 6,
+    contrast: 18,
+    saturation: 6,
+    sharpness: 18,
+    denoise: 46,
+    whitening: 0,
+    skinSmooth: 0,
+    faceSlim: 0,
+    softGlow: 2,
+  },
+  skinToneClean: {
+    brightness: 8,
+    contrast: 2,
+    saturation: 4,
+    sharpness: 8,
+    denoise: 20,
+    whitening: 26,
+    skinSmooth: 34,
+    faceSlim: 4,
+    softGlow: 6,
+  },
+  faceDetailEnhance: {
+    brightness: 4,
+    contrast: 12,
+    saturation: 4,
+    sharpness: 34,
+    denoise: 8,
+    whitening: 8,
+    skinSmooth: 10,
+    faceSlim: 10,
+    softGlow: 0,
+  },
+  softPortraitGlow: {
+    brightness: 12,
+    contrast: -2,
+    saturation: 6,
+    sharpness: 6,
+    denoise: 26,
+    whitening: 18,
+    skinSmooth: 30,
+    faceSlim: 8,
+    softGlow: 26,
+  },
+  momentsBright: {
+    brightness: 16,
+    contrast: 8,
+    saturation: 12,
+    sharpness: 14,
+    denoise: 10,
+    whitening: 10,
+    skinSmooth: 8,
+    faceSlim: 0,
+    softGlow: 8,
+  },
+  avatarPop: {
+    brightness: 10,
+    contrast: 16,
+    saturation: 8,
+    sharpness: 30,
+    denoise: 10,
+    whitening: 14,
+    skinSmooth: 18,
+    faceSlim: 14,
+    softGlow: 4,
+  },
+  travelVivid: {
+    brightness: 8,
+    contrast: 14,
+    saturation: 26,
+    sharpness: 24,
+    denoise: 8,
+    whitening: 4,
+    skinSmooth: 4,
+    faceSlim: 0,
+    softGlow: 4,
+  },
 };
 
 const defaultTools = {
@@ -412,6 +511,12 @@ const qualityToggleButton = document.getElementById('qualityToggleButton');
 const qualityOptions = document.getElementById('qualityOptions');
 const toneToggleButton = document.getElementById('toneToggleButton');
 const toneOptions = document.getElementById('toneOptions');
+const repairToggleButton = document.getElementById('repairToggleButton');
+const repairOptions = document.getElementById('repairOptions');
+const portraitDetailToggleButton = document.getElementById('portraitDetailToggleButton');
+const portraitDetailOptions = document.getElementById('portraitDetailOptions');
+const socialToggleButton = document.getElementById('socialToggleButton');
+const socialOptions = document.getElementById('socialOptions');
 const styleToggleButton = document.getElementById('styleToggleButton');
 const styleOptions = document.getElementById('styleOptions');
 
@@ -1218,6 +1323,18 @@ function toggleQualityOptions() {
 
 function toggleToneOptions() {
   toggleCollapsibleOptions(toneToggleButton, toneOptions);
+}
+
+function toggleRepairOptions() {
+  toggleCollapsibleOptions(repairToggleButton, repairOptions);
+}
+
+function togglePortraitDetailOptions() {
+  toggleCollapsibleOptions(portraitDetailToggleButton, portraitDetailOptions);
+}
+
+function toggleSocialOptions() {
+  toggleCollapsibleOptions(socialToggleButton, socialOptions);
 }
 
 function toggleStyleOptions() {
@@ -2380,6 +2497,9 @@ document.querySelectorAll('[data-style-preset]').forEach((button) => {
 sceneToggleButton.addEventListener('click', toggleSceneOptions);
 qualityToggleButton.addEventListener('click', toggleQualityOptions);
 toneToggleButton.addEventListener('click', toggleToneOptions);
+repairToggleButton.addEventListener('click', toggleRepairOptions);
+portraitDetailToggleButton.addEventListener('click', togglePortraitDetailOptions);
+socialToggleButton.addEventListener('click', toggleSocialOptions);
 styleToggleButton.addEventListener('click', toggleStyleOptions);
 
 adjustToolButton.addEventListener('click', () => {
