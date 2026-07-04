@@ -49,10 +49,14 @@ button {
 }
 
 .left-panel {
+  width: 240px;
+  min-width: 240px;
+  max-width: 240px;
   min-height: 0;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: scroll;
   overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: rgba(148, 163, 184, 0.48) transparent;
 }
@@ -269,7 +273,9 @@ p {
   margin-left: 8px;
   padding-left: 8px;
   max-height: 380px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
   padding-right: 2px;
   border-left: 2px solid rgba(91, 140, 255, 0.42);
 }
